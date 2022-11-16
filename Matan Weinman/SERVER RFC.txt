@@ -1,0 +1,34 @@
+Created by Matan Weinman
+February 2022
+
+Server commands:
+1. 'exit':
+    The client will disconnect from the server.
+2. 'quit':
+    A window will pop up, prompting you for the server's admin password. If it is correct, the server will shut down,
+     and all connected clients will see an appropriate message. If it is incorrect, you will receive 'Password incorrect.'.
+3. 'time':
+    The server will send its current time, in the following format: D-M-Y H:M:S
+4. 'change':
+    A window will pop up, prompting you for the server's admin password and a new password. If the inputted password
+    is correct, it will be replaced with the new one, and the server will send 'Password changed.'. Otherwise, it
+    will send 'Wrong password.'.
+5. 'chat':
+    The server will add you to a chat room, where you can talk to other connected clients. When someone connects or
+    disconnects, the server will notify you of the remaining amount of people online (apart from you).
+    Type 'exit' to leave the chat.
+6. 'broadcast':
+    Type 'broadcast' then a message, to send it to all connected clients.
+7. 'name':
+    A window will pop up, prompting you for a new name. If the name is already in use, you will see the message
+    'The name you chose is already in use.', and if it is free you will get 'Your name has been changed!'.
+    Names are displayed in the chat, in the list of connected devices, when broadcasting messages and in server-side printing logs.
+    [OPTIONAL: You can also type 'name <NEW_NAME>' to change your name.]
+8. 'connected':
+    You will receive a list of all connected clients' names, whether they are simple addresses or custom names.
+9. special messages:
+    The following phrases will result in special responses:
+    'Hello there', 'I am your father', 'Event?', 'Shut up', 'nslookup <ANYTHING>', 'idan'.
+    Try sending them all to see the results!
+
+Press 'Ctrl+C' to copy the selected line's content to the clipboard.
