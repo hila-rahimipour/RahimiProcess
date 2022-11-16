@@ -152,6 +152,22 @@ namespace POC_NEW
                 Console.WriteLine("Number Of Physical Processors: {0} ", item["NumberOfProcessors"]);
             }
         }
+        public static void GetCores()
+        {
+            int coreCount = 0;
+            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_Processor").Get())
+            {
+                coreCount += int.Parse(item["NumberOfCores"].ToString());
+            }
+            Console.WriteLine("Number Of Cores: {0}", coreCount);
+        }
+        public static void GetLogical()
+        {
+            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_ComputerSystem").Get())
+            {
+                Console.WriteLine("Number Of Logical Processors: {0}", item["NumberOfLogicalProcessors"]);
+            }
+        }
         public static string GetThreads(Process process)
         {
             string data = "";
@@ -175,7 +191,8 @@ namespace POC_NEW
                 OneProcess(info, process);
                 Thread.Sleep(2000);
             }*/
-            GetProcessors();
+            GetCores();
+            GetLogical();
 
         }
     }
