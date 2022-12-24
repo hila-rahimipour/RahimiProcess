@@ -152,14 +152,15 @@ namespace POC_NEW
                 Console.WriteLine("Number Of Physical Processors: {0} ", item["NumberOfProcessors"]);
             }
         }
-        public static void GetCores()
+        public static int GetCores()
         {
             int coreCount = 0;
             foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_Processor").Get())
             {
                 coreCount += int.Parse(item["NumberOfCores"].ToString());
             }
-            Console.WriteLine("Number Of Cores: {0}", coreCount);
+            //Console.WriteLine("Number Of Cores: {0}", coreCount);
+            return coreCount;
         }
         public static void GetLogical()
         {
@@ -172,27 +173,47 @@ namespace POC_NEW
         {
             string data = "";
             ProcessThreadCollection threads = process.Threads;
+
             foreach (ProcessThread thread in threads)
             {
-                data += thread.Id + ", " + thread.ThreadState + "|";
+                long currentTick = (DateTime.Now).Ticks;
+                TimeSpan currentcpu = thread.TotalProcessorTime;
+                Thread.Sleep(10);
+                long newTick = (DateTime.Now).Ticks;
+                TimeSpan newcpu = thread.TotalProcessorTime;
+                int totalcpu = (int)((newcpu - currentcpu).Ticks) / (int)(newTick - currentTick);
+                data += thread.Id + ", " + thread.ThreadState + "," + totalcpu + "|";
             }
             return data;
         }
 
+        public static void GetCoresCpu()
+        {
+            int cores = GetCores();
+            for (int i=0; i<cores; i++)
+            {
+                PerformanceCounter pc = new PerformanceCounter("Processor", "% Processor Time", i.ToString());
+                pc.NextValue();
+                Thread.Sleep(10);
+                Console.WriteLine("core {0}: {1}", i.ToString(), pc.NextValue());
+            }
+        }
+
         static void Main(string[] args)
         {
-            /*Process[] processes = Process.GetProcesses();
+            Process[] processes = Process.GetProcesses();
             Dictionary<int, object[]> info = new Dictionary<int, object[]>();
             
-            int pid = 12336;
+            int pid = 1304;
             Process process=Process.GetProcessById(pid);
+            GetCoresCpu();
             while (true)
             {
                 OneProcess(info, process);
                 Thread.Sleep(2000);
-            }*/
-            GetCores();
-            GetLogical();
+            }
+            //Console.WriteLine(GetCores());
+            //GetLogical();
 
         }
     }
