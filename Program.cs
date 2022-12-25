@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Threading;
 using System.Data;
-
+using System.Management;
+using System.Runtime.InteropServices;
+using System.Security;
 
 
 namespace POC_NEW
@@ -14,11 +16,12 @@ namespace POC_NEW
     class Program
     {
         static int tableWidth = 170;
+        [DllImport("Kernel32.dll"), SuppressUnmanagedCodeSecurity]
+        public static extern int GetCurrentProcessorNumber();
         public static void PrintLine()
         {
             Console.WriteLine(new string('-', tableWidth));
         }
-
         public static void PrintRow(params string[] columns)
         {
             int width = (tableWidth - columns.Length) / columns.Length;
@@ -31,7 +34,6 @@ namespace POC_NEW
 
             Console.WriteLine(row);
         }
-
         public static string AlignCentre(string text, int width)
         {
             text = text.Length > width ? text.Substring(0, width - 3) + "..." : text;
@@ -162,37 +164,37 @@ namespace POC_NEW
             //Console.WriteLine("Number Of Cores: {0}", coreCount);
             return coreCount;
         }
-        public static void GetLogical()
+        public static int GetLogical()
         {
-            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_ComputerSystem").Get())
-            {
-                Console.WriteLine("Number Of Logical Processors: {0}", item["NumberOfLogicalProcessors"]);
-            }
+            return Environment.ProcessorCount;
         }
         public static string GetThreads(Process process)
         {
             string data = "";
             ProcessThreadCollection threads = process.Threads;
-
+            
+            //get cpu of each thread
             foreach (ProcessThread thread in threads)
             {
                 long currentTick = (DateTime.Now).Ticks;
-                double currentcpu = thread.TotalProcessorTime.TotalMilliseconds ;
-                Thread.Sleep(501);
+                double currentcpu = thread.TotalProcessorTime.TotalMilliseconds;
+                Thread.Sleep(500);
                 long newTick = (DateTime.Now).Ticks;
                 double newcpu = thread.TotalProcessorTime.TotalMilliseconds;
-                double totalcpu = (double)((newcpu-currentcpu)) / (double)(newTick - currentTick);
+                double totalcpu = 100000 * (double)((newcpu - currentcpu)) / (double)(newTick - currentTick);
 
-                //data += thread.Id + ", " + thread.ThreadState + "," + totalcpu + "|";
-                Console.WriteLine($"{currentcpu}    {newcpu}"); 
-                data += thread.Id + ", " + totalcpu + "%|";
+                if (thread.Id== Thread.CurrentThread.ManagedThreadId)
+                    //data += thread.Id + ", " + thread.ThreadState + "," + totalcpu + "|";
+                    Console.WriteLine($"tid: {thread.Id}, state: {thread.ThreadState}, cpu: {totalcpu}, core: {GetCurrentProcessorNumber()}");
+                else
+                    Console.WriteLine($"tid: {thread.Id}, state: {thread.ThreadState}, cpu: {totalcpu}");
             }
             return data;
         }
 
-        public static void GetCoresCpu()
+        public static void GetLogicalCpu()
         {
-            int cores = GetCores();
+            int cores = GetLogical();
             for (int i=0; i<cores; i++)
             {
                 PerformanceCounter pc = new PerformanceCounter("Processor", "% Processor Time", i.ToString());
@@ -200,40 +202,79 @@ namespace POC_NEW
                 Thread.Sleep(10);
                 Console.WriteLine("core {0}: {1}", i.ToString(), pc.NextValue());
             }
+            
         }
 
         static void Main(string[] args)
         {
             Process[] processes = Process.GetProcesses();
-            Dictionary<int, object[]> info = new Dictionary<int, object[]>();
             
-            int pid = 1304;
+            int pid = 548;
             Process process=Process.GetProcessById(pid);
-            while (true)
+            Console.WriteLine("would you like to recieve info about process or thread? (p/t):");
+            char selection = char.Parse(Console.ReadLine());
+            if (selection == 'p')
             {
-                foreach (ProcessThread thread in process.Threads)
+                Console.WriteLine("enter process id: ");
+                int process_id = int.Parse(Console.ReadLine());
+                try
                 {
-                    if (thread.Id == 1948)
-                    {
-                        long currentTick = (DateTime.Now).Ticks;
-                        double currentcpu = thread.TotalProcessorTime.TotalSeconds;
-                        Thread.Sleep(501);
-                        long newTick = (DateTime.Now).Ticks;
-                        double newcpu = thread.TotalProcessorTime.TotalSeconds;
-                        double totalcpu = 100*(double)((newcpu - currentcpu)) / (double)(newTick - currentTick);
-                        Console.WriteLine(totalcpu);
-                    }
+                    Process selected_process = Process.GetProcessById(process_id);
+                    Console.Clear();
+                    //give process info
+                }
+                catch
+                {
+                    Console.WriteLine("process doesnt exist, try to run the program again");
                 }
             }
-            
-            //GetCoresCpu();
+            if (selection == 't')
+            {
+                Console.WriteLine("enter process id: ");
+                int process_id = int.Parse(Console.ReadLine());
+                try
+                {
+                    Process selected_process = Process.GetProcessById(process_id);
+                    foreach (ProcessThread thread in selected_process.Threads)
+                    {
+                        Console.WriteLine($"Thread Id: {thread.Id}");
+                    }
+                    Console.WriteLine("select thread Id: ");
+                    int thread_id = int.Parse(Console.ReadLine());
+                    bool is_exist = false;
+                    foreach (ProcessThread thread in selected_process.Threads)
+                    {
+                        if (thread_id == thread.Id)
+                        {
+                            is_exist = true;
+                            Console.Clear();
+                            //give thread info
+                        }
+                    }
+                    if (!is_exist)
+                        Console.WriteLine("thread doesnt exist");
+                }
+                catch
+                {
+                    Console.WriteLine("process doesnt exist, try to run the program again");
+                }
+            }
+            //while (true)
+            //{
+            //    GetThreads(process);  
+            //}
+            //      Parallel.For(0, 1000000, state => Console.WriteLine("Thread Id = {0}, CoreId = {1}",
+            //Thread.CurrentThread.ManagedThreadId,
+            //GetCurrentProcessorNumber()));
+
+            //GetLogicalCpu();
+            Console.ReadKey();
             //while (true)
             //{
             //    OneProcess(info, process);
             //    Thread.Sleep(2000);
             //}
-            //Console.WriteLine(GetCores());
-            //GetLogical();
+            Console.ReadKey();
 
         }
     }
