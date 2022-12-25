@@ -177,12 +177,15 @@ namespace POC_NEW
             foreach (ProcessThread thread in threads)
             {
                 long currentTick = (DateTime.Now).Ticks;
-                TimeSpan currentcpu = thread.TotalProcessorTime;
-                Thread.Sleep(10);
+                double currentcpu = thread.TotalProcessorTime.TotalMilliseconds ;
+                Thread.Sleep(501);
                 long newTick = (DateTime.Now).Ticks;
-                TimeSpan newcpu = thread.TotalProcessorTime;
-                int totalcpu = (int)((newcpu - currentcpu).Ticks) / (int)(newTick - currentTick);
-                data += thread.Id + ", " + thread.ThreadState + "," + totalcpu + "|";
+                double newcpu = thread.TotalProcessorTime.TotalMilliseconds;
+                double totalcpu = (double)((newcpu-currentcpu)) / (double)(newTick - currentTick);
+
+                //data += thread.Id + ", " + thread.ThreadState + "," + totalcpu + "|";
+                Console.WriteLine($"{currentcpu}    {newcpu}"); 
+                data += thread.Id + ", " + totalcpu + "%|";
             }
             return data;
         }
@@ -206,12 +209,29 @@ namespace POC_NEW
             
             int pid = 1304;
             Process process=Process.GetProcessById(pid);
-            GetCoresCpu();
             while (true)
             {
-                OneProcess(info, process);
-                Thread.Sleep(2000);
+                foreach (ProcessThread thread in process.Threads)
+                {
+                    if (thread.Id == 1948)
+                    {
+                        long currentTick = (DateTime.Now).Ticks;
+                        double currentcpu = thread.TotalProcessorTime.TotalSeconds;
+                        Thread.Sleep(501);
+                        long newTick = (DateTime.Now).Ticks;
+                        double newcpu = thread.TotalProcessorTime.TotalSeconds;
+                        double totalcpu = 100*(double)((newcpu - currentcpu)) / (double)(newTick - currentTick);
+                        Console.WriteLine(totalcpu);
+                    }
+                }
             }
+            
+            //GetCoresCpu();
+            //while (true)
+            //{
+            //    OneProcess(info, process);
+            //    Thread.Sleep(2000);
+            //}
             //Console.WriteLine(GetCores());
             //GetLogical();
 
