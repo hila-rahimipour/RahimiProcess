@@ -178,20 +178,28 @@ namespace POC_NEW
             {
                 long currentTick = (DateTime.Now).Ticks;
                 double currentcpu = thread.TotalProcessorTime.TotalMilliseconds;
-                Thread.Sleep(500);
+                Thread.Sleep(100);
                 long newTick = (DateTime.Now).Ticks;
                 double newcpu = thread.TotalProcessorTime.TotalMilliseconds;
                 double totalcpu = 100000 * (double)((newcpu - currentcpu)) / (double)(newTick - currentTick);
 
-                if (thread.Id== Thread.CurrentThread.ManagedThreadId)
-                    //data += thread.Id + ", " + thread.ThreadState + "," + totalcpu + "|";
-                    Console.WriteLine($"tid: {thread.Id}, state: {thread.ThreadState}, cpu: {totalcpu}, core: {GetCurrentProcessorNumber()}");
-                else
-                    Console.WriteLine($"tid: {thread.Id}, state: {thread.ThreadState}, cpu: {totalcpu}");
             }
             return data;
         }
-
+        public static double GetCpuThread(ProcessThread thread)
+        {
+            long currentTick = (DateTime.Now).Ticks;
+            double currentcpu = thread.TotalProcessorTime.TotalMilliseconds;
+            Thread.Sleep(100);
+            long newTick = (DateTime.Now).Ticks;
+            double newcpu = thread.TotalProcessorTime.TotalMilliseconds;
+            double totalcpu = 100000 * (double)((newcpu - currentcpu)) / (double)(newTick - currentTick);
+            return totalcpu;
+        }
+        public static string GetThreadState(ProcessThread thread)
+        {
+            return thread.ThreadState.ToString();
+        }
         public static void GetLogicalCpu()
         {
             int cores = GetLogical();
@@ -208,8 +216,8 @@ namespace POC_NEW
         static void Main(string[] args)
         {
             Process[] processes = Process.GetProcesses();
-            
-            int pid = 548;
+            Dictionary<int, object[]> info = new Dictionary<int, object[]>();
+            int pid = 1376;
             Process process=Process.GetProcessById(pid);
             Console.WriteLine("would you like to recieve info about process or thread? (p/t):");
             char selection = char.Parse(Console.ReadLine());
@@ -220,6 +228,16 @@ namespace POC_NEW
                 try
                 {
                     Process selected_process = Process.GetProcessById(process_id);
+                    Process[] same_name = Process.GetProcessesByName(selected_process.ProcessName);
+                    int instance = 0;
+                    if (same_name.Length != 0)
+                    {
+                        for (int i=0; i < same_name.Length; i++)
+                        {
+                            if (same_name[i].Id == selected_process.Id)
+                                instance = i;
+                        }
+                    }
                     Console.Clear();
                     //give process info
                 }
@@ -242,33 +260,50 @@ namespace POC_NEW
                     Console.WriteLine("select thread Id: ");
                     int thread_id = int.Parse(Console.ReadLine());
                     bool is_exist = false;
+                    ProcessThread selected_thread=selected_process.Threads[0];
                     foreach (ProcessThread thread in selected_process.Threads)
                     {
                         if (thread_id == thread.Id)
                         {
                             is_exist = true;
-                            Console.Clear();
-                            //give thread info
+                            selected_thread = thread;
+                            break;
+
                         }
                     }
                     if (!is_exist)
                         Console.WriteLine("thread doesnt exist");
+                    else
+                    {
+                        Console.Clear();
+                        //give thread info
+
+                        PrintRow($"information about thread {selected_thread.Id} from process" +
+                            $" {selected_process.ProcessName}, {selected_process.Id}");
+                        PrintLine();
+                        PrintRow("priority", "ideal processor", "State", "Wait Reason", "CPU");
+                        while (true)
+                        {
+                            Random rnd = new Random();
+                            int ideal = rnd.Next(0, GetLogical());
+                            selected_thread.IdealProcessor = ideal;
+                            PrintRow($"{selected_thread.BasePriority}", $"{ideal}",
+                                $"{selected_thread.ThreadState}", $"{selected_thread.WaitReason}", $"{GetCpuThread(selected_thread)}");
+                            Thread.Sleep(1000);
+                        }
+                    }
                 }
                 catch
                 {
                     Console.WriteLine("process doesnt exist, try to run the program again");
                 }
             }
-            //while (true)
-            //{
-            //    GetThreads(process);  
-            //}
+
+
             //      Parallel.For(0, 1000000, state => Console.WriteLine("Thread Id = {0}, CoreId = {1}",
             //Thread.CurrentThread.ManagedThreadId,
             //GetCurrentProcessorNumber()));
 
-            //GetLogicalCpu();
-            Console.ReadKey();
             //while (true)
             //{
             //    OneProcess(info, process);
