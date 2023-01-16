@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(home));
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -40,6 +41,7 @@
             this.filterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findDllOrHandleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.graphs = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,6 +67,7 @@
             this.textBox1.Size = new System.Drawing.Size(143, 26);
             this.textBox1.TabIndex = 3;
             this.textBox1.Text = "Search";
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // menuStrip1
             // 
@@ -120,13 +123,13 @@
             // filterToolStripMenuItem
             // 
             this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            this.filterToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.filterToolStripMenuItem.Size = new System.Drawing.Size(255, 34);
             this.filterToolStripMenuItem.Text = "Filter";
             // 
             // findDllOrHandleToolStripMenuItem
             // 
             this.findDllOrHandleToolStripMenuItem.Name = "findDllOrHandleToolStripMenuItem";
-            this.findDllOrHandleToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.findDllOrHandleToolStripMenuItem.Size = new System.Drawing.Size(255, 34);
             this.findDllOrHandleToolStripMenuItem.Text = "Find dll or Handle";
             // 
             // helpToolStripMenuItem
@@ -135,15 +138,27 @@
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
             this.helpToolStripMenuItem.Text = "Help";
             // 
+            // graphs
+            // 
+            this.graphs.Image = ((System.Drawing.Image)(resources.GetObject("graphs.Image")));
+            this.graphs.Location = new System.Drawing.Point(1, 32);
+            this.graphs.Name = "graphs";
+            this.graphs.Size = new System.Drawing.Size(34, 33);
+            this.graphs.TabIndex = 5;
+            this.graphs.UseVisualStyleBackColor = true;
+            this.graphs.Click += new System.EventHandler(this.graphs_Click);
+            // 
             // home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(962, 555);
+            this.Controls.Add(this.graphs);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.vScrollBar1);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "home";
             this.Text = "home";
@@ -167,5 +182,6 @@
         private System.Windows.Forms.ToolStripMenuItem filterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findDllOrHandleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.Button graphs;
     }
 }

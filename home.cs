@@ -21,5 +21,15 @@ namespace POC_NEW
         {
 
         }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void graphs_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
