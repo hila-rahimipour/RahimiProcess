@@ -19,8 +19,6 @@ namespace POC_NEW
         [DllImport("Kernel32.dll"), SuppressUnmanagedCodeSecurity]
         public static extern int GetCurrentProcessorNumber();
 
-        [DllImport("IdealProcessor.dll", EntryPoint = "IdealProcessor")]
-        public static extern char[] IdealProcessor(uint threadid);
         public static void PrintLine()
         {
             Console.WriteLine(new string('-', tableWidth));
@@ -428,12 +426,5 @@ namespace POC_NEW
         //    Console.ReadKey();
 
         //}
-        static void Main (string [] args)
-        {
-            uint thread_id = 6740;
-            char[] ideal = IdealProcessor(thread_id);
-            Console.WriteLine(ideal);
-            Console.ReadKey();
-        }
     }
 }
