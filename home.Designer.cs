@@ -79,7 +79,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(962, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(962, 36);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -90,7 +90,7 @@
             this.suspendProcessToolStripMenuItem,
             this.propertiesToolStripMenuItem});
             this.processToolStripMenuItem.Name = "processToolStripMenuItem";
-            this.processToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
+            this.processToolStripMenuItem.Size = new System.Drawing.Size(88, 32);
             this.processToolStripMenuItem.Text = "Process";
             // 
             // killProcessToolStripMenuItem
@@ -117,7 +117,7 @@
             this.filterToolStripMenuItem,
             this.findDllOrHandleToolStripMenuItem});
             this.findToolStripMenuItem.Name = "findToolStripMenuItem";
-            this.findToolStripMenuItem.Size = new System.Drawing.Size(62, 29);
+            this.findToolStripMenuItem.Size = new System.Drawing.Size(62, 32);
             this.findToolStripMenuItem.Text = "Find";
             // 
             // filterToolStripMenuItem
@@ -135,13 +135,13 @@
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 32);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // graphs
             // 
             this.graphs.Image = ((System.Drawing.Image)(resources.GetObject("graphs.Image")));
-            this.graphs.Location = new System.Drawing.Point(1, 32);
+            this.graphs.Location = new System.Drawing.Point(4, 32);
             this.graphs.Name = "graphs";
             this.graphs.Size = new System.Drawing.Size(34, 33);
             this.graphs.TabIndex = 5;

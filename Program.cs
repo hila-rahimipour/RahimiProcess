@@ -260,6 +260,10 @@ namespace POC_NEW
             }
             
         }
+        static void Main(string[] args)
+        {
+            Console.WriteLine("hello");
+        }
 
         //static void Main(string[] args)
         //{
@@ -312,9 +316,9 @@ namespace POC_NEW
         //                while (true)
         //                {
         //                    double cpu = GetCpuProcess(selected_process, instance);
-                            
-                            
-                            
+
+
+
         //                    double private_size = selected_process.PrivateMemorySize64;
         //                    double peak_private = selected_process.PeakVirtualMemorySize64;
         //                    double virtual_size = selected_process.VirtualMemorySize64;
