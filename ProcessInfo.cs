@@ -53,7 +53,19 @@ namespace POC_NEW
             this.cpu = 0;
             this.privateWS = 0;
             this.shared = 0;
+            /*can find pipelines of the process by:
+             * foreach (ProcessModule module in process.Modules)
+                {
+                    Console.WriteLine("Module Name: " + module.ModuleName);
 
+                    // Check if the module represents a pipe
+                    if (module.ModuleName.Contains("pipe"))
+                    {
+                        Console.WriteLine("Pipe Name: " + module.ModuleName);
+                    }
+                }
+            need to add try and catch
+            */
         }
         public void SetWrites(double writes)
         {

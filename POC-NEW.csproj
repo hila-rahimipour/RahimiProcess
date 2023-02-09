@@ -55,7 +55,7 @@
     <Compile Include="home.Designer.cs">
       <DependentUpon>home.cs</DependentUpon>
     </Compile>
-    <Compile Include="IdealProcessor.cs" />
+    <Compile Include="idealprocessor.cs" />
     <Compile Include="ProcessInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
