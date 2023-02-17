@@ -24,48 +24,64 @@ namespace POC_NEW
         public double peak_working;
         public double reads;
         public double writes;
-        
-        public ProcessInfo(int pid)
+        public List<string> pipes = new List<string>();
+
+        public ProcessInfo(int pid, string name, int priority, ProcessThreadCollection threads)
         {
             Process process = Process.GetProcessById(pid);
             this.pid = pid;
-            this.name = process.ProcessName;
-            Process[] processes = Process.GetProcessesByName(process.ProcessName);
-            int instance=0;
-            if (processes.Length != 0)
-            {
-                for (int i=0; i < processes.Length; i++)
-                {
-                    if (processes[i].Id == process.Id)
-                        instance = i;
-                }
-            }
-            this.instance = instance;
-            this.priority = process.BasePriority;
-            this.threads = process.Threads;
-            this.private_size = process.PrivateMemorySize64;
-            this.peak_private = process.PeakWorkingSet64;
-            this.virtual_size = process.VirtualMemorySize64;
-            this.working_set = process.WorkingSet64;
-            this.peak_working = process.PeakWorkingSet64;
+            this.name = name;
+            this.priority = priority;
+            this.threads = threads;
             this.writes = 0;
             this.reads = 0;
             this.cpu = 0;
             this.privateWS = 0;
             this.shared = 0;
-            /*can find pipelines of the process by:
-             * foreach (ProcessModule module in process.Modules)
-                {
-                    Console.WriteLine("Module Name: " + module.ModuleName);
 
+            
+        
+        }
+
+        public void SetInstance()
+        {
+            Process process = Process.GetProcessById(this.pid);
+            Process[] processes = Process.GetProcessesByName(this.name);
+            int instance = 0;
+            if (processes.Length != 0)
+            {
+                for (int i = 0; i < processes.Length; i++)
+                {
+                    if (processes[i].Id == this.pid)
+                        instance = i;
+                }
+            }
+            this.instance = instance;
+            try
+            {
+                this.private_size = process.PrivateMemorySize64;
+                this.peak_private = process.PeakWorkingSet64;
+                this.virtual_size = process.VirtualMemorySize64;
+                this.working_set = process.WorkingSet64;
+                this.peak_working = process.PeakWorkingSet64;
+                foreach (ProcessModule module in process.Modules)
+                {
                     // Check if the module represents a pipe
                     if (module.ModuleName.Contains("pipe"))
                     {
-                        Console.WriteLine("Pipe Name: " + module.ModuleName);
+                        this.pipes.Add(module.ModuleName);
                     }
                 }
-            need to add try and catch
-            */
+            }
+            catch
+            {
+                this.private_size = -1;
+                this.peak_private = -1;
+                this.virtual_size = -1;
+                this.working_set = -1;
+                this.peak_working = -1;
+
+            }
         }
         public void SetWrites(double writes)
         {

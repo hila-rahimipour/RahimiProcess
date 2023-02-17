@@ -9,6 +9,9 @@ using System.Data;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Net.NetworkInformation;
+using System.Net;
+using System.Net.Sockets;
 
 
 namespace POC_NEW
@@ -260,39 +263,146 @@ namespace POC_NEW
             }
             
         }
-        public static void ArrangeProc(List<ProcessInfo> procs)
+        public static void ToList(List<ProcessInfo> procs)
         {
             Process[] processes = Process.GetProcesses();
-            foreach (Process process in processes)
-                procs.Add(new ProcessInfo(process.Id));
-
-            PerformanceCounter[] cpus = new PerformanceCounter[procs.Count];
-            PerformanceCounter[] reads = new PerformanceCounter[procs.Count];
-            PerformanceCounter[] writes = new PerformanceCounter[procs.Count];
-            PerformanceCounter[] workingSet = new PerformanceCounter[procs.Count];
-            
-            for (int i=0; i < cpus.Length; i++)
+            foreach (Process proc in processes)
+            {
+                ProcessInfo process = new ProcessInfo(proc.Id, 
+                    proc.ProcessName, proc.BasePriority, proc.Threads);
+                if (!procs.Contains(process))
+                {
+                    procs.Add(process);
+                }
+            }
+                
+        }
+        public static void AllCpu(PerformanceCounter[] cpus, List<ProcessInfo> procs)
+        {
+            for (int c = 0; c < cpus.Length; c++)
+            {
+                try
+                {
+                    if (procs[c].GetInstance() == 0)
+                    {
+                        cpus[c] = new PerformanceCounter("Process", "% Processor Time", procs[c].GetName(), true);
+                    }
+                    else
+                    {
+                        cpus[c] = new PerformanceCounter("Process", "% Processor Time", procs[c].GetName() + "#" + procs[c].GetInstance(), true);
+                    }
+                    cpus[c].NextValue();
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+        }
+        public static void GetAllCpu(PerformanceCounter[] cpus, List<ProcessInfo> procs)
+        {
+            for (int a = 0; a < cpus.Length; a++)
+            {
+                try
+                {
+                    double cpu = cpus[a].NextValue();
+                    procs[a].SetCPU(cpu);
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+        }
+        public static void AllReads(PerformanceCounter[] reads, List<ProcessInfo> procs)
+        {
+            for (int n = 0; n < reads.Length; n++)
+            {
+                try
+                {
+                    if (procs[n].GetInstance() == 0)
+                    {
+                        reads[n] = new PerformanceCounter("Process", "IO Read Bytes/sec", procs[n].GetName(), true);
+                    }
+                    else
+                    {
+                        reads[n] = new PerformanceCounter("Process", "IO Read Bytes/sec", procs[n].GetName() + "#" + procs[n].GetInstance(), true);
+                    }
+                    reads[n].NextValue();
+                }
+                catch
+                {
+                    continue;
+                }
+            }  
+        }
+        public static void GetAllReads(PerformanceCounter[] reads, List<ProcessInfo> procs)
+        {
+            for (int q = 0; q < reads.Length; q++)
+            {
+                try
+                {
+                    double read = reads[q].NextValue();
+                    procs[q].SetReads(read);
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+        }
+        public static void AllWrites(PerformanceCounter[] writes, List<ProcessInfo> procs)
+        {
+            for (int j = 0; j < writes.Length; j++)
+            {
+                try
+                {
+                    if (procs[j].GetInstance() == 0)
+                    {
+                        writes[j] = new PerformanceCounter("Process", "IO Write Bytes/sec", procs[j].GetName(), true);
+                    }
+                    else
+                    {
+                        writes[j] = new PerformanceCounter("Process", "IO Write Bytes/sec", procs[j].GetName() + "#" + procs[j].GetInstance(), true);
+                    }
+                    writes[j].NextValue();
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+        }
+        public static void GetAllWrites(PerformanceCounter[] writes, List<ProcessInfo> procs)
+        {
+            for (int m = 0; m < writes.Length; m++)
+            {
+                try
+                {
+                    double write = writes[m].NextValue();
+                    procs[m].SetWrites(write);
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+        }
+        public static void AllWS(PerformanceCounter[] workingSet, List<ProcessInfo> procs)
+        {
+            for (int i = 0; i < workingSet.Length; i++)
             {
                 try
                 {
                     if (procs[i].GetInstance() == 0)
                     {
-                        cpus[i] = new PerformanceCounter("Process", "% Processor Time", procs[i].GetName(), true);
-                        reads[i] = new PerformanceCounter("Process", "IO Read Bytes/sec", procs[i].GetName());
-                        writes[i] = new PerformanceCounter("Process", "IO Write Bytes/sec", procs[i].GetName());
+
                         workingSet[i] = new PerformanceCounter("Process", "Working Set - Private", procs[i].GetName());
                     }
                     else
                     {
-                        cpus[i] = new PerformanceCounter("Process", "% Processor Time", procs[i].GetName() + "#" + procs[i].GetInstance(), true);
-                        reads[i] = new PerformanceCounter("Process", "IO Read Bytes/sec", procs[i].GetName() + "#" + procs[i].GetInstance());
-                        writes[i] = new PerformanceCounter("Process", "IO Write Bytes/sec", procs[i].GetName() + "#" + procs[i].GetInstance());
                         workingSet[i] = new PerformanceCounter("Process", "Working Set - Private", procs[i].GetName() + "#" + procs[i].GetInstance());
                     }
-
-                    cpus[i].NextValue();
-                    reads[i].NextValue();
-                    writes[i].NextValue();
                     workingSet[i].NextValue();
                 }
                 catch
@@ -300,20 +410,16 @@ namespace POC_NEW
                     continue;
                 }
             }
-            Thread.Sleep(10);
-            for (int i=0; i < cpus.Length; i++)
+        }
+        public static void GetAllWS(PerformanceCounter[] workingSet, List<ProcessInfo> procs)
+        {
+            for (int l = 0; l < workingSet.Length; l++)
             {
                 try
                 {
-                    double cpu = cpus[i].NextValue();
-                    procs[i].SetCPU(cpu);
-                    procs[i].SetReads(reads[i].NextValue());
-                    procs[i].SetWrites(reads[i].NextValue());
-
-                    double privateWS = workingSet[i].NextValue();
-
-                    procs[i].SetPrivateWS(privateWS);
-                    procs[i].SetShared(procs[i].GetWS() - privateWS);
+                    double privateWS = workingSet[l].NextValue();
+                    procs[l].SetPrivateWS(privateWS);
+                    procs[l].SetShared(procs[l].GetWS() - privateWS);
                 }
                 catch
                 {
@@ -321,198 +427,119 @@ namespace POC_NEW
                 }
 
             }
-
-
-
-
         }
-        static void Main(string[] args)
+        public static void GetTcpSockets()
         {
-            List<ProcessInfo> procs = new List<ProcessInfo>();
-            ArrangeProc(procs);
+            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+            TcpConnectionInformation[] connections = properties.GetActiveTcpConnections();
 
-            PrintRow("pid", "name", "cpu", "ws", "read", "writes", "threads");
-            foreach (ProcessInfo process in procs)
+            Console.WriteLine("Active TCP Connections:");
+            foreach (TcpConnectionInformation connection in connections)
             {
-                try
-                {
-                    PrintRow(process.GetPID().ToString(), process.GetName(), process.GetCPU().ToString(), process.GetWS().ToString(),
-                        process.GetReads().ToString(), process.GetWrites().ToString(), process.ThreadCount().ToString());
-                }
-                catch
-                {
-                    continue;
-                }
+                Console.WriteLine("Local endpoint: {0}:{1}", connection.LocalEndPoint.Address, connection.LocalEndPoint.Port);
+                Console.WriteLine("Remote endpoint: {0}:{1}", connection.RemoteEndPoint.Address, connection.RemoteEndPoint.Port);
+                Console.WriteLine("State: {0}", connection.State);
+                Console.WriteLine();
+            }
+            Console.ReadLine();
+        }
+        public static void GetUdpSockets()
+        {
+            IPEndPoint[] endpoints = GetActiveUdpListeners();
+
+            Console.WriteLine("Active UDP Listeners:");
+            foreach (IPEndPoint endpoint in endpoints)
+            {
+                Console.WriteLine("Endpoint: {0}:{1}", endpoint.Address, endpoint.Port);
             }
 
             Console.ReadKey();
+        }
+        static IPEndPoint[] GetActiveUdpListeners()
+        {
+            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+            IPEndPoint[] endpoints = new IPEndPoint[0];
 
+            foreach (UnicastIPAddressInformation address in properties.GetUnicastAddresses())
+            {
+                if (address.Address.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    try
+                    {
+                        IPEndPoint endpoint = new IPEndPoint(address.Address, 0);
+                        using (UdpClient client = new UdpClient(endpoint))
+                        {
+                            IPEndPoint[] localEndpoints = { client.Client.LocalEndPoint as IPEndPoint };
+                            Array.Resize(ref endpoints, endpoints.Length + localEndpoints.Length);
+                            Array.Copy(localEndpoints, 0, endpoints, endpoints.Length - localEndpoints.Length, localEndpoints.Length);
+                        }
+                    }
+                    catch (SocketException)
+                    {
+                        // ignore exceptions for this example
+                    }
+                }
+            }
+
+            return endpoints;
+        }
+        public static void AllInstance(List<ProcessInfo> procs)
+        {
+            foreach (ProcessInfo proc in procs)
+                proc.SetInstance();
         }
 
-        //static void Main(string[] args)
-        //{
-        //    Process[] processes = Process.GetProcesses();
-        //    Dictionary<int, object[]> info = new Dictionary<int, object[]>();
-        //    int pid = 1376;
-        //    Process process=Process.GetProcessById(pid);
-        //    Console.WriteLine("would you like to recieve info about process or thread? (p/t):");
-        //    char selection = char.Parse(Console.ReadLine());
-        //    if (selection == 'p')
-        //    {
-        //        Console.WriteLine("enter process id: ");
-        //        int process_id = int.Parse(Console.ReadLine());
-        //        try
-        //        {
-        //            Process selected_process = Process.GetProcessById(process_id);
-        //            Process[] same_name = Process.GetProcessesByName(selected_process.ProcessName);
-        //            int instance = 0;
-        //            if (same_name.Length != 0)
-        //            {
-        //                for (int i=0; i < same_name.Length; i++)
-        //                {
-        //                    if (same_name[i].Id == selected_process.Id)
-        //                        instance = i;
-        //                }
-        //            }
-        //            Console.WriteLine("would you like to get part 1/2 (1/2)?");
-        //            int select = int.Parse(Console.ReadLine());
-        //            Console.Clear();
-        //            PrintRow($"information about process {selected_process.ProcessName}, PID of {selected_process.Id}- PART 1");
-        //            PrintLine();
-        //            if (select == 1)
-        //            {
-        //                string data = "|";
-        //                int count = 0;
-        //                foreach (ProcessThread thread in selected_process.Threads)
-        //                {
-        //                    data += thread.Id + "," + thread.ThreadState + "|";
-        //                    count++;
-        //                    if (count == 5)
-        //                    {
-        //                        Console.WriteLine(data);
-        //                        data = "|";
-        //                        count = 0;
-        //                    }
-        //                }
-        //                double cpu_old = 0;
-        //                double old_private = 0;
-        //                PrintRow("priority","cpu", "d. cpu", "p. bytes", "d. p. bytes", "peak private", "virtual size", "affinity");
-        //                while (true)
-        //                {
-        //                    double cpu = GetCpuProcess(selected_process, instance);
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("start");
+            List<ProcessInfo> procs = new List<ProcessInfo>();
+            ToList(procs);
+
+            Console.WriteLine("list");
+
+            PerformanceCounter[] cpus = new PerformanceCounter[procs.Count];
+            PerformanceCounter[] reads = new PerformanceCounter[procs.Count];
+            PerformanceCounter[] writes = new PerformanceCounter[procs.Count];
+            PerformanceCounter[] workingSet = new PerformanceCounter[procs.Count];
 
 
 
-        //                    double private_size = selected_process.PrivateMemorySize64;
-        //                    double peak_private = selected_process.PeakVirtualMemorySize64;
-        //                    double virtual_size = selected_process.VirtualMemorySize64;
-        //                    //0- cpu, 1- d. cpu, 2- private bytes, 3- d. private bytes, 4- peak private,
-        //                    // 5- virtual size, 6- working set, 7- d. working set, 8- ws private, 9- ws shareable
-        //                    //10- peak working set, 11- read, 12- write, 13- handle
-        //                    PrintRow($"{selected_process.BasePriority}", $"{cpu}", $"{cpu - cpu_old}", $"{private_size}", $"{private_size - old_private}",
-        //                        $"{peak_private}", $"{virtual_size}", $"{Convert.ToString((int)selected_process.ProcessorAffinity, 2)}");
-        //                    cpu_old = GetCpuProcess(selected_process, instance);
-        //                    old_private = selected_process.PrivateMemorySize64;
-        //                    Thread.Sleep(1000);
-        //                }
-        //            }
-        //            if (select == 2)
-        //            {
-        //                PrintRow("WS", "d. WS", "private WS", "shared WS", "peak WS", "read", "write", "handle count");
-        //                double old_ws = 0;
-        //                while (true)
-        //                {
-        //                    double privateWS = GetWS(selected_process, instance);
-        //                    double working_set = selected_process.WorkingSet64;
-        //                    double shared = selected_process.WorkingSet64 - selected_process.PagedMemorySize64;
-        //                    double peak_working = selected_process.PeakWorkingSet64;
-        //                    double reads = GetOutput(selected_process, instance);
-        //                    double writes = GetOutput(selected_process, instance);
-        //                    PrintRow($"{working_set}", $"{working_set - old_ws}", $"{privateWS}", $"{shared}",
-        //                        $"{peak_working}", $"{reads}", $"{writes}", $"{selected_process.HandleCount}");
-        //                    Thread.Sleep(1000);
-        //                }
-        //                //0- cpu, 1- d. cpu, 2- private bytes, 3- d. private bytes, 4- peak private,
-        //                // 5- virtual size, 6- working set, 7- d. working set, 8- ws private, 9- ws shareable
-        //                //10- peak working set, 11- read, 12- write, 13- handle
-        //            }
-        //            //give process info
-        //        }
-        //        catch
-        //        {
-        //            Console.WriteLine("process doesnt exist, try to run the program again");
-        //        }
-        //    }
-        //    if (selection == 't')
-        //    {
-        //        Console.WriteLine("enter process id: ");
-        //        int process_id = int.Parse(Console.ReadLine());
-        //        try
-        //        {
-        //            Process selected_process = Process.GetProcessById(process_id);
-        //            foreach (ProcessThread thread in selected_process.Threads)
-        //            {
-        //                Console.WriteLine($"Thread Id: {thread.Id}");
-        //            }
-        //            Console.WriteLine("select thread Id: ");
-        //            int thread_id = int.Parse(Console.ReadLine());
-        //            bool is_exist = false;
-        //            ProcessThread selected_thread=selected_process.Threads[0];
-        //            foreach (ProcessThread thread in selected_process.Threads)
-        //            {
-        //                if (thread_id == thread.Id)
-        //                {
-        //                    is_exist = true;
-        //                    selected_thread = thread;
-        //                    break;
 
-        //                }
-        //            }
-        //            if (!is_exist)
-        //                Console.WriteLine("thread doesnt exist");
-        //            else
-        //            {
-        //                Console.Clear();
-        //                //give thread info
+            Thread cpu = new Thread(() => AllCpu(cpus, procs));
+            Thread read = new Thread(() => AllReads(reads, procs));
+            Thread write = new Thread(() => AllWrites(writes, procs));
+            Thread ws = new Thread(() => AllWS(workingSet, procs));
+            Thread instance = new Thread(() => AllInstance(procs));
 
-        //                PrintRow($"information about thread {selected_thread.Id} from process" +
-        //                    $" {selected_process.ProcessName}, {selected_process.Id}");
-        //                PrintLine();
-        //                if (selected_thread.ThreadState.ToString()=="Wait")
-        //                    PrintRow("b. priority", "d. priority", "ideal processor", "State", "Wait Reason", "CPU");
-        //                else
-        //                    PrintRow("b. priority", "d. priority", "ideal processor", "State", "CPU");
-        //                PrintLine();
-        //                while (true)
-        //                {
-        //                    if (selected_thread.ThreadState.ToString() == "Wait")
-        //                        PrintRow($"{selected_thread.BasePriority}", $"{selected_thread.CurrentPriority}", $"{ideal}",
-        //                        $"{selected_thread.ThreadState}", $"{selected_thread.WaitReason}", $"{GetCpuThread(selected_thread)}");
-        //                    else
-        //                        PrintRow($"{selected_thread.BasePriority}", $"{selected_thread.CurrentPriority}", $"{ideal}",
-        //                       $"{selected_thread.ThreadState}", $"{GetCpuThread(selected_thread)}");
-        //                    Thread.Sleep(1000);
-        //                }
-        //            }
-        //        }
-        //        catch
-        //        {
-        //            Console.WriteLine("process doesnt exist, try to run the program again");
-        //        }
-        //    }
+            instance.Start();
+            instance.Join();
+            Console.WriteLine("start cpu");
+            cpu.Start();
+            read.Start();
+            write.Start();
+            ws.Start();
+
+            //cpu.Join();
+            //read.Join();
+            //write.Join();
+            //ws.Join();
+            Thread.Sleep(10);
 
 
-        //    //      Parallel.For(0, 1000000, state => Console.WriteLine("Thread Id = {0}, CoreId = {1}",
-        //    //Thread.CurrentThread.ManagedThreadId,
-        //    //GetCurrentProcessorNumber()));
+            Thread Getcpu = new Thread(() => GetAllCpu(cpus, procs));
+            Thread Getread = new Thread(() => GetAllReads(reads, procs));
+            Thread Getwrite = new Thread(() => GetAllWrites(writes, procs));
+            Thread Getws = new Thread(() => GetAllWS(workingSet, procs));
+            Getcpu.Start();
+            Getread.Start();
+            Getwrite.Start();
+            Getws.Start();
 
-        //    //while (true)
-        //    //{
-        //    //    OneProcess(info, process);
-        //    //    Thread.Sleep(2000);
-        //    //}
-        //    Console.ReadKey();
+            Console.WriteLine("end");
+            Console.WriteLine(procs.Count);
+            Console.ReadKey();
 
-        //}
+        }
     }
 }

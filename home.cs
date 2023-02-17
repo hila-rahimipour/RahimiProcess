@@ -17,19 +17,5 @@ namespace POC_NEW
             InitializeComponent();
         }
 
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void graphs_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
