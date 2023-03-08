@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace POC_NEW
 {
@@ -45,10 +46,10 @@ namespace POC_NEW
 
         static void MMain(string[] args)
         {
-            uint threadId = 9252;  // Thread ID of the thread you want to get the logical processor number for
+            uint threadId = 1032;
+            // Thread ID of the thread you want to get the logical processor number for
             IntPtr thread = OpenThread(THREAD_QUERY_INFORMATION, false, threadId);
             PROCESSOR_NUMBER idealProcessor;
-
             if (thread != IntPtr.Zero)
             {
                 if (GetThreadIdealProcessorEx(thread, out idealProcessor))
