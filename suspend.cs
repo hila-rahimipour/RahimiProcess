@@ -23,7 +23,7 @@ public enum ThreadAccess : int
 }
 namespace POC_NEW
 {
-    class Suspend
+    public class Suspend
     {
         [DllImport("kernel32.dll")]
         static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
@@ -35,7 +35,7 @@ namespace POC_NEW
         static extern bool CloseHandle(IntPtr handle);
 
 
-        private static void SuspendProcess(int pid)
+        public static void SuspendProcess(int pid)
         {
             var process = Process.GetProcessById(pid); // throws exception if process does not exist
 
@@ -79,10 +79,10 @@ namespace POC_NEW
                 CloseHandle(pOpenThread);
             }
         }
-        static void MMain(string[] args)
-        {
-            SuspendProcess(14256);
-            ResumeProcess(14256);
-        }
+        //static void MMain(string[] args)
+        //{
+        //    SuspendProcess(14256);
+        //    ResumeProcess(14256);
+        //}
     }
 }
