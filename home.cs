@@ -12,11 +12,9 @@ namespace POC_NEW
 {
     public partial class home : Form
     {
-        public List<ProcessInfo> procs;
-        public home(List<ProcessInfo> processes)
+        public home()
         {
             InitializeComponent();
-            procs = processes;
             StartPosition = FormStartPosition.Manual;
             Rectangle screen = Screen.FromPoint(Cursor.Position).WorkingArea;
             int w = Width >= screen.Width ? screen.Width : (screen.Width + Width) / 2;
@@ -27,11 +25,11 @@ namespace POC_NEW
 
         private void home_Load(object sender, EventArgs e)
         {
-            Load_ListView(procs);
+            Load_ListView();
         }
-        private void Load_ListView(List<ProcessInfo> procs)
+        private void Load_ListView()
         {
-            foreach(ProcessInfo proc in procs)
+            foreach(ProcessInfo proc in Program.procs)
             {
                 string[] data = {proc.GetName(), proc.GetPID().ToString(), proc.GetCPU().ToString(),
                     proc.GetWS().ToString(), proc.GetReads().ToString(), proc.GetWrites().ToString(),
@@ -41,9 +39,18 @@ namespace POC_NEW
             }
         }
 
-        public void SetProcs(List<ProcessInfo> processes)
+        public void SetProcs()
         {
-            this.procs = processes;
+            listView1.Clear();
+            foreach (ProcessInfo proc in Program.procs)
+            {
+                string[] data = {proc.GetName(), proc.GetPID().ToString(), proc.GetCPU().ToString(),
+                    proc.GetWS().ToString(), proc.GetReads().ToString(), proc.GetWrites().ToString(),
+                    proc.GetThreads().Count.ToString(), proc.GetHandleCount().ToString()};
+                var ListViewItemData = new ListViewItem(data);
+                listView1.Items.Add(ListViewItemData);
+            }
+            listView1.Update();
         }
     }
 }

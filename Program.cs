@@ -343,6 +343,7 @@ namespace POC_NEW
         }
         public static void ToList(List<ProcessInfo> procs)
         {
+            procs.Clear();
             Process[] processes = Process.GetProcesses();
             foreach (Process proc in processes)
             {
@@ -674,7 +675,142 @@ namespace POC_NEW
 
             return endpoints;
         }
+        public static void UpdateProcsForm(home form)
+        {
+            Console.WriteLine("start");
 
+
+            Console.WriteLine("list");
+
+            PerformanceCounter[] cpus = new PerformanceCounter[procs.Count];
+            PerformanceCounter[] reads = new PerformanceCounter[procs.Count];
+            PerformanceCounter[] writes = new PerformanceCounter[procs.Count];
+            PerformanceCounter[] workingSet = new PerformanceCounter[procs.Count];
+
+
+
+
+            // ThreadPool.QueueUserWorkItem(new WaitCallback(() => AllCpu(cpus, procs)));
+            Thread cpu;
+            Thread read;
+            Thread write;
+            Thread ws;
+
+
+
+            //ThreadPool.QueueUserWorkItem(state => GetAllCpu(cpus, procs));
+            //ThreadPool.QueueUserWorkItem(state => GetAllReads(cpus, procs));
+            //ThreadPool.QueueUserWorkItem(state => GetAllWrites(cpus, procs));
+            //ThreadPool.QueueUserWorkItem(state => GetAllWS(cpus, procs));
+
+            Thread Getcpu1;
+            Thread Getread1;
+            Thread Getwrite1;
+            Thread Getws1;
+
+            Thread Getcpu2;
+            Thread Getread2;
+            Thread Getwrite2;
+            Thread Getws2;
+
+
+          
+            while (true)
+            {
+                ToList(procs);
+
+
+                cpus = new PerformanceCounter[procs.Count];
+                reads = new PerformanceCounter[procs.Count];
+                writes = new PerformanceCounter[procs.Count];
+                workingSet = new PerformanceCounter[procs.Count];
+
+
+
+
+                // ThreadPool.QueueUserWorkItem(new WaitCallback(() => AllCpu(cpus, procs)));
+                cpu = new Thread(() => AllCpu(cpus, procs));
+                read = new Thread(() => AllReads(reads, procs));
+                write = new Thread(() => AllWrites(writes, procs));
+                ws = new Thread(() => AllWS(workingSet, procs));
+
+
+
+                Console.WriteLine("start cpu");
+                cpu.Start();
+                read.Start();
+                write.Start();
+                ws.Start();
+
+
+                cpu.Join();
+                read.Join();
+                write.Join();
+                ws.Join();
+                Console.WriteLine("end cpu");
+                Thread.Sleep(1000);
+
+
+                //ThreadPool.QueueUserWorkItem(state => GetAllCpu(cpus, procs));
+                //ThreadPool.QueueUserWorkItem(state => GetAllReads(cpus, procs));
+                //ThreadPool.QueueUserWorkItem(state => GetAllWrites(cpus, procs));
+                //ThreadPool.QueueUserWorkItem(state => GetAllWS(cpus, procs));
+
+                Console.WriteLine("start get");
+                Getcpu1 = new Thread(() => GetAllCpu1(cpus, procs));
+                Getread1 = new Thread(() => GetAllReads1(reads, procs));
+                Getwrite1 = new Thread(() => GetAllWrites1(writes, procs));
+                Getws1 = new Thread(() => GetAllWS1(workingSet, procs));
+
+                Getcpu2 = new Thread(() => GetAllCpu2(cpus, procs));
+                Getread2 = new Thread(() => GetAllReads2(reads, procs));
+                Getwrite2 = new Thread(() => GetAllWrites2(writes, procs));
+                Getws2 = new Thread(() => GetAllWS2(workingSet, procs));
+
+
+                Getcpu1.Start();
+                Getread1.Start();
+                Getwrite1.Start();
+                Getws1.Start();
+
+                Getcpu2.Start();
+                Getread2.Start();
+                Getwrite2.Start();
+                Getws2.Start();
+
+
+                Getcpu1.Join();
+                Getread1.Join();
+                Getwrite1.Join();
+                Getws1.Join();
+                Getcpu2.Join();
+                Getread2.Join();
+                Getwrite2.Join();
+                Getws2.Join();
+                //Thread sendInfo = new Thread(()=>form.SetProcs());
+                //sendInfo.Start();
+                //form.SetProcs();
+                Console.WriteLine("end get");
+
+                ListView list = (ListView)form.Controls.Find("listView1", false)[0];
+                list.Items.Clear();
+
+                list.BeginUpdate();
+
+                foreach (ProcessInfo proc in procs)
+                {
+                    string[] data = {proc.GetName(), proc.GetPID().ToString(), proc.GetCPU().ToString(),
+                     proc.GetWS().ToString(), proc.GetReads().ToString(), proc.GetWrites().ToString(),
+                     proc.GetThreads().Count.ToString(), proc.GetHandleCount().ToString()};
+                    var ListViewItemData = new ListViewItem(data);
+                    list.Items.Add(ListViewItemData);
+                }
+
+                list.EndUpdate();
+                list.Update();
+
+            }
+        }
 
         public static string GetIdealProcessor(uint threadId)
         {
@@ -696,91 +832,97 @@ namespace POC_NEW
         public static EventWaitHandle waitHandle = new AutoResetEvent(false);
 
 
+
+        public static List<ProcessInfo> procs = new List<ProcessInfo>();
         static void Main(string[] args)
         {
-            Console.WriteLine("start");
-            List<ProcessInfo> procs = new List<ProcessInfo>();
-            ToList(procs);
 
-            Console.WriteLine("list");
+            //Console.WriteLine("start");
 
-            PerformanceCounter[] cpus = new PerformanceCounter[procs.Count];
-            PerformanceCounter[] reads = new PerformanceCounter[procs.Count];
-            PerformanceCounter[] writes = new PerformanceCounter[procs.Count];
-            PerformanceCounter[] workingSet = new PerformanceCounter[procs.Count];
+            //ToList(procs);
 
-            PerformanceCounter[] totalcpu = new PerformanceCounter[GetLogical()];
-            Console.WriteLine(totalcpu.Length);
+            //Console.WriteLine("list");
+
+            //PerformanceCounter[] cpus = new PerformanceCounter[procs.Count];
+            //PerformanceCounter[] reads = new PerformanceCounter[procs.Count];
+            //PerformanceCounter[] writes = new PerformanceCounter[procs.Count];
+            //PerformanceCounter[] workingSet = new PerformanceCounter[procs.Count];
+
+            //PerformanceCounter[] totalcpu = new PerformanceCounter[GetLogical()];
+            //Console.WriteLine(totalcpu.Length);
+
+
+
+            //// ThreadPool.QueueUserWorkItem(new WaitCallback(() => AllCpu(cpus, procs)));
+            //Thread cpu = new Thread(() => AllCpu(cpus, procs));
+            //Thread read = new Thread(() => AllReads(reads, procs));
+            //Thread write = new Thread(() => AllWrites(writes, procs));
+            //Thread ws = new Thread(() => AllWS(workingSet, procs));
+
+
+
+            //Console.WriteLine("start cpu");
+            //cpu.Start();
+            //read.Start();
+            //write.Start();
+            //ws.Start();
+
+
+            //cpu.Join();
+            //read.Join();
+            //write.Join();
+            //ws.Join();
+            //Console.WriteLine("end cpu");
+            //Thread.Sleep(1000);
+
+
+            ////ThreadPool.QueueUserWorkItem(state => GetAllCpu(cpus, procs));
+            ////ThreadPool.QueueUserWorkItem(state => GetAllReads(cpus, procs));
+            ////ThreadPool.QueueUserWorkItem(state => GetAllWrites(cpus, procs));
+            ////ThreadPool.QueueUserWorkItem(state => GetAllWS(cpus, procs));
+
+            //Console.WriteLine("start get");
+            //Thread Getcpu1 = new Thread(() => GetAllCpu1(cpus, procs));
+            //Thread Getread1= new Thread(() => GetAllReads1(reads, procs));
+            //Thread Getwrite1 = new Thread(() => GetAllWrites1(writes, procs));
+            //Thread Getws1 = new Thread(() => GetAllWS1(workingSet, procs));
+
+            //Thread Getcpu2 = new Thread(() => GetAllCpu2(cpus, procs));
+            //Thread Getread2 = new Thread(() => GetAllReads2(reads, procs));
+            //Thread Getwrite2 = new Thread(() => GetAllWrites2(writes, procs));
+            //Thread Getws2 = new Thread(() => GetAllWS2(workingSet, procs));
+
+
+            //Getcpu1.Start();
+            //Getread1.Start();
+            //Getwrite1.Start();
+            //Getws1.Start();
+
+            //Getcpu2.Start();
+            //Getread2.Start();
+            //Getwrite2.Start();
+            //Getws2.Start();
+
+
+            //Getcpu1.Join();
+            //Getread1.Join();
+            //Getwrite1.Join();
+            //Getws1.Join();
+            //Getcpu2.Join();
+            //Getread2.Join();
+            //Getwrite2.Join();
+            //Getws2.Join();
 
             
-
-            // ThreadPool.QueueUserWorkItem(new WaitCallback(() => AllCpu(cpus, procs)));
-            Thread cpu = new Thread(() => AllCpu(cpus, procs));
-            Thread read = new Thread(() => AllReads(reads, procs));
-            Thread write = new Thread(() => AllWrites(writes, procs));
-            Thread ws = new Thread(() => AllWS(workingSet, procs));
-
-            
-            
-            Console.WriteLine("start cpu");
-            cpu.Start();
-            read.Start();
-            write.Start();
-            ws.Start();
-
-
-            cpu.Join();
-            read.Join();
-            write.Join();
-            ws.Join();
-            Console.WriteLine("end cpu");
-            Thread.Sleep(1000);
-
-
-            //ThreadPool.QueueUserWorkItem(state => GetAllCpu(cpus, procs));
-            //ThreadPool.QueueUserWorkItem(state => GetAllReads(cpus, procs));
-            //ThreadPool.QueueUserWorkItem(state => GetAllWrites(cpus, procs));
-            //ThreadPool.QueueUserWorkItem(state => GetAllWS(cpus, procs));
-
-            Console.WriteLine("start get");
-            Thread Getcpu1 = new Thread(() => GetAllCpu1(cpus, procs));
-            Thread Getread1= new Thread(() => GetAllReads1(reads, procs));
-            Thread Getwrite1 = new Thread(() => GetAllWrites1(writes, procs));
-            Thread Getws1 = new Thread(() => GetAllWS1(workingSet, procs));
-
-            Thread Getcpu2 = new Thread(() => GetAllCpu2(cpus, procs));
-            Thread Getread2 = new Thread(() => GetAllReads2(reads, procs));
-            Thread Getwrite2 = new Thread(() => GetAllWrites2(writes, procs));
-            Thread Getws2 = new Thread(() => GetAllWS2(workingSet, procs));
-
-
-            Getcpu1.Start();
-            Getread1.Start();
-            Getwrite1.Start();
-            Getws1.Start();
-
-            Getcpu2.Start();
-            Getread2.Start();
-            Getwrite2.Start();
-            Getws2.Start();
-
-
-            Getcpu1.Join();
-            Getread1.Join();
-            Getwrite1.Join();
-            Getws1.Join();
-            Getcpu2.Join();
-            Getread2.Join();
-            Getwrite2.Join();
-            Getws2.Join();
-
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            home form = new home(procs);
-            //Thread gameThread = new Thread(() => GameThread(form));
-            //gameThread.Start();
+            home form = new home();
+            Thread runProcUpdate = new Thread(() => UpdateProcsForm(form));
+            runProcUpdate.Start();
             Application.Run(form);
+
+            
 
 
             Console.WriteLine("end get");

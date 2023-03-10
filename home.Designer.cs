@@ -60,9 +60,10 @@
             // textBox1
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(807, 39);
+            this.textBox1.Location = new System.Drawing.Point(538, 26);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(143, 26);
+            this.textBox1.Size = new System.Drawing.Size(97, 20);
             this.textBox1.TabIndex = 3;
             this.textBox1.Text = "Search";
             // 
@@ -73,25 +74,25 @@
             this.suspendProcessToolStripMenuItem,
             this.propertiesToolStripMenuItem});
             this.processToolStripMenuItem.Name = "processToolStripMenuItem";
-            this.processToolStripMenuItem.Size = new System.Drawing.Size(88, 32);
+            this.processToolStripMenuItem.Size = new System.Drawing.Size(59, 22);
             this.processToolStripMenuItem.Text = "Process";
             // 
             // killProcessToolStripMenuItem
             // 
             this.killProcessToolStripMenuItem.Name = "killProcessToolStripMenuItem";
-            this.killProcessToolStripMenuItem.Size = new System.Drawing.Size(248, 34);
+            this.killProcessToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.killProcessToolStripMenuItem.Text = "Kill Process";
             // 
             // suspendProcessToolStripMenuItem
             // 
             this.suspendProcessToolStripMenuItem.Name = "suspendProcessToolStripMenuItem";
-            this.suspendProcessToolStripMenuItem.Size = new System.Drawing.Size(248, 34);
+            this.suspendProcessToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.suspendProcessToolStripMenuItem.Text = "Suspend Process";
             // 
             // propertiesToolStripMenuItem
             // 
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(248, 34);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.propertiesToolStripMenuItem.Text = "Properties";
             // 
             // findToolStripMenuItem
@@ -100,25 +101,25 @@
             this.filterToolStripMenuItem,
             this.findDllOrHandleToolStripMenuItem});
             this.findToolStripMenuItem.Name = "findToolStripMenuItem";
-            this.findToolStripMenuItem.Size = new System.Drawing.Size(62, 32);
+            this.findToolStripMenuItem.Size = new System.Drawing.Size(42, 22);
             this.findToolStripMenuItem.Text = "Find";
             // 
             // filterToolStripMenuItem
             // 
             this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            this.filterToolStripMenuItem.Size = new System.Drawing.Size(255, 34);
+            this.filterToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.filterToolStripMenuItem.Text = "Filter";
             // 
             // findDllOrHandleToolStripMenuItem
             // 
             this.findDllOrHandleToolStripMenuItem.Name = "findDllOrHandleToolStripMenuItem";
-            this.findDllOrHandleToolStripMenuItem.Size = new System.Drawing.Size(255, 34);
+            this.findDllOrHandleToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.findDllOrHandleToolStripMenuItem.Text = "Find dll or Handle";
             // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 32);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 22);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // menu
@@ -130,7 +131,8 @@
             this.helpToolStripMenuItem});
             this.menu.Location = new System.Drawing.Point(0, 0);
             this.menu.Name = "menu";
-            this.menu.Size = new System.Drawing.Size(962, 36);
+            this.menu.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
+            this.menu.Size = new System.Drawing.Size(641, 24);
             this.menu.TabIndex = 4;
             this.menu.Text = "menu";
             // 
@@ -142,9 +144,10 @@
             this.graph.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.graph.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.graph.ForeColor = System.Drawing.SystemColors.Menu;
-            this.graph.Location = new System.Drawing.Point(5, 39);
+            this.graph.Location = new System.Drawing.Point(3, 26);
+            this.graph.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.graph.Name = "graph";
-            this.graph.Size = new System.Drawing.Size(37, 29);
+            this.graph.Size = new System.Drawing.Size(34, 29);
             this.graph.TabIndex = 5;
             this.graph.UseVisualStyleBackColor = false;
             // 
@@ -156,9 +159,10 @@
             this.info.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.info.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.info.ForeColor = System.Drawing.SystemColors.Menu;
-            this.info.Location = new System.Drawing.Point(44, 38);
+            this.info.Location = new System.Drawing.Point(40, 25);
+            this.info.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.info.Name = "info";
-            this.info.Size = new System.Drawing.Size(37, 29);
+            this.info.Size = new System.Drawing.Size(40, 29);
             this.info.TabIndex = 6;
             this.info.UseVisualStyleBackColor = false;
             // 
@@ -170,9 +174,10 @@
             this.cancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.cancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cancel.ForeColor = System.Drawing.SystemColors.Menu;
-            this.cancel.Location = new System.Drawing.Point(86, 38);
+            this.cancel.Location = new System.Drawing.Point(80, 25);
+            this.cancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cancel.Name = "cancel";
-            this.cancel.Size = new System.Drawing.Size(37, 29);
+            this.cancel.Size = new System.Drawing.Size(38, 29);
             this.cancel.TabIndex = 7;
             this.cancel.UseVisualStyleBackColor = false;
             // 
@@ -184,7 +189,8 @@
             this.suspend.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.suspend.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.suspend.ForeColor = System.Drawing.SystemColors.Menu;
-            this.suspend.Location = new System.Drawing.Point(128, 38);
+            this.suspend.Location = new System.Drawing.Point(119, 25);
+            this.suspend.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.suspend.Name = "suspend";
             this.suspend.Size = new System.Drawing.Size(37, 29);
             this.suspend.TabIndex = 8;
@@ -198,9 +204,10 @@
             this.create.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.create.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.create.ForeColor = System.Drawing.SystemColors.Menu;
-            this.create.Location = new System.Drawing.Point(169, 38);
+            this.create.Location = new System.Drawing.Point(159, 26);
+            this.create.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.create.Name = "create";
-            this.create.Size = new System.Drawing.Size(37, 32);
+            this.create.Size = new System.Drawing.Size(37, 29);
             this.create.TabIndex = 9;
             this.create.UseVisualStyleBackColor = false;
             // 
@@ -213,9 +220,10 @@
             this.network.Enabled = false;
             this.network.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.network.ForeColor = System.Drawing.SystemColors.Menu;
-            this.network.Location = new System.Drawing.Point(211, 38);
+            this.network.Location = new System.Drawing.Point(198, 26);
+            this.network.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.network.Name = "network";
-            this.network.Size = new System.Drawing.Size(37, 29);
+            this.network.Size = new System.Drawing.Size(37, 31);
             this.network.TabIndex = 10;
             this.network.UseVisualStyleBackColor = false;
             // 
@@ -234,9 +242,10 @@
             this.thread,
             this.handle});
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(0, 71);
+            this.listView1.Location = new System.Drawing.Point(0, 62);
+            this.listView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(962, 486);
+            this.listView1.Size = new System.Drawing.Size(643, 310);
             this.listView1.TabIndex = 11;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -283,9 +292,9 @@
             // 
             // home
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(962, 555);
+            this.ClientSize = new System.Drawing.Size(641, 370);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.network);
             this.Controls.Add(this.create);
@@ -297,6 +306,7 @@
             this.Controls.Add(this.menu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menu;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "home";
             this.Text = "home";
             this.Load += new System.EventHandler(this.home_Load);
