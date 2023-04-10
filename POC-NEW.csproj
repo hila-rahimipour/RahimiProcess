@@ -37,6 +37,9 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -53,6 +56,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DoubleBufferedListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="graphs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="graphs.Designer.cs">
+      <DependentUpon>graphs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="helpScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="helpScreen.Designer.cs">
+      <DependentUpon>helpScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="home.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,6 +78,12 @@
       <DependentUpon>home.cs</DependentUpon>
     </Compile>
     <Compile Include="idealprocessor.cs" />
+    <Compile Include="NetworkInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NetworkInfo.Designer.cs">
+      <DependentUpon>NetworkInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProcessInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,6 +92,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="singleProcess.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="singleProcess.Designer.cs">
+      <DependentUpon>singleProcess.cs</DependentUpon>
+    </Compile>
     <Compile Include="suspend.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,12 +105,24 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="graphs.resx">
+      <DependentUpon>graphs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="helpScreen.resx">
+      <DependentUpon>helpScreen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="home.resx">
       <DependentUpon>home.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NetworkInfo.resx">
+      <DependentUpon>NetworkInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="singleProcess.resx">
+      <DependentUpon>singleProcess.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -43,8 +43,11 @@
             this.cancel = new System.Windows.Forms.Button();
             this.suspend = new System.Windows.Forms.Button();
             this.create = new System.Windows.Forms.Button();
+            this.searchBox = new System.Windows.Forms.TextBox();
+            this.resume = new System.Windows.Forms.Button();
+            this.selectBy = new System.Windows.Forms.ComboBox();
             this.network = new System.Windows.Forms.Button();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.listView1 = new POC_NEW.DoubleBufferedListView();
             this.ProcName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cpu = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -53,9 +56,6 @@
             this.write = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.thread = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.handle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.searchBox = new System.Windows.Forms.TextBox();
-            this.resume = new System.Windows.Forms.Button();
-            this.selectBy = new System.Windows.Forms.ComboBox();
             this.menu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,7 +66,7 @@
             this.suspendProcessToolStripMenuItem,
             this.propertiesToolStripMenuItem});
             this.processToolStripMenuItem.Name = "processToolStripMenuItem";
-            this.processToolStripMenuItem.Size = new System.Drawing.Size(88, 32);
+            this.processToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
             this.processToolStripMenuItem.Text = "Process";
             // 
             // killProcessToolStripMenuItem
@@ -86,6 +86,7 @@
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
             this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(248, 34);
             this.propertiesToolStripMenuItem.Text = "Properties";
+            this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
             // findToolStripMenuItem
             // 
@@ -93,7 +94,7 @@
             this.filterToolStripMenuItem,
             this.findDllOrHandleToolStripMenuItem});
             this.findToolStripMenuItem.Name = "findToolStripMenuItem";
-            this.findToolStripMenuItem.Size = new System.Drawing.Size(62, 32);
+            this.findToolStripMenuItem.Size = new System.Drawing.Size(62, 29);
             this.findToolStripMenuItem.Text = "Find";
             // 
             // filterToolStripMenuItem
@@ -111,8 +112,9 @@
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 32);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
             this.helpToolStripMenuItem.Text = "Help";
+            this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
             // 
             // menu
             // 
@@ -124,9 +126,10 @@
             this.helpToolStripMenuItem});
             this.menu.Location = new System.Drawing.Point(0, 0);
             this.menu.Name = "menu";
-            this.menu.Size = new System.Drawing.Size(962, 36);
+            this.menu.Size = new System.Drawing.Size(962, 33);
             this.menu.TabIndex = 4;
             this.menu.Text = "menu";
+            this.menu.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menu_ItemClicked);
             // 
             // graph
             // 
@@ -141,6 +144,7 @@
             this.graph.Size = new System.Drawing.Size(40, 31);
             this.graph.TabIndex = 5;
             this.graph.UseVisualStyleBackColor = false;
+            this.graph.MouseClick += new System.Windows.Forms.MouseEventHandler(this.graph_MouseClick);
             // 
             // info
             // 
@@ -150,7 +154,7 @@
             this.info.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.info.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.info.ForeColor = System.Drawing.SystemColors.Menu;
-            this.info.Location = new System.Drawing.Point(63, 40);
+            this.info.Location = new System.Drawing.Point(64, 40);
             this.info.Name = "info";
             this.info.Size = new System.Drawing.Size(40, 31);
             this.info.TabIndex = 6;
@@ -166,7 +170,7 @@
             this.cancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.cancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cancel.ForeColor = System.Drawing.SystemColors.Menu;
-            this.cancel.Location = new System.Drawing.Point(119, 40);
+            this.cancel.Location = new System.Drawing.Point(121, 40);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(40, 31);
             this.cancel.TabIndex = 7;
@@ -180,7 +184,7 @@
             this.suspend.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.suspend.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.suspend.ForeColor = System.Drawing.SystemColors.Menu;
-            this.suspend.Location = new System.Drawing.Point(231, 40);
+            this.suspend.Location = new System.Drawing.Point(235, 40);
             this.suspend.Name = "suspend";
             this.suspend.Size = new System.Drawing.Size(40, 31);
             this.suspend.TabIndex = 8;
@@ -196,11 +200,53 @@
             this.create.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.create.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.create.ForeColor = System.Drawing.SystemColors.Menu;
-            this.create.Location = new System.Drawing.Point(175, 40);
+            this.create.Location = new System.Drawing.Point(178, 40);
             this.create.Name = "create";
             this.create.Size = new System.Drawing.Size(40, 31);
             this.create.TabIndex = 9;
             this.create.UseVisualStyleBackColor = false;
+            // 
+            // searchBox
+            // 
+            this.searchBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.searchBox.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.searchBox.Location = new System.Drawing.Point(831, 40);
+            this.searchBox.Name = "searchBox";
+            this.searchBox.Size = new System.Drawing.Size(119, 26);
+            this.searchBox.TabIndex = 12;
+            this.searchBox.Text = "Search";
+            this.searchBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.searchBox_MouseClick);
+            this.searchBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.searchBox_KeyDown);
+            this.searchBox.Leave += new System.EventHandler(this.searchBox_Leave);
+            // 
+            // resume
+            // 
+            this.resume.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.resume.BackColor = System.Drawing.SystemColors.Menu;
+            this.resume.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("resume.BackgroundImage")));
+            this.resume.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.resume.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.resume.ForeColor = System.Drawing.SystemColors.Menu;
+            this.resume.Location = new System.Drawing.Point(292, 40);
+            this.resume.Name = "resume";
+            this.resume.Size = new System.Drawing.Size(40, 31);
+            this.resume.TabIndex = 13;
+            this.resume.UseVisualStyleBackColor = false;
+            this.resume.MouseClick += new System.Windows.Forms.MouseEventHandler(this.resume_MouseClick);
+            this.resume.MouseHover += new System.EventHandler(this.resume_MouseHover);
+            // 
+            // selectBy
+            // 
+            this.selectBy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.selectBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.selectBy.FormattingEnabled = true;
+            this.selectBy.Items.AddRange(new object[] {
+            "Name",
+            "PID"});
+            this.selectBy.Location = new System.Drawing.Point(728, 40);
+            this.selectBy.Name = "selectBy";
+            this.selectBy.Size = new System.Drawing.Size(97, 28);
+            this.selectBy.TabIndex = 14;
             // 
             // network
             // 
@@ -208,14 +254,14 @@
             this.network.BackColor = System.Drawing.SystemColors.Menu;
             this.network.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("network.BackgroundImage")));
             this.network.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.network.Enabled = false;
             this.network.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.network.ForeColor = System.Drawing.SystemColors.Menu;
-            this.network.Location = new System.Drawing.Point(343, 40);
+            this.network.Location = new System.Drawing.Point(349, 40);
             this.network.Name = "network";
             this.network.Size = new System.Drawing.Size(40, 31);
-            this.network.TabIndex = 10;
+            this.network.TabIndex = 15;
             this.network.UseVisualStyleBackColor = false;
+            this.network.MouseClick += new System.Windows.Forms.MouseEventHandler(this.network_MouseClick);
             this.network.MouseHover += new System.EventHandler(this.network_MouseHover);
             // 
             // listView1
@@ -282,58 +328,16 @@
             this.handle.Text = "Handle Count";
             this.handle.Width = 120;
             // 
-            // searchBox
-            // 
-            this.searchBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.searchBox.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.searchBox.Location = new System.Drawing.Point(831, 40);
-            this.searchBox.Name = "searchBox";
-            this.searchBox.Size = new System.Drawing.Size(119, 26);
-            this.searchBox.TabIndex = 12;
-            this.searchBox.Text = "Search";
-            this.searchBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.searchBox_MouseClick);
-            this.searchBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.searchBox_KeyDown);
-            this.searchBox.Leave += new System.EventHandler(this.searchBox_Leave);
-            // 
-            // resume
-            // 
-            this.resume.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.resume.BackColor = System.Drawing.SystemColors.Menu;
-            this.resume.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("resume.BackgroundImage")));
-            this.resume.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.resume.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.resume.ForeColor = System.Drawing.SystemColors.Menu;
-            this.resume.Location = new System.Drawing.Point(287, 40);
-            this.resume.Name = "resume";
-            this.resume.Size = new System.Drawing.Size(40, 31);
-            this.resume.TabIndex = 13;
-            this.resume.UseVisualStyleBackColor = false;
-            this.resume.MouseClick += new System.Windows.Forms.MouseEventHandler(this.resume_MouseClick);
-            this.resume.MouseHover += new System.EventHandler(this.resume_MouseHover);
-            // 
-            // selectBy
-            // 
-            this.selectBy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.selectBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.selectBy.FormattingEnabled = true;
-            this.selectBy.Items.AddRange(new object[] {
-            "Name",
-            "PID"});
-            this.selectBy.Location = new System.Drawing.Point(728, 40);
-            this.selectBy.Name = "selectBy";
-            this.selectBy.Size = new System.Drawing.Size(97, 28);
-            this.selectBy.TabIndex = 14;
-            // 
             // home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(962, 555);
+            this.Controls.Add(this.network);
             this.Controls.Add(this.selectBy);
             this.Controls.Add(this.resume);
             this.Controls.Add(this.searchBox);
             this.Controls.Add(this.listView1);
-            this.Controls.Add(this.network);
             this.Controls.Add(this.create);
             this.Controls.Add(this.suspend);
             this.Controls.Add(this.cancel);
@@ -367,8 +371,6 @@
         private System.Windows.Forms.Button cancel;
         private System.Windows.Forms.Button suspend;
         private System.Windows.Forms.Button create;
-        private System.Windows.Forms.Button network;
-        private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader ProcName;
         private System.Windows.Forms.ColumnHeader pid;
         private System.Windows.Forms.ColumnHeader cpu;
@@ -380,5 +382,7 @@
         private System.Windows.Forms.TextBox searchBox;
         private System.Windows.Forms.Button resume;
         private System.Windows.Forms.ComboBox selectBy;
+        private System.Windows.Forms.Button network;
+        private DoubleBufferedListView listView1;
     }
 }

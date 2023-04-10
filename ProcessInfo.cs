@@ -32,7 +32,7 @@ namespace POC_NEW
         public ProcessInfo(int pid, string name, int priority, 
             ProcessThreadCollection threads, int instance, double private_size, 
              double virtual_size, double working_set, double peak_working, List<string> pipes, string affinity,
-             int handleCount)
+             int handleCount, double reads, double writes)
         {
           
             this.pid = pid;
@@ -55,6 +55,8 @@ namespace POC_NEW
             this.pipes = pipes;
             this.affinity = affinity;
             this.handleCount = handleCount;
+            this.reads = reads;
+            this.writes = writes;
 
         }
 
@@ -121,8 +123,15 @@ namespace POC_NEW
         }
 
 
+        public void SetName(string name)
+        {
+            this.name = name;
+        }
 
-
+        public void SetPriority(int priority)
+        {
+            this.priority = priority;
+        }
         public int GetInstance()
         {
             return this.instance;

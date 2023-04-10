@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace POC_NEW
 {
@@ -25,25 +26,16 @@ namespace POC_NEW
             Size = new Size(w, h);
             selectBy.Text = "PID";
             
+            
         }
 
         private void home_Load(object sender, EventArgs e)
         {
-            Load_ListView();
+            
             
         }
 
-        private void Load_ListView()
-        {
-            foreach(ProcessInfo proc in Program.procs)
-            {
-                string[] data = {proc.GetName(), proc.GetPID().ToString(), proc.GetCPU().ToString(),
-                    proc.GetWS().ToString(), proc.GetReads().ToString(), proc.GetWrites().ToString(),
-                    proc.GetThreads().Count.ToString(), proc.GetHandleCount().ToString()};
-                var ListViewItemData = new ListViewItem(data);
-                listView1.Items.Add(ListViewItemData);
-            }
-        }
+        
 
         public void SetProcs()
         {
@@ -51,11 +43,23 @@ namespace POC_NEW
             listView1.BeginUpdate();
             foreach (ProcessInfo proc in Program.procs)
             {
-                string[] data = {proc.GetName(), proc.GetPID().ToString(), proc.GetCPU().ToString(),
+                if (proc.GetThreads()[0].ThreadState.ToString()== "Suspended") 
+                {
+                    string[] data = {proc.GetName(), proc.GetPID().ToString(), "Suspended".ToString(),
                     proc.GetWS().ToString(), proc.GetReads().ToString(), proc.GetWrites().ToString(),
                     proc.GetThreads().Count.ToString(), proc.GetHandleCount().ToString()};
-                var ListViewItemData = new ListViewItem(data);
-                listView1.Items.Add(ListViewItemData);
+                    var ListViewItemData = new ListViewItem(data);
+                    listView1.Items.Add(ListViewItemData);
+                }
+                else
+                {
+                    string[] data = {proc.GetName(), proc.GetPID().ToString(), proc.GetCPU().ToString(),
+                    proc.GetWS().ToString(), proc.GetReads().ToString(), proc.GetWrites().ToString(),
+                    proc.GetThreads().Count.ToString(), proc.GetHandleCount().ToString()};
+                    var ListViewItemData = new ListViewItem(data);
+                    listView1.Items.Add(ListViewItemData);
+                }
+                
             }
             listView1.EndUpdate();
             listView1.Update();
@@ -72,7 +76,14 @@ namespace POC_NEW
                     count = i;
             }
             int id = int.Parse(listView1.SelectedItems[0].SubItems[count].Text);
-            Console.WriteLine(id);
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            singleProcess singleproc = new singleProcess(id);
+            singleproc.Show();
+            
+            
+            //Application.Run(singleproc);
+            
             
         }
 
@@ -89,14 +100,14 @@ namespace POC_NEW
 
         private void searchBox_Leave(object sender, EventArgs e)
         {
-            if (searchBox.Text != "Search")
+            if (searchBox.Text == "Search" || searchBox.Text=="")
             {
                 searchBox.Text = "Search";
                 searchBox.ForeColor = Color.FromName("ControlDark");
             }
         }
 
-        // open form with proc info!!!!!!
+        
         private void info_MouseClick(object sender, MouseEventArgs e)
         {
             int count = 0;
@@ -109,6 +120,8 @@ namespace POC_NEW
             {
                 int id = int.Parse(listView1.SelectedItems[0].SubItems[count].Text);
                 Console.WriteLine(id);
+                singleProcess singleproc = new singleProcess(id);
+                singleproc.Show();
             }  
             
             catch
@@ -198,31 +211,16 @@ namespace POC_NEW
             information.Show("Process Information", info);
         }
 
-        public void SearchResult1(string pid, int count)
-        {
-            for (int i=0; i < listView1.Items.Count / 2; i++)
-            {
-                if (listView1.Items[i].SubItems[count].Text != pid)
-                    listView1.Items[i].Remove();
-            }
-        }
-        public void SearchResult2(string pid, int count)
-        {
-            for (int j = 0; j < listView1.Items.Count; j++)
-            {
-                if (listView1.Items[j].SubItems[count].Text != pid)
-                    listView1.Items[j].Remove();
-            }
-        }
+
 
         //search by name or id
         private void searchBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                
+
                 string query = searchBox.Text;
-                if (selectBy.Text=="PID" && query!="" && query!="Search")
+                if (selectBy.Text == "PID" && query != "" && query != "Search")
                 {
                     int count = 0;
                     for (int i = 0; i < listView1.Columns.Count; i++)
@@ -240,15 +238,15 @@ namespace POC_NEW
                     listView1.EndUpdate();
                     listView1.Update();
                 }
-                else if(selectBy.Text=="Name" && query != "")
+                else if (selectBy.Text == "Name" && query != "")
                 {
                     int count = 0;
-                    for(int i=0; i < listView1.Columns.Count; i++)
+                    for (int i = 0; i < listView1.Columns.Count; i++)
                     {
                         if (listView1.Columns[i].Text == "Name")
                             count = i;
                     }
-                    
+
                     listView1.BeginUpdate();
                     foreach (ListViewItem item in listView1.Items)
                     {
@@ -259,14 +257,66 @@ namespace POC_NEW
                     listView1.EndUpdate();
                     listView1.Update();
                 }
-                else if (query=="" || query=="Search")
+                else if (query == "" || query == "Search")
                     SetProcs();
 
             }
             else if (e.KeyCode == Keys.Back)
-                if (searchBox.Text.Length==1 || searchBox.Text.Length == 0)
+                if (searchBox.Text.Length == 1 || searchBox.Text.Length == 0)
                     SetProcs();
-            
+
+
+
+
+        }
+
+        //open socket info
+        private void network_MouseClick(object sender, MouseEventArgs e)
+        {
+            Console.WriteLine("here");
+            NetworkInfo network = new NetworkInfo();
+            network.Show();
+        }
+
+        private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int count = 0;
+            for (int i = 0; i < listView1.Columns.Count; i++)
+            {
+                if (listView1.Columns[i].Text == "PID")
+                    count = i;
+            }
+            try
+            {
+                int id = int.Parse(listView1.SelectedItems[0].SubItems[count].Text);
+                Console.WriteLine(id);
+                singleProcess singleproc = new singleProcess(id);
+                singleproc.Show();
+            }
+
+            catch
+            {
+                MessageBox.Show("Please select process from the list", "Select Process",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            helpScreen help = new helpScreen();
+            help.Show();    
+        }
+
+        private void graph_MouseClick(object sender, MouseEventArgs e)
+        {
+            graphs graph = new graphs();
+            graph.Show();
+        }
+
+        private void menu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
         }
     }
 }
