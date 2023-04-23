@@ -30,12 +30,14 @@ namespace POC_NEW
         private void InitializeComponent()
         {
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(singleProcess));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.general = new System.Windows.Forms.TabPage();
@@ -79,7 +81,7 @@ namespace POC_NEW
             this.label14 = new System.Windows.Forms.Label();
             this.threadID = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.threadState = new System.Windows.Forms.Label();
+            this.threadStateText = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.startThread = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -94,19 +96,21 @@ namespace POC_NEW
             this.modules = new System.Windows.Forms.TabPage();
             this.dlls = new System.Windows.Forms.RichTextBox();
             this.graphs = new System.Windows.Forms.TabPage();
-            this.pipes = new System.Windows.Forms.TabPage();
-            this.pipesBox = new System.Windows.Forms.RichTextBox();
             this.cpuGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.ioGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.pipes = new System.Windows.Forms.TabPage();
+            this.pipesBox = new System.Windows.Forms.RichTextBox();
+            this.memChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tabControl1.SuspendLayout();
             this.general.SuspendLayout();
             this.memNet.SuspendLayout();
             this.threads.SuspendLayout();
             this.modules.SuspendLayout();
             this.graphs.SuspendLayout();
-            this.pipes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cpuGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ioGraph)).BeginInit();
+            this.pipes.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.memChart)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -126,6 +130,7 @@ namespace POC_NEW
             // 
             // general
             // 
+            this.general.AutoScroll = true;
             this.general.BackColor = System.Drawing.Color.White;
             this.general.Controls.Add(this.label1);
             this.general.Controls.Add(this.label2);
@@ -155,7 +160,6 @@ namespace POC_NEW
             // 
             // label1
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Black;
@@ -167,7 +171,6 @@ namespace POC_NEW
             // 
             // label2
             // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.Black;
@@ -188,7 +191,6 @@ namespace POC_NEW
             // 
             // label5
             // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.Black;
@@ -211,7 +213,7 @@ namespace POC_NEW
             // 
             this.parent.AutoSize = true;
             this.parent.ForeColor = System.Drawing.Color.Black;
-            this.parent.Location = new System.Drawing.Point(173, 229);
+            this.parent.Location = new System.Drawing.Point(173, 226);
             this.parent.Name = "parent";
             this.parent.Size = new System.Drawing.Size(0, 20);
             this.parent.TabIndex = 57;
@@ -227,7 +229,6 @@ namespace POC_NEW
             // 
             // label11
             // 
-            this.label11.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label11.ForeColor = System.Drawing.Color.Black;
@@ -239,7 +240,6 @@ namespace POC_NEW
             // 
             // priority
             // 
-            this.priority.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.priority.AutoSize = true;
             this.priority.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.priority.ForeColor = System.Drawing.Color.Black;
@@ -251,7 +251,6 @@ namespace POC_NEW
             // 
             // name
             // 
-            this.name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.name.AutoSize = true;
             this.name.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.name.ForeColor = System.Drawing.Color.Black;
@@ -272,7 +271,6 @@ namespace POC_NEW
             // 
             // id
             // 
-            this.id.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.id.AutoSize = true;
             this.id.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.id.ForeColor = System.Drawing.Color.Black;
@@ -286,7 +284,7 @@ namespace POC_NEW
             // 
             this.terminate.AutoSize = true;
             this.terminate.ForeColor = System.Drawing.Color.Black;
-            this.terminate.Location = new System.Drawing.Point(264, 95);
+            this.terminate.Location = new System.Drawing.Point(253, 325);
             this.terminate.Name = "terminate";
             this.terminate.Size = new System.Drawing.Size(0, 20);
             this.terminate.TabIndex = 51;
@@ -320,7 +318,6 @@ namespace POC_NEW
             // 
             // handleCount
             // 
-            this.handleCount.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.handleCount.AutoSize = true;
             this.handleCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.handleCount.ForeColor = System.Drawing.Color.Black;
@@ -341,7 +338,6 @@ namespace POC_NEW
             // 
             // affinity
             // 
-            this.affinity.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.affinity.AutoSize = true;
             this.affinity.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.affinity.ForeColor = System.Drawing.Color.Black;
@@ -354,6 +350,7 @@ namespace POC_NEW
             // memNet
             // 
             this.memNet.BackColor = System.Drawing.Color.White;
+            this.memNet.Controls.Add(this.memChart);
             this.memNet.Controls.Add(this.procPeakWS);
             this.memNet.Controls.Add(this.privateMemory);
             this.memNet.Controls.Add(this.peakWS);
@@ -552,7 +549,7 @@ namespace POC_NEW
             this.threads.Controls.Add(this.label14);
             this.threads.Controls.Add(this.threadID);
             this.threads.Controls.Add(this.label12);
-            this.threads.Controls.Add(this.threadState);
+            this.threads.Controls.Add(this.threadStateText);
             this.threads.Controls.Add(this.label8);
             this.threads.Controls.Add(this.startThread);
             this.threads.Controls.Add(this.label6);
@@ -582,10 +579,11 @@ namespace POC_NEW
             // 
             this.threadID.AutoSize = true;
             this.threadID.ForeColor = System.Drawing.Color.Black;
-            this.threadID.Location = new System.Drawing.Point(102, 337);
+            this.threadID.Location = new System.Drawing.Point(108, 337);
             this.threadID.Name = "threadID";
             this.threadID.Size = new System.Drawing.Size(0, 20);
             this.threadID.TabIndex = 67;
+            this.threadID.Click += new System.EventHandler(this.threadID_Click);
             // 
             // label12
             // 
@@ -599,14 +597,14 @@ namespace POC_NEW
             this.label12.TabIndex = 64;
             this.label12.Text = "State:";
             // 
-            // threadState
+            // threadStateText
             // 
-            this.threadState.AutoSize = true;
-            this.threadState.ForeColor = System.Drawing.Color.Black;
-            this.threadState.Location = new System.Drawing.Point(291, 379);
-            this.threadState.Name = "threadState";
-            this.threadState.Size = new System.Drawing.Size(0, 20);
-            this.threadState.TabIndex = 65;
+            this.threadStateText.AutoSize = true;
+            this.threadStateText.ForeColor = System.Drawing.Color.Black;
+            this.threadStateText.Location = new System.Drawing.Point(297, 379);
+            this.threadStateText.Name = "threadStateText";
+            this.threadStateText.Size = new System.Drawing.Size(0, 20);
+            this.threadStateText.TabIndex = 65;
             // 
             // label8
             // 
@@ -624,7 +622,7 @@ namespace POC_NEW
             // 
             this.startThread.AutoSize = true;
             this.startThread.ForeColor = System.Drawing.Color.Black;
-            this.startThread.Location = new System.Drawing.Point(330, 337);
+            this.startThread.Location = new System.Drawing.Point(336, 337);
             this.startThread.Name = "startThread";
             this.startThread.Size = new System.Drawing.Size(0, 20);
             this.startThread.TabIndex = 63;
@@ -645,7 +643,7 @@ namespace POC_NEW
             // 
             this.Cpriority.AutoSize = true;
             this.Cpriority.ForeColor = System.Drawing.Color.Black;
-            this.Cpriority.Location = new System.Drawing.Point(142, 421);
+            this.Cpriority.Location = new System.Drawing.Point(148, 421);
             this.Cpriority.Name = "Cpriority";
             this.Cpriority.Size = new System.Drawing.Size(0, 20);
             this.Cpriority.TabIndex = 61;
@@ -666,7 +664,7 @@ namespace POC_NEW
             // 
             this.Bpriority.AutoSize = true;
             this.Bpriority.ForeColor = System.Drawing.Color.Black;
-            this.Bpriority.Location = new System.Drawing.Point(123, 377);
+            this.Bpriority.Location = new System.Drawing.Point(129, 379);
             this.Bpriority.Name = "Bpriority";
             this.Bpriority.Size = new System.Drawing.Size(0, 20);
             this.Bpriority.TabIndex = 59;
@@ -681,6 +679,7 @@ namespace POC_NEW
             this.procThreads.FullRowSelect = true;
             this.procThreads.HideSelection = false;
             this.procThreads.Location = new System.Drawing.Point(8, 9);
+            this.procThreads.MultiSelect = false;
             this.procThreads.Name = "procThreads";
             this.procThreads.Size = new System.Drawing.Size(496, 311);
             this.procThreads.TabIndex = 0;
@@ -691,17 +690,17 @@ namespace POC_NEW
             // tid
             // 
             this.tid.Text = "ID";
-            this.tid.Width = 100;
+            this.tid.Width = 80;
             // 
             // cpuThread
             // 
             this.cpuThread.Text = "CPU";
-            this.cpuThread.Width = 100;
+            this.cpuThread.Width = 80;
             // 
             // state
             // 
             this.state.Text = "State";
-            this.state.Width = 100;
+            this.state.Width = 80;
             // 
             // processor
             // 
@@ -731,13 +730,93 @@ namespace POC_NEW
             // graphs
             // 
             this.graphs.BackColor = System.Drawing.Color.White;
-            this.graphs.Controls.Add(this.ioGraph);
             this.graphs.Controls.Add(this.cpuGraph);
+            this.graphs.Controls.Add(this.ioGraph);
             this.graphs.Location = new System.Drawing.Point(4, 29);
             this.graphs.Name = "graphs";
             this.graphs.Size = new System.Drawing.Size(512, 506);
             this.graphs.TabIndex = 4;
             this.graphs.Text = "Graphs";
+            // 
+            // cpuGraph
+            // 
+            chartArea2.AxisX.LabelStyle.Enabled = false;
+            chartArea2.AxisX.LineColor = System.Drawing.Color.DarkGray;
+            chartArea2.AxisX.MajorGrid.Enabled = false;
+            chartArea2.AxisX.MajorTickMark.Enabled = false;
+            chartArea2.AxisX.MinorGrid.Interval = double.NaN;
+            chartArea2.AxisX.MinorGrid.IntervalOffset = double.NaN;
+            chartArea2.AxisX.MinorGrid.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.NotSet;
+            chartArea2.AxisX.MinorGrid.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.NotSet;
+            chartArea2.AxisX.MinorGrid.LineWidth = 0;
+            chartArea2.AxisY.IsLabelAutoFit = false;
+            chartArea2.AxisY.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea2.AxisY.LineColor = System.Drawing.Color.DarkGray;
+            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            chartArea2.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+            chartArea2.Name = "ChartArea1";
+            this.cpuGraph.ChartAreas.Add(chartArea2);
+            legend1.Enabled = false;
+            legend1.Name = "Legend1";
+            this.cpuGraph.Legends.Add(legend1);
+            this.cpuGraph.Location = new System.Drawing.Point(8, 22);
+            this.cpuGraph.Name = "cpuGraph";
+            this.cpuGraph.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel;
+            series2.BorderColor = System.Drawing.Color.Gold;
+            series2.BorderWidth = 2;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Area;
+            series2.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.cpuGraph.Series.Add(series2);
+            this.cpuGraph.Size = new System.Drawing.Size(496, 183);
+            this.cpuGraph.TabIndex = 4;
+            this.cpuGraph.Text = "chart1";
+            // 
+            // ioGraph
+            // 
+            chartArea3.AxisX.LabelStyle.Enabled = false;
+            chartArea3.AxisX.LineColor = System.Drawing.Color.DarkGray;
+            chartArea3.AxisX.MajorGrid.Enabled = false;
+            chartArea3.AxisX.MajorTickMark.Enabled = false;
+            chartArea3.AxisX.MinorGrid.Interval = double.NaN;
+            chartArea3.AxisX.MinorGrid.IntervalOffset = double.NaN;
+            chartArea3.AxisX.MinorGrid.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.NotSet;
+            chartArea3.AxisX.MinorGrid.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.NotSet;
+            chartArea3.AxisX.MinorGrid.LineWidth = 0;
+            chartArea3.AxisY.IsLabelAutoFit = false;
+            chartArea3.AxisY.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea3.AxisY.LineColor = System.Drawing.Color.DarkGray;
+            chartArea3.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            chartArea3.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+            chartArea3.Name = "ChartArea1";
+            this.ioGraph.ChartAreas.Add(chartArea3);
+            legend2.Enabled = false;
+            legend2.Name = "Legend1";
+            this.ioGraph.Legends.Add(legend2);
+            this.ioGraph.Location = new System.Drawing.Point(8, 230);
+            this.ioGraph.Name = "ioGraph";
+            this.ioGraph.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel;
+            series3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            series3.BorderWidth = 2;
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Area;
+            series3.Color = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(210)))), ((int)(((byte)(255)))));
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            series4.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            series4.BorderWidth = 2;
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Area;
+            series4.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            series4.Legend = "Legend1";
+            series4.Name = "Series2";
+            this.ioGraph.Series.Add(series3);
+            this.ioGraph.Series.Add(series4);
+            this.ioGraph.Size = new System.Drawing.Size(496, 183);
+            this.ioGraph.TabIndex = 3;
+            this.ioGraph.Text = "ioGraph";
             // 
             // pipes
             // 
@@ -760,89 +839,19 @@ namespace POC_NEW
             this.pipesBox.TabIndex = 1;
             this.pipesBox.Text = "";
             // 
-            // cpuGraph
+            // memChart
             // 
-            chartArea2.AxisX.LabelStyle.Enabled = false;
-            chartArea2.AxisX.LineColor = System.Drawing.Color.DarkGray;
-            chartArea2.AxisX.MajorGrid.Enabled = false;
-            chartArea2.AxisX.MajorTickMark.Enabled = false;
-            chartArea2.AxisX.Maximum = 50D;
-            chartArea2.AxisX.Minimum = 0D;
-            chartArea2.AxisX.MinorGrid.Interval = double.NaN;
-            chartArea2.AxisX.MinorGrid.IntervalOffset = double.NaN;
-            chartArea2.AxisX.MinorGrid.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.NotSet;
-            chartArea2.AxisX.MinorGrid.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.NotSet;
-            chartArea2.AxisX.MinorGrid.LineWidth = 0;
-            chartArea2.AxisY.IsLabelAutoFit = false;
-            chartArea2.AxisY.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea2.AxisY.LineColor = System.Drawing.Color.DarkGray;
-            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-            chartArea2.AxisY.Maximum = 100D;
-            chartArea2.AxisY.Minimum = 0D;
-            chartArea2.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-            chartArea2.Name = "ChartArea1";
-            this.cpuGraph.ChartAreas.Add(chartArea2);
-            legend2.Enabled = false;
-            legend2.Name = "Legend1";
-            this.cpuGraph.Legends.Add(legend2);
-            this.cpuGraph.Location = new System.Drawing.Point(8, 8);
-            this.cpuGraph.Name = "cpuGraph";
-            this.cpuGraph.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel;
-            series3.BorderColor = System.Drawing.Color.Gold;
-            series3.BorderWidth = 2;
-            series3.ChartArea = "ChartArea1";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Area;
-            series3.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.cpuGraph.Series.Add(series3);
-            this.cpuGraph.Size = new System.Drawing.Size(496, 183);
-            this.cpuGraph.TabIndex = 2;
-            this.cpuGraph.Text = "chart1";
-            // 
-            // ioGraph
-            // 
-            chartArea1.AxisX.LabelStyle.Enabled = false;
-            chartArea1.AxisX.LineColor = System.Drawing.Color.DarkGray;
-            chartArea1.AxisX.MajorGrid.Enabled = false;
-            chartArea1.AxisX.MajorTickMark.Enabled = false;
-            chartArea1.AxisX.MinorGrid.Interval = double.NaN;
-            chartArea1.AxisX.MinorGrid.IntervalOffset = double.NaN;
-            chartArea1.AxisX.MinorGrid.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.NotSet;
-            chartArea1.AxisX.MinorGrid.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.NotSet;
-            chartArea1.AxisX.MinorGrid.LineWidth = 0;
-            chartArea1.AxisY.IsLabelAutoFit = false;
-            chartArea1.AxisY.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea1.AxisY.LineColor = System.Drawing.Color.DarkGray;
-            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-            chartArea1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
             chartArea1.Name = "ChartArea1";
-            this.ioGraph.ChartAreas.Add(chartArea1);
-            legend1.Enabled = false;
-            legend1.Name = "Legend1";
-            this.ioGraph.Legends.Add(legend1);
-            this.ioGraph.Location = new System.Drawing.Point(8, 230);
-            this.ioGraph.Name = "ioGraph";
-            this.ioGraph.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel;
-            series1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            series1.BorderWidth = 2;
+            this.memChart.ChartAreas.Add(chartArea1);
+            this.memChart.Location = new System.Drawing.Point(206, 226);
+            this.memChart.Name = "memChart";
             series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Area;
-            series1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(210)))), ((int)(((byte)(255)))));
-            series1.Legend = "Legend1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
+            series1.IsVisibleInLegend = false;
             series1.Name = "Series1";
-            series2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            series2.BorderWidth = 2;
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Area;
-            series2.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            series2.Legend = "Legend1";
-            series2.Name = "Series2";
-            this.ioGraph.Series.Add(series1);
-            this.ioGraph.Series.Add(series2);
-            this.ioGraph.Size = new System.Drawing.Size(496, 183);
-            this.ioGraph.TabIndex = 3;
-            this.ioGraph.Text = "ioGraph";
+            this.memChart.Series.Add(series1);
+            this.memChart.Size = new System.Drawing.Size(298, 272);
+            this.memChart.TabIndex = 72;
             // 
             // singleProcess
             // 
@@ -863,9 +872,10 @@ namespace POC_NEW
             this.threads.PerformLayout();
             this.modules.ResumeLayout(false);
             this.graphs.ResumeLayout(false);
-            this.pipes.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cpuGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ioGraph)).EndInit();
+            this.pipes.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.memChart)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -923,7 +933,7 @@ namespace POC_NEW
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label threadID;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label threadState;
+        private System.Windows.Forms.Label threadStateText;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label startThread;
         private System.Windows.Forms.Label label6;
@@ -933,5 +943,6 @@ namespace POC_NEW
         private System.Windows.Forms.RichTextBox pipesBox;
         private System.Windows.Forms.DataVisualization.Charting.Chart ioGraph;
         private System.Windows.Forms.DataVisualization.Charting.Chart cpuGraph;
+        private System.Windows.Forms.DataVisualization.Charting.Chart memChart;
     }
 }

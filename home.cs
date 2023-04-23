@@ -9,12 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.Diagnostics;
 
 namespace POC_NEW
 {
     public partial class home : Form
     {
-
+        private int sortColumn = -1;
         public home()
         {
             InitializeComponent();
@@ -318,5 +319,73 @@ namespace POC_NEW
         {
 
         }
+
+        private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            // Determine whether the column is the same as the last column clicked.
+            if (e.Column != sortColumn)
+            {
+                // Set the sort column to the new column.
+                sortColumn = e.Column;
+                // Set the sort order to ascending by default.
+                listView1.Sorting = SortOrder.Ascending;
+            }
+            else
+            {
+                // Determine what the last sort order was and change it.
+                if (listView1.Sorting == SortOrder.Ascending)
+                    listView1.Sorting = SortOrder.Descending;
+                else
+                    listView1.Sorting = SortOrder.Ascending;
+            }
+
+            // Call the sort method to manually sort.
+            listView1.Sort();
+            // Set the ListViewItemSorter property to a new ListViewItemComparer
+            // object.
+            listView1.ListViewItemSorter = new ListViewItemComparer(e.Column, listView1.Sorting);
+        }
+
+        private void cancel_MouseClick(object sender, MouseEventArgs e)
+        {
+            int count = 0;
+            int id = -1;
+            for (int i = 0; i < listView1.Columns.Count; i++)
+            {
+                if (listView1.Columns[i].Text == "PID")
+                    count = i;
+            }
+            try
+            {
+                id = int.Parse(listView1.SelectedItems[0].SubItems[count].Text);
+                Console.WriteLine(id);
+            }
+
+            catch
+            {
+                MessageBox.Show("Please select process from the list", "Select Process",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            try
+            {
+                Process proc = Process.GetProcessById(id);
+                proc.Kill();
+            }
+            catch
+            {
+                MessageBox.Show("Can't kill process", "process can't be killed or already been killed",
+                   MessageBoxButtons.OK,
+                   MessageBoxIcon.Information);
+            }
+        }
+
+        private void create_MouseClick(object sender, MouseEventArgs e)
+        {
+            addProcess add = new addProcess();
+            add.Show();
+        }
     }
+    
+
 }

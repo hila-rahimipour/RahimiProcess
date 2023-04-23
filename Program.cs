@@ -16,6 +16,8 @@ using System.Windows.Forms;
 using System.Security.Cryptography;
 using System.Reflection;
 using System.Drawing;
+using System.IO;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
 namespace POC_NEW
@@ -528,7 +530,7 @@ namespace POC_NEW
                 }
                 catch
                 {
-                    procs[a].SetCPU(0);
+                    //procs[a].SetCPU(0);
                     // do nothing and continue to the next index
                 }
             });
@@ -546,7 +548,7 @@ namespace POC_NEW
                 }
                 catch
                 {
-                    procs[b].SetCPU(0);
+                    //procs[b].SetCPU(0);
                     // do nothing and continue to the next index
                 }
             });
@@ -689,12 +691,34 @@ namespace POC_NEW
 
             return endpoints;
         }
+        public static List<string> runProcs=new List<string>();
+        public static bool isDone=false;
+        public static void UpdateRun()
+        {
+            foreach (string fileName in Directory.GetFiles(@"C:\Program Files (x86)", "*.exe", SearchOption.AllDirectories))
+            {
+                string name = fileName.Split('\\')[fileName.Split('\\').Length-1].ToLower();
+                runProcs.Add(name);
+            }
+            foreach (string fileName in Directory.GetFiles(@"C:\WINDOWS\system32", "*.exe"))
+            {
+                string name = fileName.Split('\\')[fileName.Split('\\').Length - 1].ToLower(); ;
+                runProcs.Add(name);
+            }
+            isDone = true;
+            
+
+
+        }
         public static void UpdateProcsForm(home form)
         {
             procs.Clear();
 
 
             Dictionary<int, double[]> cpus=new Dictionary<int, double[]>();
+
+            Thread updaterun = new Thread(() => UpdateRun());
+            updaterun.Start();
 
             Thread cpu1;
 
@@ -775,7 +799,7 @@ namespace POC_NEW
                 try {  tempItem = list.TopItem.Index + 1; }
 
                 catch { }
-                TextBox search = (TextBox)form.Controls.Find("searchBox", false)[0];
+                System.Windows.Forms.TextBox search = (System.Windows.Forms.TextBox)form.Controls.Find("searchBox", false)[0];
                 list.SuspendLayout();
                 list.BeginUpdate();
                 list.Items.Clear();
@@ -799,7 +823,7 @@ namespace POC_NEW
                 }
                 else
                 {
-                    ComboBox filter = (ComboBox)form.Controls.Find("selectBy", false)[0];
+                    System.Windows.Forms.ComboBox filter = (System.Windows.Forms.ComboBox)form.Controls.Find("selectBy", false)[0];
                     if (filter.Text == "PID")
                     {
                         foreach (ProcessInfo process in procs)

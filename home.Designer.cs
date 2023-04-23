@@ -36,6 +36,7 @@
             this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.filterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findDllOrHandleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createAnAlertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu = new System.Windows.Forms.MenuStrip();
             this.graph = new System.Windows.Forms.Button();
@@ -66,7 +67,7 @@
             this.suspendProcessToolStripMenuItem,
             this.propertiesToolStripMenuItem});
             this.processToolStripMenuItem.Name = "processToolStripMenuItem";
-            this.processToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
+            this.processToolStripMenuItem.Size = new System.Drawing.Size(88, 30);
             this.processToolStripMenuItem.Text = "Process";
             // 
             // killProcessToolStripMenuItem
@@ -92,9 +93,10 @@
             // 
             this.findToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.filterToolStripMenuItem,
-            this.findDllOrHandleToolStripMenuItem});
+            this.findDllOrHandleToolStripMenuItem,
+            this.createAnAlertToolStripMenuItem});
             this.findToolStripMenuItem.Name = "findToolStripMenuItem";
-            this.findToolStripMenuItem.Size = new System.Drawing.Size(62, 29);
+            this.findToolStripMenuItem.Size = new System.Drawing.Size(62, 30);
             this.findToolStripMenuItem.Text = "Find";
             // 
             // filterToolStripMenuItem
@@ -109,10 +111,16 @@
             this.findDllOrHandleToolStripMenuItem.Size = new System.Drawing.Size(255, 34);
             this.findDllOrHandleToolStripMenuItem.Text = "Find dll or Handle";
             // 
+            // createAnAlertToolStripMenuItem
+            // 
+            this.createAnAlertToolStripMenuItem.Name = "createAnAlertToolStripMenuItem";
+            this.createAnAlertToolStripMenuItem.Size = new System.Drawing.Size(255, 34);
+            this.createAnAlertToolStripMenuItem.Text = "Create an Alert";
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 30);
             this.helpToolStripMenuItem.Text = "Help";
             this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
             // 
@@ -126,7 +134,7 @@
             this.helpToolStripMenuItem});
             this.menu.Location = new System.Drawing.Point(0, 0);
             this.menu.Name = "menu";
-            this.menu.Size = new System.Drawing.Size(962, 33);
+            this.menu.Size = new System.Drawing.Size(962, 36);
             this.menu.TabIndex = 4;
             this.menu.Text = "menu";
             this.menu.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menu_ItemClicked);
@@ -175,6 +183,7 @@
             this.cancel.Size = new System.Drawing.Size(40, 31);
             this.cancel.TabIndex = 7;
             this.cancel.UseVisualStyleBackColor = false;
+            this.cancel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cancel_MouseClick);
             // 
             // suspend
             // 
@@ -205,6 +214,7 @@
             this.create.Size = new System.Drawing.Size(40, 31);
             this.create.TabIndex = 9;
             this.create.UseVisualStyleBackColor = false;
+            this.create.MouseClick += new System.Windows.Forms.MouseEventHandler(this.create_MouseClick);
             // 
             // searchBox
             // 
@@ -286,6 +296,7 @@
             this.listView1.TabIndex = 11;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
             this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
             // 
             // ProcName
@@ -347,7 +358,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menu;
             this.Name = "home";
-            this.Text = "home";
+            this.Text = "RahimiProcess";
             this.Load += new System.EventHandler(this.home_Load);
             this.menu.ResumeLayout(false);
             this.menu.PerformLayout();
@@ -384,5 +395,6 @@
         private System.Windows.Forms.ComboBox selectBy;
         private System.Windows.Forms.Button network;
         private DoubleBufferedListView listView1;
+        private System.Windows.Forms.ToolStripMenuItem createAnAlertToolStripMenuItem;
     }
 }

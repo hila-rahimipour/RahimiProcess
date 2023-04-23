@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
+
 namespace POC_NEW
 {
     public partial class graphs : Form
@@ -86,6 +87,7 @@ namespace POC_NEW
                 graph.ChartAreas[0].AxisY2.MajorTickMark.Enabled=false;
 
                 graph.Series[0].Points.AddXY(0, 0);
+                
             }
         }
 
@@ -101,7 +103,7 @@ namespace POC_NEW
             for (int i = 0; i < numGraphs; i++)
             {
                 Chart graph = (Chart)tableLayoutPanel1.GetControlFromPosition(i, 0);
-
+                
                 graph.Width = tableLayoutPanel1.GetColumnWidths()[i];
                 graph.Height = tableLayoutPanel1.ClientSize.Height;
 
@@ -114,20 +116,22 @@ namespace POC_NEW
         {
             while (true)
             {
-                PerformanceCounter[] cpus = new PerformanceCounter[numGraphs];
-                for (int i = 0; i < numGraphs; i++)
+                try
                 {
-                    cpus[i] = new PerformanceCounter("Processor", "% Processor Time", i.ToString());
-                    cpus[i].NextValue();
-                }
-                Thread.Sleep(1000);
-                for (int i = 0; i < numGraphs; i++)
-                {
-                    try
+                    PerformanceCounter[] cpus = new PerformanceCounter[numGraphs];
+                    for (int i = 0; i < numGraphs; i++)
                     {
+                        cpus[i] = new PerformanceCounter("Processor", "% Processor Time", i.ToString());
+                        cpus[i].NextValue();
+                    }
+                    Thread.Sleep(1000);
+                    for (int i = 0; i < numGraphs; i++)
+                    {
+
                         double value = cpus[i].NextValue();
                         Chart graph = (Chart)tableLayoutPanel1.GetControlFromPosition(i, 0);
                         graph.Series[0].Points.AddXY(count[i], value);
+                        graph.Series[0].Points[count[i]].ToolTip = $"CPU usage: {Math.Round(value,2)}";
                         if (count[i] > 25)
                         {
                             count[i] = 25;
@@ -135,14 +139,17 @@ namespace POC_NEW
                             foreach (System.Windows.Forms.DataVisualization.Charting.DataPoint point in graph.Series[0].Points)
                             {
                                 point.XValue -= 1;
+                                
                             }
                         }
                         count[i]++;
 
+
+
                     }
-                    catch { }
                 }
-                
+                catch { }
+
             }
         }
 

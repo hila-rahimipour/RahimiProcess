@@ -153,7 +153,7 @@ namespace POC_NEW
             this.Controls.Add(this.tcp);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NetworkInfo";
-            this.Text = "NetworkInfo";
+            this.Text = "Network Information";
             this.Load += new System.EventHandler(this.NetworkInfo_Load);
             this.tcp.ResumeLayout(false);
             this.tcpPage.ResumeLayout(false);
@@ -161,7 +161,6 @@ namespace POC_NEW
             this.pipes.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
-            
 
         }
 
