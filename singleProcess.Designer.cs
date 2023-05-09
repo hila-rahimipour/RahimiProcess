@@ -29,6 +29,8 @@ namespace POC_NEW
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
@@ -36,8 +38,6 @@ namespace POC_NEW
             System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(singleProcess));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.general = new System.Windows.Forms.TabPage();
@@ -61,6 +61,7 @@ namespace POC_NEW
             this.procAffinity = new System.Windows.Forms.Label();
             this.affinity = new System.Windows.Forms.Label();
             this.memNet = new System.Windows.Forms.TabPage();
+            this.memChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.procPeakWS = new System.Windows.Forms.Label();
             this.privateMemory = new System.Windows.Forms.Label();
             this.peakWS = new System.Windows.Forms.Label();
@@ -100,17 +101,17 @@ namespace POC_NEW
             this.ioGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.pipes = new System.Windows.Forms.TabPage();
             this.pipesBox = new System.Windows.Forms.RichTextBox();
-            this.memChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.button1 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.general.SuspendLayout();
             this.memNet.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.memChart)).BeginInit();
             this.threads.SuspendLayout();
             this.modules.SuspendLayout();
             this.graphs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cpuGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ioGraph)).BeginInit();
             this.pipes.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.memChart)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -132,6 +133,7 @@ namespace POC_NEW
             // 
             this.general.AutoScroll = true;
             this.general.BackColor = System.Drawing.Color.White;
+            this.general.Controls.Add(this.button1);
             this.general.Controls.Add(this.label1);
             this.general.Controls.Add(this.label2);
             this.general.Controls.Add(this.command);
@@ -373,6 +375,20 @@ namespace POC_NEW
             this.memNet.Size = new System.Drawing.Size(512, 506);
             this.memNet.TabIndex = 1;
             this.memNet.Text = "Memory & Network";
+            // 
+            // memChart
+            // 
+            chartArea1.Name = "ChartArea1";
+            this.memChart.ChartAreas.Add(chartArea1);
+            this.memChart.Location = new System.Drawing.Point(206, 226);
+            this.memChart.Name = "memChart";
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
+            series1.IsVisibleInLegend = false;
+            series1.Name = "Series1";
+            this.memChart.Series.Add(series1);
+            this.memChart.Size = new System.Drawing.Size(298, 272);
+            this.memChart.TabIndex = 72;
             // 
             // procPeakWS
             // 
@@ -839,19 +855,18 @@ namespace POC_NEW
             this.pipesBox.TabIndex = 1;
             this.pipesBox.Text = "";
             // 
-            // memChart
+            // button1
             // 
-            chartArea1.Name = "ChartArea1";
-            this.memChart.ChartAreas.Add(chartArea1);
-            this.memChart.Location = new System.Drawing.Point(206, 226);
-            this.memChart.Name = "memChart";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
-            series1.IsVisibleInLegend = false;
-            series1.Name = "Series1";
-            this.memChart.Series.Add(series1);
-            this.memChart.Size = new System.Drawing.Size(298, 272);
-            this.memChart.TabIndex = 72;
+            this.button1.BackgroundImage = global::POC_NEW.Properties.Resources.infoProc1;
+            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.ForeColor = System.Drawing.Color.White;
+            this.button1.Location = new System.Drawing.Point(9, 426);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(28, 29);
+            this.button1.TabIndex = 60;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.MouseHover += new System.EventHandler(this.button1_MouseHover);
             // 
             // singleProcess
             // 
@@ -868,6 +883,7 @@ namespace POC_NEW
             this.general.PerformLayout();
             this.memNet.ResumeLayout(false);
             this.memNet.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.memChart)).EndInit();
             this.threads.ResumeLayout(false);
             this.threads.PerformLayout();
             this.modules.ResumeLayout(false);
@@ -875,7 +891,6 @@ namespace POC_NEW
             ((System.ComponentModel.ISupportInitialize)(this.cpuGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ioGraph)).EndInit();
             this.pipes.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.memChart)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -944,5 +959,6 @@ namespace POC_NEW
         private System.Windows.Forms.DataVisualization.Charting.Chart ioGraph;
         private System.Windows.Forms.DataVisualization.Charting.Chart cpuGraph;
         private System.Windows.Forms.DataVisualization.Charting.Chart memChart;
+        private System.Windows.Forms.Button button1;
     }
 }

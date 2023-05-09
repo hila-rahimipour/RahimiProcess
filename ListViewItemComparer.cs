@@ -15,8 +15,8 @@ namespace POC_NEW
 {
     class ListViewItemComparer : System.Collections.IComparer
     {
-        private int col;
-        private SortOrder order;
+        public int col;
+        public SortOrder order;
         public ListViewItemComparer()
         {
             col = 0;

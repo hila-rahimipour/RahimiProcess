@@ -10,11 +10,24 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace POC_NEW
 {
+    struct IO_COUNTERS
+    {
+        public ulong ReadOperationCount;
+        public ulong WriteOperationCount;
+        public ulong OtherOperationCount;
+        public ulong ReadTransferCount;
+        public ulong WriteTransferCount;
+        public ulong OtherTransferCount;
+    }
+    
     public partial class home : Form
     {
+        [DllImport(@"kernel32.dll", SetLastError = true)]
+        static extern bool GetProcessIoCounters(IntPtr hProcess, out IO_COUNTERS counters);
         private int sortColumn = -1;
         public home()
         {
@@ -42,23 +55,59 @@ namespace POC_NEW
         {
             listView1.Items.Clear();
             listView1.BeginUpdate();
-            foreach (ProcessInfo proc in Program.procs)
+            foreach (Process proc in Program.procs)
             {
-                if (proc.GetThreads()[0].ThreadState.ToString()== "Suspended") 
+                double reads = 0; ;
+                double writes = 0;
+                try
                 {
-                    string[] data = {proc.GetName(), proc.GetPID().ToString(), "Suspended".ToString(),
-                    proc.GetWS().ToString(), proc.GetReads().ToString(), proc.GetWrites().ToString(),
-                    proc.GetThreads().Count.ToString(), proc.GetHandleCount().ToString()};
-                    var ListViewItemData = new ListViewItem(data);
-                    listView1.Items.Add(ListViewItemData);
+                    if (GetProcessIoCounters(proc.Handle, out IO_COUNTERS counters))
+                    {
+                        reads = counters.ReadTransferCount;
+                        writes = counters.WriteTransferCount;
+                    }
+                }
+                catch
+                {
+
+                }
+                if (proc.Threads[0].ThreadState.ToString()== "Suspended") 
+                {
+                    try
+                    {
+                        string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended".ToString(),
+                    proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                    proc.StartTime.ToString()};
+                        var ListViewItemData = new ListViewItem(data);
+                        listView1.Items.Add(ListViewItemData);
+                    }
+                    catch
+                    {
+                        string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended".ToString(),
+                    proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                    ""};
+                        var ListViewItemData = new ListViewItem(data);
+                        listView1.Items.Add(ListViewItemData);
+                    }
                 }
                 else
                 {
-                    string[] data = {proc.GetName(), proc.GetPID().ToString(), proc.GetCPU().ToString(),
-                    proc.GetWS().ToString(), proc.GetReads().ToString(), proc.GetWrites().ToString(),
-                    proc.GetThreads().Count.ToString(), proc.GetHandleCount().ToString()};
-                    var ListViewItemData = new ListViewItem(data);
-                    listView1.Items.Add(ListViewItemData);
+                    try
+                    {
+                        string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(Program.cpus[proc.Id][2],2).ToString(),
+                    proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                    proc.StartTime.ToString()};
+                        var ListViewItemData = new ListViewItem(data);
+                        listView1.Items.Add(ListViewItemData);
+                    }
+                    catch
+                    {
+                        string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(Program.cpus[proc.Id][2],2).ToString(),
+                    proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                    ""};
+                        var ListViewItemData = new ListViewItem(data);
+                        listView1.Items.Add(ListViewItemData);
+                    }
                 }
                 
             }
@@ -263,7 +312,7 @@ namespace POC_NEW
 
             }
             else if (e.KeyCode == Keys.Back)
-                if (searchBox.Text.Length == 1 || searchBox.Text.Length == 0)
+                if (searchBox.Text.Length == 1)
                     SetProcs();
 
 
@@ -319,31 +368,43 @@ namespace POC_NEW
         {
 
         }
-
+        public static bool isSort=false;
+        public static int column = -1;
+        public static SortOrder sort;
+        
         private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            // Determine whether the column is the same as the last column clicked.
-            if (e.Column != sortColumn)
-            {
-                // Set the sort column to the new column.
-                sortColumn = e.Column;
-                // Set the sort order to ascending by default.
-                listView1.Sorting = SortOrder.Ascending;
-            }
-            else
-            {
-                // Determine what the last sort order was and change it.
-                if (listView1.Sorting == SortOrder.Ascending)
-                    listView1.Sorting = SortOrder.Descending;
-                else
-                    listView1.Sorting = SortOrder.Ascending;
-            }
 
-            // Call the sort method to manually sort.
-            listView1.Sort();
-            // Set the ListViewItemSorter property to a new ListViewItemComparer
-            // object.
-            listView1.ListViewItemSorter = new ListViewItemComparer(e.Column, listView1.Sorting);
+            try
+            {
+                // Determine whether the column is the same as the last column clicked.
+                if (e.Column != sortColumn)
+                {
+                    // Set the sort column to the new column.
+                    sortColumn = e.Column;
+                    // Set the sort order to ascending by default.
+                    listView1.Sorting = SortOrder.Ascending;
+                }
+                else
+                {
+                    // Determine what the last sort order was and change it.
+                    if (listView1.Sorting == SortOrder.Ascending)
+                        listView1.Sorting = SortOrder.Descending;
+                    else
+                        listView1.Sorting = SortOrder.Ascending;
+                }
+
+                // Call the sort method to manually sort.
+                listView1.Sort();
+                // Set the ListViewItemSorter property to a new ListViewItemComparer
+                // object.
+                listView1.ListViewItemSorter = new ListViewItemComparer(e.Column, listView1.Sorting);
+                isSort = true;
+                sort = listView1.Sorting;
+                column = e.Column;
+                
+            }
+            catch { }
         }
 
         private void cancel_MouseClick(object sender, MouseEventArgs e)
@@ -384,6 +445,12 @@ namespace POC_NEW
         {
             addProcess add = new addProcess();
             add.Show();
+        }
+
+        private void createAnAlertToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            addAlert alert = new addAlert();
+            alert.Show();
         }
     }
     

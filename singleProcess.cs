@@ -53,6 +53,7 @@ namespace POC_NEW
         public int pid;
         public static ProcessInfo process;
         int count = 0;
+        string tooltipInfo = "";
         public singleProcess(int pid)
         {
             this.pid = pid;
@@ -241,16 +242,21 @@ namespace POC_NEW
                 try
                 {
                     cpuVal = ((DateTime.Now.Ticks - cpu[1]) / (proc.TotalProcessorTime.Ticks - cpu[0])) / Environment.ProcessorCount;
+                    if ((int)cpuVal > 10)
+                        tooltipInfo += "High CPU usage!\n";
                     process.SetCPU(cpuVal);
                 }
                 catch
                 {
                     process.SetCPU(0);
                 }
-
+                if (proc.Threads.Count > 10)
+                    tooltipInfo += "Pay attention to the number of threads\n";
                 double wsValue = workingSet.NextValue();
                 process.SetPrivateWS(wsValue);
                 process.SetShared(process.GetWS() - wsValue);
+                if (process.GetShared() > process.GetPrivateWS())
+                    tooltipInfo += "The process uses DLL's a lot\n";
 
                 procName.Text = process.GetName();
                 processID.Text = pid.ToString();
@@ -393,7 +399,7 @@ namespace POC_NEW
                 memChart.Series[0].Points[2].ToolTip = $"Private Bytes:\n{memChart.Series[0].Points[2].YValues[0]}";
             }
             catch { }
-
+            tooltipInfo = "";
         }
 
         private void singleProcess_Load(object sender, EventArgs e)
@@ -495,6 +501,7 @@ namespace POC_NEW
                         if (selectedThreadIndex >= 0 && selectedThreadIndex < procThreads.Items.Count)
                         {
                             procThreads.Items[selectedThreadIndex].Selected = true;
+                            procThreads.TopItem= procThreads.Items[selectedThreadIndex];    
                             
                         }
                         else
@@ -574,6 +581,14 @@ namespace POC_NEW
 
         private void threadID_Click(object sender, EventArgs e)
         {
+
+        }
+
+        private void button1_MouseHover(object sender, EventArgs e)
+        {
+            System.Windows.Forms.ToolTip info = new System.Windows.Forms.ToolTip();
+            info.Show(tooltipInfo, button1);
+            
 
         }
     }

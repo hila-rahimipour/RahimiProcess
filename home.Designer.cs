@@ -55,8 +55,7 @@
             this.ws = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.read = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.write = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.thread = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.handle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.startTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,7 +66,7 @@
             this.suspendProcessToolStripMenuItem,
             this.propertiesToolStripMenuItem});
             this.processToolStripMenuItem.Name = "processToolStripMenuItem";
-            this.processToolStripMenuItem.Size = new System.Drawing.Size(88, 30);
+            this.processToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
             this.processToolStripMenuItem.Text = "Process";
             // 
             // killProcessToolStripMenuItem
@@ -96,7 +95,7 @@
             this.findDllOrHandleToolStripMenuItem,
             this.createAnAlertToolStripMenuItem});
             this.findToolStripMenuItem.Name = "findToolStripMenuItem";
-            this.findToolStripMenuItem.Size = new System.Drawing.Size(62, 30);
+            this.findToolStripMenuItem.Size = new System.Drawing.Size(62, 29);
             this.findToolStripMenuItem.Text = "Find";
             // 
             // filterToolStripMenuItem
@@ -116,11 +115,12 @@
             this.createAnAlertToolStripMenuItem.Name = "createAnAlertToolStripMenuItem";
             this.createAnAlertToolStripMenuItem.Size = new System.Drawing.Size(255, 34);
             this.createAnAlertToolStripMenuItem.Text = "Create an Alert";
+            this.createAnAlertToolStripMenuItem.Click += new System.EventHandler(this.createAnAlertToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 30);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
             this.helpToolStripMenuItem.Text = "Help";
             this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
             // 
@@ -134,7 +134,7 @@
             this.helpToolStripMenuItem});
             this.menu.Location = new System.Drawing.Point(0, 0);
             this.menu.Name = "menu";
-            this.menu.Size = new System.Drawing.Size(962, 36);
+            this.menu.Size = new System.Drawing.Size(962, 33);
             this.menu.TabIndex = 4;
             this.menu.Text = "menu";
             this.menu.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menu_ItemClicked);
@@ -286,8 +286,7 @@
             this.ws,
             this.read,
             this.write,
-            this.thread,
-            this.handle});
+            this.startTime});
             this.listView1.FullRowSelect = true;
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(0, 77);
@@ -326,18 +325,13 @@
             // 
             // write
             // 
-            this.write.Text = "write";
+            this.write.Text = "Write";
             this.write.Width = 120;
             // 
-            // thread
+            // startTime
             // 
-            this.thread.Text = "Thread Count";
-            this.thread.Width = 120;
-            // 
-            // handle
-            // 
-            this.handle.Text = "Handle Count";
-            this.handle.Width = 120;
+            this.startTime.Text = "Start Time";
+            this.startTime.Width = 300;
             // 
             // home
             // 
@@ -388,13 +382,12 @@
         private System.Windows.Forms.ColumnHeader ws;
         private System.Windows.Forms.ColumnHeader read;
         private System.Windows.Forms.ColumnHeader write;
-        private System.Windows.Forms.ColumnHeader thread;
-        private System.Windows.Forms.ColumnHeader handle;
         private System.Windows.Forms.TextBox searchBox;
         private System.Windows.Forms.Button resume;
         private System.Windows.Forms.ComboBox selectBy;
         private System.Windows.Forms.Button network;
         private DoubleBufferedListView listView1;
         private System.Windows.Forms.ToolStripMenuItem createAnAlertToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader startTime;
     }
 }
