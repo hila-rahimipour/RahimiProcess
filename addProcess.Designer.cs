@@ -51,22 +51,24 @@
             // 
             // procName
             // 
+            this.procName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.procName.Location = new System.Drawing.Point(12, 406);
-            this.procName.Multiline = true;
             this.procName.Name = "procName";
-            this.procName.Size = new System.Drawing.Size(401, 32);
+            this.procName.Size = new System.Drawing.Size(401, 30);
             this.procName.TabIndex = 2;
             // 
             // search
             // 
-            this.search.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.search.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.search.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.search.Location = new System.Drawing.Point(12, 12);
-            this.search.Multiline = true;
             this.search.Name = "search";
-            this.search.Size = new System.Drawing.Size(390, 32);
+            this.search.Size = new System.Drawing.Size(390, 30);
             this.search.TabIndex = 4;
             this.search.Text = "Search";
+            this.search.MouseClick += new System.Windows.Forms.MouseEventHandler(this.search_MouseClick);
+            this.search.KeyUp += new System.Windows.Forms.KeyEventHandler(this.search_KeyUp);
+            this.search.Leave += new System.EventHandler(this.search_Leave);
             // 
             // searchButton
             // 
@@ -78,6 +80,7 @@
             this.searchButton.TabIndex = 5;
             this.searchButton.Text = "Search";
             this.searchButton.UseVisualStyleBackColor = false;
+            this.searchButton.MouseClick += new System.Windows.Forms.MouseEventHandler(this.searchButton_MouseClick);
             // 
             // processes
             // 

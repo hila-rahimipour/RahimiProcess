@@ -51,7 +51,6 @@ namespace POC_NEW
         const uint THREAD_QUERY_INFORMATION = 0x0040;
 
         public int pid;
-        public static ProcessInfo process;
         int count = 0;
         string tooltipInfo = "";
         public singleProcess(int pid)
@@ -71,7 +70,6 @@ namespace POC_NEW
             ioGraph.ChartAreas[0].AxisY.Minimum = 0;
             ioGraph.ChartAreas[0].AxisX.Maximum = 30;
             ioGraph.ChartAreas[0].AxisX.Minimum = 0;
-            process = new ProcessInfo(-1, "-1", -1, null, -1, -1, -1, -1, -1, null, "-1", -1, -1, -1);
            
 
 
@@ -96,62 +94,75 @@ namespace POC_NEW
             }
             return "";
         }
-        public void SingleProcess(Process proc)
+        bool isFirst=true;
+        public void SingleProcess()
         {
-
-            //need to add try & catch in case of process doesnt exists
-            if (!proc.HasExited)
+            try
             {
+                Process proc = Process.GetProcessById(pid);
+                double wsValue = 0;
                 this.Text = $"{proc.ProcessName}: {proc.Id}";
+                Thread thread = new Thread(() => GetProcessInstanceName(pid));
+                thread.Start();
 
+                //Process[] sameName = Process.GetProcessesByName(proc.ProcessName);
+                //int instance = 0;
+                //for (int i = 0; i < sameName.Length; i++)
+                //{
+                //    if (sameName[i].Id == proc.Id)
+                //        instance = i;
+                //}
 
-                Process[] sameName = Process.GetProcessesByName(proc.ProcessName);
-                int instance = 0;
-                for (int i = 0; i < sameName.Length; i++)
+                int pipeTop = 0;
+                int dllTop = 0;
+                if (isFirst)
                 {
-                    if (sameName[i].Id == proc.Id)
-                        instance = i;
-                }
-                List<string> pipes = new List<string>();
-
-                string pipeText = "";
-                RichTextBox tempRichTextBox1 = new RichTextBox();
-                tempRichTextBox1.Font = new Font("Consolas", 10);
-                tempRichTextBox1.BackColor = Color.White;
-                tempRichTextBox1.BorderStyle = BorderStyle.None;
-                tempRichTextBox1.WordWrap = false;
-                try
-                {
-                    foreach (ProcessModule module in proc.Modules)
+                    try
                     {
-                        //Check if the module represents a pipe
-                        if (module.ModuleName.Contains("pipe"))
+                        pipesList.BeginUpdate();
+                        dlls.BeginUpdate();
+
+                        try { pipeTop = pipesList.TopItem.Index; }
+                        catch { }
+                        try { dllTop = dlls.TopItem.Index; }
+                        catch { }
+
+                        pipesList.Items.Clear();
+                        dlls.Items.Clear();
+                        foreach (ProcessModule module in proc.Modules)
                         {
-                            pipes.Add(module.ModuleName);
-                            pipeText += module.ModuleName + "\n";
+                            //Check if the module represents a pipe
+                            if (module.ModuleName.Contains("pipe"))
+                            {
+                                ListViewItem item = new ListViewItem(new string[1] { module.ModuleName });
+                                pipesList.Items.Add(item);
+                            }
+                            ListViewItem dllItem = new ListViewItem(new string[1] { module.ModuleName });
+                            dlls.Items.Add(dllItem);
                         }
+                        pipesList.EndUpdate();
+                        dlls.EndUpdate();
+
+                        pipesList.Update();
+
+                        dlls.Update();
+
                     }
-                }
-                catch
-                {
-                    pipeText = "Can't access";
-                    pipes.Add("-1");
-                }
-                tempRichTextBox1.AppendText(pipeText);
-                try
-                {
-
-                    BeginInvoke(new Action(() =>
+                    catch
                     {
-                        dlls.SuspendLayout();
-                        dlls.Text = pipeText;
-                        dlls.ResumeLayout();
-
-                    }));
-                    start.Text = proc.StartTime.ToString();
+                        pipesList.BeginUpdate();
+                        pipesList.Items.Clear();
+                        dlls.BeginUpdate();
+                        dlls.Items.Clear();
+                        pipesList.Items.Add(new ListViewItem(new string[1] { "Can't Access" }));
+                        dlls.Items.Add(new ListViewItem(new string[1] { "Can't Access" }));
+                        pipesList.EndUpdate();
+                        pipesList.Update();
+                        dlls.EndUpdate();
+                        dlls.Update();
+                    }
+                    isFirst = false;
                 }
-                catch { }
-
 
                 string affinity;
                 try
@@ -160,7 +171,7 @@ namespace POC_NEW
                 }
                 catch
                 {
-                    affinity = "-1";
+                    affinity = "Can't Access";
                 }
                 double reads = 0;
                 double writes = 0;
@@ -176,28 +187,34 @@ namespace POC_NEW
                 {
 
                 }
-
-                
-
-                process.SetPrivateMemory(proc.PrivateMemorySize64);
-
-
-                process.SetName(proc.ProcessName);
-                process.SetThreads(proc.Threads);
-                process.SetInstance(instance);
-
-                process.SetPipes(pipes);
-                if (affinity == "-1")
-                    process.SetAffinity("unavailable");
-                else
-                    process.SetAffinity(affinity);
-                process.SetPriority(proc.BasePriority);
-                process.SetHandle(proc.HandleCount);
-                process.SetReads(reads);
-                process.SetWrites(writes);
+                procName.Text = proc.ProcessName;
+                processID.Text = pid.ToString();
+                procPriority.Text = proc.BasePriority.ToString();
+                procAffinity.Text = affinity;
+                procHandle.Text = proc.HandleCount.ToString();
+                procPrivate.Text = proc.PrivateMemorySize64.ToString();
+                procWS.Text = proc.WorkingSet64.ToString();
+                procReads.Text = reads.ToString();
+                procWrites.Text = writes.ToString();
+                try
+                {
+                    start.Text = proc.StartTime.ToString();
+                }
+                catch { }
 
 
-                Console.WriteLine("done processing");
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher($"SELECT * FROM Win32_Process WHERE ProcessId = {proc.Id}");
+                long virtualMemorySize = Convert.ToInt64(-1);
+                foreach (ManagementObject obj in searcher.Get())
+                {
+                    procVirtual.Text = (Convert.ToInt64(obj["VirtualSize"]).ToString());
+                    command.Text = obj["CommandLine"].ToString();
+                    path.Text = obj["ExecutablePath"].ToString();
+                    parent.Text = obj["ParentProcessId"].ToString();
+
+                }
+
+
 
                 double[] cpu = new double[2] { 0, 0 };
                 PerformanceCounter workingSet;
@@ -205,21 +222,12 @@ namespace POC_NEW
                 PerformanceCounter writeBytes;
                 double read = 0;
                 double write = 0;
-
-                if (instance == 0)
-                {
-                    workingSet = new PerformanceCounter("Process", "Working Set - Private", proc.ProcessName);
-                    readBytes = new PerformanceCounter("Process", "IO Read Bytes/sec", proc.ProcessName);
-                    writeBytes = new PerformanceCounter("Process", "IO Write Bytes/sec", proc.ProcessName);
-                    Console.WriteLine("in cpu");
-                }
-                else
-                {
-                    workingSet = new PerformanceCounter("Process", "Working Set - Private", proc.ProcessName + "#" + instance);
-                    readBytes = new PerformanceCounter("Process", "IO Read Bytes/sec", proc.ProcessName + "#" + instance);
-                    writeBytes = new PerformanceCounter("Process", "IO Write Bytes/sec", proc.ProcessName + "#" + instance);
-                    Console.WriteLine("in cpu");
-                }
+                while (instanceName == "") { }
+                workingSet = new PerformanceCounter("Process", "Working Set - Private",instanceName);
+                readBytes = new PerformanceCounter("Process", "IO Read Bytes/sec", instanceName);
+                writeBytes = new PerformanceCounter("Process", "IO Write Bytes/sec", instanceName);
+                Console.WriteLine("in cpu");
+                
                 try
                 {
                     cpu[0] = proc.TotalProcessorTime.Ticks;
@@ -243,100 +251,39 @@ namespace POC_NEW
                 {
                     cpuVal = ((DateTime.Now.Ticks - cpu[1]) / (proc.TotalProcessorTime.Ticks - cpu[0])) / Environment.ProcessorCount;
                     if ((int)cpuVal > 10)
-                        tooltipInfo += "High CPU usage!\n";
-                    process.SetCPU(cpuVal);
+                        if (!tooltipInfo.Contains("High CPU usage!"))
+                            tooltipInfo += "High CPU usage!\n";
+
                 }
                 catch
                 {
-                    process.SetCPU(0);
+
                 }
                 if (proc.Threads.Count > 10)
-                    tooltipInfo += "Pay attention to the number of threads\n";
-                double wsValue = workingSet.NextValue();
-                process.SetPrivateWS(wsValue);
-                process.SetShared(process.GetWS() - wsValue);
-                if (process.GetShared() > process.GetPrivateWS())
-                    tooltipInfo += "The process uses DLL's a lot\n";
+                    if (!tooltipInfo.Contains("Pay attention to the number"))
+                        tooltipInfo += "Pay attention to the number of threads\n";
+                wsValue = workingSet.NextValue();
 
-                procName.Text = process.GetName();
-                processID.Text = pid.ToString();
-                procPriority.Text = process.GetPriority().ToString();
-                procAffinity.Text = process.GetAffinity();
-                procHandle.Text = process.GetHandleCount().ToString();
-                procPrivate.Text = process.GetPrivateSize().ToString();
-                procVirtual.Text = process.GetVirtualSize().ToString();
-                procWS.Text = process.GetWS().ToString();
-                procPrivateWS.Text = process.GetPrivateWS().ToString();
-                procSharedWS.Text = process.GetShared().ToString();
-                procPeakWS.Text = process.GetPeakWs().ToString();
-                procReads.Text = process.GetReads().ToString();
-                procWrites.Text = process.GetWrites().ToString();
-                start.Text = proc.StartTime.ToString();
+                if (proc.WorkingSet64 - wsValue > wsValue)
+                    if (!tooltipInfo.Contains("The process uses DLL"))
+                        tooltipInfo += "The process uses DLL's a lot\n";
 
-                ManagementObjectSearcher searcher = new ManagementObjectSearcher($"SELECT * FROM Win32_Process WHERE ProcessId = {proc.Id}");
-                long virtualMemorySize = Convert.ToInt64(-1);
-                foreach (ManagementObject obj in searcher.Get())
-                {
-                    process.SetVirtual(Convert.ToInt64(obj["VirtualSize"]));
-                    process.SetWS(Convert.ToInt64(obj["WorkingSetSize"]));
-                    process.SetPeakWS(Convert.ToInt64(obj["PeakWorkingSetSize"]));
-                    
-
-                    command.Text = obj["CommandLine"].ToString();
-                    path.Text = obj["ExecutablePath"].ToString();
-                    parent.Text = obj["ParentProcessId"].ToString();
-
-                }
-
-
-
-                RichTextBox tempRichTextBox = new RichTextBox();
-                tempRichTextBox.Font = new Font("Consolas", 10);
-                tempRichTextBox.BackColor = Color.White;
-                tempRichTextBox.BorderStyle = BorderStyle.None;
-                tempRichTextBox.WordWrap = false;
-
-                StringBuilder moduleTextBuilder = new StringBuilder();
-
-                try
-                {
-                    foreach (ProcessModule module in proc.Modules)
-                    {
-                        moduleTextBuilder.Append(module.ModuleName);
-                        moduleTextBuilder.Append("\n");
-                    }
-                }
-                catch
-                {
-                    moduleTextBuilder.Append("Can't Access\n");
-                }
-
-                string moduleText = moduleTextBuilder.ToString();
-
-                try
-                {
-                    BeginInvoke(new Action(() =>
-                    {
-                        dlls.SuspendLayout();
-                        dlls.Text = moduleText;
-                        dlls.ResumeLayout();
-                    }));
-                }
-                catch { }
+               
+                procPrivateWS.Text = wsValue.ToString();
+                procSharedWS.Text = (proc.WorkingSet64 - wsValue).ToString();
+                procPeakWS.Text = proc.PeakWorkingSet64.ToString();
+               
                 
-
-
-
 
 
                 Console.WriteLine("done cpu single");
                 try
                 {
-                    if (process.GetCPU() < 5)
+                    if (cpuVal < 5)
                         cpuGraph.ChartAreas[0].AxisY.Maximum = 5;
-                    else if (process.GetCPU() < 10)
+                    else if (cpuVal < 10)
                         cpuGraph.ChartAreas[0].AxisY.Maximum = 10;
-                    else if (process.GetCPU() < 20)
+                    else if (cpuVal < 20)
                         cpuGraph.ChartAreas[0].AxisY.Maximum = 20;
 
 
@@ -380,28 +327,42 @@ namespace POC_NEW
                     count++;
                 }
                 catch { }
+
+                try
+                {
+                    memChart.Series[0].Points.Clear();
+                    memChart.Series[1].Points.Clear();
+
+                    //memChart.Series[0].Points.AddXY("private Mem", proc.PrivateMemorySize64);
+                    //memChart.Series[0].Points.AddXY("WS", proc.WorkingSet64 - wsValue);
+
+                    //memChart.Series[1].Points.AddXY("private Mem", proc.PrivateMemorySize64-wsValue);
+
+                    //memChart.Series[1].Points.AddXY("WS", wsValue);
+
+                    memChart.Series[0].Points.AddXY("private Mem", proc.PrivateMemorySize64);
+                    memChart.Series[0].Points.AddXY("WS", proc.WorkingSet64);
+
+                    memChart.Series[1].Points.AddXY("private Mem", wsValue);
+
+                    memChart.Series[1].Points.AddXY("WS", wsValue);
+
+                    
+                    memChart.Series[0].Points[0].ToolTip = $"Private Size:\n{memChart.Series[0].Points[0].YValues[0]-wsValue}";
+                    memChart.Series[0].Points[1].ToolTip = $"Shared Working Set:\n{memChart.Series[0].Points[1].YValues[0]-wsValue}";
+                    memChart.Series[1].Points[0].ToolTip = $"Private Working Set:\n{memChart.Series[1].Points[0].YValues[0]}";
+                    memChart.Series[1].Points[1].ToolTip = $"Private Working Set:\n{memChart.Series[1].Points[1].YValues[0]}";
+                }
+                catch { }
+                
             }
-            else
+            catch
             {
                 terminate.Text = "Process Terminated, Closing window";
+                this.Close();
             }
-
-            try
-            {
-                memChart.Series[0].Points.Clear();
-                memChart.Series[0].Points.AddXY("private WS", process.GetPrivateWS());
-                if (process.GetShared() > 0)
-                    memChart.Series[0].Points.AddXY("shared WS", process.GetShared());
-                memChart.Series[0].Points.AddXY("private bytes", process.GetPrivateSize());
-                //memChart.Series[0].Points.AddXY("virtual memory", process.GetVirtualSize());
-                memChart.Series[0].Points[0].ToolTip = $"Private Working Set:\n{memChart.Series[0].Points[0].YValues[0]}";
-                memChart.Series[0].Points[1].ToolTip = $"Shared Working Set:\n{memChart.Series[0].Points[1].YValues[0]}";
-                memChart.Series[0].Points[2].ToolTip = $"Private Bytes:\n{memChart.Series[0].Points[2].YValues[0]}";
-            }
-            catch { }
-            tooltipInfo = "";
         }
-
+        public static string instanceName = "";
         private void singleProcess_Load(object sender, EventArgs e)
         {
             Thread update = new Thread(() => Update());
@@ -413,21 +374,25 @@ namespace POC_NEW
 
         public void Update()
         {
-            Process proc = Process.GetProcessById(pid);
+            
             while (true)
             {
-                SingleProcess(proc);
+                SingleProcess();
+
             }
         }
         private int selectedThreadIndex = -1;
+        private int topIndex=0;
         public void ThreadUpdate()
         {
             while (true)
             {
+                
                 try
                 {
+                    
                     var threadItems = new List<ListViewItem>();
-                    ProcessThreadCollection threads = process.GetThreads();
+                    ProcessThreadCollection threads = Process.GetProcessById(pid).Threads;
                     for (int i = 0; i < threads.Count; i++)
                     {
                         try
@@ -501,14 +466,15 @@ namespace POC_NEW
                         if (selectedThreadIndex >= 0 && selectedThreadIndex < procThreads.Items.Count)
                         {
                             procThreads.Items[selectedThreadIndex].Selected = true;
-                            procThreads.TopItem= procThreads.Items[selectedThreadIndex];    
+                            procThreads.TopItem = procThreads.Items[topIndex];
                             
                         }
                         else
                         {
                             procThreads.Items[0].Selected = true;
                             procThreads.Items[0].Focused = true;
-                            
+                            procThreads.TopItem = procThreads.Items[topIndex];
+
                         }
                     }));
 
@@ -528,6 +494,7 @@ namespace POC_NEW
         {
             int tid;
             int count = 0;
+            topIndex = procThreads.TopItem.Index;
             for (int i = 0; i < procThreads.Columns.Count; i++)
             {
                 if (procThreads.Columns[i].Text == "tid")
@@ -537,7 +504,7 @@ namespace POC_NEW
             {
                 tid = int.Parse(procThreads.SelectedItems[0].SubItems[count].Text);
 
-                foreach (ProcessThread thread in process.GetThreads())
+                foreach (ProcessThread thread in Process.GetProcessById(pid).Threads)
                 {
                     if (tid == thread.Id)
                     {
@@ -584,12 +551,38 @@ namespace POC_NEW
 
         }
 
-        private void button1_MouseHover(object sender, EventArgs e)
+
+        private void infoHover_MouseHover(object sender, EventArgs e)
         {
             System.Windows.Forms.ToolTip info = new System.Windows.Forms.ToolTip();
-            info.Show(tooltipInfo, button1);
+            info.Show(tooltipInfo, infoHover,10000);
             
 
+        }
+        public static void GetProcessInstanceName(int pid)
+        {
+            PerformanceCounterCategory cat = new PerformanceCounterCategory("Process");
+
+            string[] instances = cat.GetInstanceNames();
+            foreach (string instance in instances)
+            {
+                try
+                {
+
+                    using (PerformanceCounter cnt = new PerformanceCounter("Process",
+                         "ID Process", instance, true))
+                    {
+                        int val = (int)cnt.RawValue;
+                        if (val == pid)
+                        {
+                            instanceName = instance;
+                        }
+                    }
+                }
+                catch { }
+            }
+            if (instanceName == "")
+                instanceName = Process.GetProcessById(pid).ProcessName;
         }
     }
 

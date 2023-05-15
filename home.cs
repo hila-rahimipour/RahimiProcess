@@ -55,62 +55,66 @@ namespace POC_NEW
         {
             listView1.Items.Clear();
             listView1.BeginUpdate();
-            foreach (Process proc in Program.procs)
+            try
             {
-                double reads = 0; ;
-                double writes = 0;
-                try
+                foreach (Process proc in Program.procs)
                 {
-                    if (GetProcessIoCounters(proc.Handle, out IO_COUNTERS counters))
+                    double reads = 0; ;
+                    double writes = 0;
+                    try
                     {
-                        reads = counters.ReadTransferCount;
-                        writes = counters.WriteTransferCount;
+                        if (GetProcessIoCounters(proc.Handle, out IO_COUNTERS counters))
+                        {
+                            reads = counters.ReadTransferCount;
+                            writes = counters.WriteTransferCount;
+                        }
                     }
-                }
-                catch
-                {
+                    catch
+                    {
+
+                    }
+                    if (proc.Threads[0].ThreadState.ToString() == "Suspended")
+                    {
+                        try
+                        {
+                            string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended".ToString(),
+                    proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                    proc.StartTime.ToString()};
+                            var ListViewItemData = new ListViewItem(data);
+                            listView1.Items.Add(ListViewItemData);
+                        }
+                        catch
+                        {
+                            string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended".ToString(),
+                    proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                    ""};
+                            var ListViewItemData = new ListViewItem(data);
+                            listView1.Items.Add(ListViewItemData);
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(Program.cpus[proc.Id][2],2).ToString(),
+                    proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                    proc.StartTime.ToString()};
+                            var ListViewItemData = new ListViewItem(data);
+                            listView1.Items.Add(ListViewItemData);
+                        }
+                        catch
+                        {
+                            string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(Program.cpus[proc.Id][2],2).ToString(),
+                    proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                    ""};
+                            var ListViewItemData = new ListViewItem(data);
+                            listView1.Items.Add(ListViewItemData);
+                        }
+                    }
 
                 }
-                if (proc.Threads[0].ThreadState.ToString()== "Suspended") 
-                {
-                    try
-                    {
-                        string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended".ToString(),
-                    proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
-                    proc.StartTime.ToString()};
-                        var ListViewItemData = new ListViewItem(data);
-                        listView1.Items.Add(ListViewItemData);
-                    }
-                    catch
-                    {
-                        string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended".ToString(),
-                    proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
-                    ""};
-                        var ListViewItemData = new ListViewItem(data);
-                        listView1.Items.Add(ListViewItemData);
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(Program.cpus[proc.Id][2],2).ToString(),
-                    proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
-                    proc.StartTime.ToString()};
-                        var ListViewItemData = new ListViewItem(data);
-                        listView1.Items.Add(ListViewItemData);
-                    }
-                    catch
-                    {
-                        string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(Program.cpus[proc.Id][2],2).ToString(),
-                    proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
-                    ""};
-                        var ListViewItemData = new ListViewItem(data);
-                        listView1.Items.Add(ListViewItemData);
-                    }
-                }
-                
             }
+            catch { }
             listView1.EndUpdate();
             listView1.Update();
         }
@@ -119,17 +123,28 @@ namespace POC_NEW
         // open form with proc info!!!!!!!!
         private void listView1_DoubleClick(object sender, EventArgs e)
         {
+            
+            double y = Cursor.Position.Y;
+            foreach (ListViewItem item in listView1.Items)
+            {
+                if(item.Position.Y>=y+0.8 || item.Position.Y<=y+0.8)
+                    item.Selected = true;
+            }
             int count = 0;
             for (int i = 0; i < listView1.Columns.Count; i++)
             {
                 if (listView1.Columns[i].Text == "PID")
                     count = i;
             }
-            int id = int.Parse(listView1.SelectedItems[0].SubItems[count].Text);
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            singleProcess singleproc = new singleProcess(id);
-            singleproc.Show();
+            try
+            {
+                int id = int.Parse(listView1.SelectedItems[0].SubItems[count].Text);
+                //Application.EnableVisualStyles();
+                //Application.SetCompatibleTextRenderingDefault(false);
+                singleProcess singleproc = new singleProcess(id);
+                singleproc.Show();
+            }
+            catch { }
             
             
             //Application.Run(singleproc);

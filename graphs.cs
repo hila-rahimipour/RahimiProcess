@@ -75,7 +75,7 @@ namespace POC_NEW
                 graph.ChartAreas[0].AxisY.MajorGrid.LineWidth= 1;
                 graph.ChartAreas[0].AxisX.LineColor = Color.DarkGray;
                 graph.ChartAreas[0].AxisY.LineColor = Color.DarkGray;
-                graph.ChartAreas[0].AxisY.Maximum = 120;
+                graph.ChartAreas[0].AxisY.Maximum = 101;
                 graph.ChartAreas[0].AxisY.Minimum = 0;
 
                 graph.ChartAreas[0].AxisX.Maximum = 30;

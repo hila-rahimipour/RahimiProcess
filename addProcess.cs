@@ -53,7 +53,7 @@ namespace POC_NEW
 
 
 
-            private void start_MouseClick(object sender, MouseEventArgs e)
+        private void start_MouseClick(object sender, MouseEventArgs e)
         {
             try
             {
@@ -72,6 +72,73 @@ namespace POC_NEW
                 procName.Text = name;
             }
             catch { }
+        }
+
+        private void search_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (search.Text == "Search")
+            {
+                search.Text = "";
+                search.ForeColor = Color.Black;
+            }
+        }
+
+        private void search_Leave(object sender, EventArgs e)
+        {
+            if (search.Text == "Search" || search.Text == "")
+            {
+                search.Text = "Search";
+                search.ForeColor = Color.FromName("ControlDark");
+                processes.BeginUpdate();
+
+                processes.Items.Clear();
+                int count = 0;
+                foreach (string name in Program.runProcs)
+                {
+                    processes.Items.Add(name);
+                    if (knownProcs.Contains(processes.Items[count].SubItems[0].Text))
+                        processes.Items[count].BackColor = Color.LightGreen;
+                    count++;
+                }
+
+                processes.EndUpdate();
+            }
+        }
+
+        private void searchButton_MouseClick(object sender, MouseEventArgs e)
+        {
+            processes.BeginUpdate();
+            string text = search.Text;
+            foreach(ListViewItem item in processes.Items)
+            {
+                if (!item.Text.ToLower().Contains(text.ToLower()))
+                {
+                    processes.Items[item.Index].Remove();
+                }
+            }
+            processes.EndUpdate();
+            processes.Update();
+        }
+
+        private void search_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode== Keys.Back && search.Text.Length==1)
+            {
+                processes.BeginUpdate();
+
+                processes.Items.Clear();
+                int count = 0;
+                foreach (string name in Program.runProcs)
+                {
+                    processes.Items.Add(name);
+                    if (knownProcs.Contains(processes.Items[count].SubItems[0].Text))
+                        processes.Items[count].BackColor = Color.LightGreen;
+                    count++;
+                }
+
+                processes.EndUpdate();
+            }
+            
         }
     }
 }

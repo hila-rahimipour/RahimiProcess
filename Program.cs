@@ -109,7 +109,7 @@ namespace POC_NEW
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool IsWow64Process([In] IntPtr hProcess, [Out] out bool wow64Process);
 
-        
+
         public static void GetProcessors()
         {
             foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_ComputerSystem").Get())
@@ -131,7 +131,7 @@ namespace POC_NEW
         {
             return Environment.ProcessorCount;
         }
-        
+
         public static void ToList(List<ProcessInfo> procs)
         {
             procs.Clear();
@@ -189,7 +189,7 @@ namespace POC_NEW
                 }
                 catch
                 {
-                    
+
                 }
                 ProcessInfo process;
                 try
@@ -200,8 +200,8 @@ namespace POC_NEW
                     foreach (ManagementObject obj in searcher.Get())
                     {
                         virtualMemorySize = Convert.ToInt64(obj["VirtualSize"]);
-                        virtualMemorySize=(Convert.ToInt64(obj["WorkingSetSize"]));
-                        ws=(Convert.ToInt64(obj["PeakWorkingSetSize"]));
+                        virtualMemorySize = (Convert.ToInt64(obj["WorkingSetSize"]));
+                        ws = (Convert.ToInt64(obj["PeakWorkingSetSize"]));
                     }
 
                     process = new ProcessInfo(proc.Id,
@@ -227,11 +227,11 @@ namespace POC_NEW
                        proc.PrivateMemorySize, virtualMemorySize, proc.WorkingSet,
                        proc.PeakWorkingSet, pipes, affinity, proc.HandleCount, reads, writes);
                 }
-                
 
 
-                    procs.Add(process);
-                
+
+                procs.Add(process);
+
             });
         }
 
@@ -240,19 +240,19 @@ namespace POC_NEW
         {
             Parallel.For(0, procs.Length, c =>
             {
-            try
-            {
-                    
+                try
+                {
+
                     double lastProcessor = procs[c].TotalProcessorTime.Ticks;
                     double lastTime = DateTime.Now.Ticks;
-                    double[] data = {lastProcessor, lastTime,0 };
-                    cpus[procs[c].Id]=data;
-                    
+                    double[] data = { lastProcessor, lastTime, 0 };
+                    cpus[procs[c].Id] = data;
+
                 }
                 catch
                 {
                     Console.WriteLine("hello");
-                    double[] data = { 0,0,0 };
+                    double[] data = { 0, 0, 0 };
                     cpus[procs[c].Id] = data;
                     // do nothing and continue to the next CPU
                 }
@@ -267,7 +267,7 @@ namespace POC_NEW
                 {
                     double newProcessor = procs[a].TotalProcessorTime.Ticks;
                     double newTime = DateTime.Now.Ticks;
-                    cpus[procs[a].Id][2]=((newProcessor-cpus[procs[a].Id][0] ) / (newTime-cpus[procs[a].Id][2]));
+                    cpus[procs[a].Id][2] = ((newProcessor - cpus[procs[a].Id][0]) / (newTime - cpus[procs[a].Id][2]));
                 }
                 catch
                 {
@@ -285,7 +285,7 @@ namespace POC_NEW
                 {
                     double newProcessor = procs[b].TotalProcessorTime.Ticks;
                     double newTime = DateTime.Now.Ticks;
-                    cpus[procs[b].Id][2]=((newProcessor-cpus[procs[b].Id][0]) / (newTime-cpus[procs[b].Id][1]));
+                    cpus[procs[b].Id][2] = ((newProcessor - cpus[procs[b].Id][0]) / (newTime - cpus[procs[b].Id][1]));
                 }
                 catch
                 {
@@ -300,35 +300,58 @@ namespace POC_NEW
         public static List<string> openPipes = new List<string>();
         public static void GetTcpSockets()
         {
-            //IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
-            //TcpConnectionInformation[] connections = properties.GetActiveTcpConnections();
+            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+            TcpConnectionInformation[] connections = properties.GetActiveTcpConnections();
 
-            //string info = "";
-            //Console.WriteLine("Active TCP Connections:");
-            //foreach (TcpConnectionInformation connection in connections)
-            //{
-            //    info+="Local endpoint: " + connection.LocalEndPoint.Address+":"+ connection.LocalEndPoint.Port+"\n";
-            //    info+="Remote endpoint: "+ connection.RemoteEndPoint.Address+":"+ connection.RemoteEndPoint.Port+"\n";
-            //    info+="State: "+ connection.State;
-            //    tcpSockets.Add(info);
-            //    info = "";
-            //}
-            
+            string info = "";
+            Console.WriteLine("Active TCP Connections:");
+            foreach (TcpConnectionInformation connection in connections)
+            {
+                info += "Local endpoint: " + connection.LocalEndPoint.Address + ":" + connection.LocalEndPoint.Port + "\n";
+                info += "Remote endpoint: " + connection.RemoteEndPoint.Address + ":" + connection.RemoteEndPoint.Port + "\n";
+                info += "State: " + connection.State;
+                tcpSockets.Add(info);
+                info = "";
+            }
+
         }
         public static void GetUdpSockets()
         {
-            //IPEndPoint[] endpoints = GetActiveUdpListeners();
+            IPEndPoint[] endpoints = GetActiveUdpListeners();
+            string info = "";
+            foreach (IPEndPoint endpoint in endpoints)
+            {
+                info += "Endpoint: " + endpoint.Address + ":" + endpoint.Port;
+                udpSockets.Add(info);
+                info = "";
+            }
+        }
+        public static IPEndPoint[] GetActiveUdpListeners()
+        {
+            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+            List<IPEndPoint> endpointList = new List<IPEndPoint>(); // Use a list instead of an array
 
-            //Console.WriteLine("Active UDP Listeners:");
-            //string info = "";
-            //foreach (IPEndPoint endpoint in endpoints)
-            //{
-            //    info+="Endpoint: "+ endpoint.Address+":"+ endpoint.Port;
-            //    udpSockets.Add(info);
-            //    info = "";
-            //}
-            
-           
+            foreach (UnicastIPAddressInformation address in properties.GetUnicastAddresses())
+            {
+                if (address.Address.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    try
+                    {
+                        IPEndPoint endpoint = new IPEndPoint(address.Address, 0);
+                        using (UdpClient client = new UdpClient(endpoint))
+                        {
+                            IPEndPoint localEndpoint = client.Client.LocalEndPoint as IPEndPoint; // Use a single endpoint variable
+                            endpointList.Add(localEndpoint);
+                        }
+                    }
+                    catch (SocketException)
+                    {
+                        // ignore exceptions for this example
+                    }
+                }
+            }
+
+            return endpointList.ToArray(); // Convert the list to an array before returning
         }
         public static void GetPipes()
         {
@@ -344,43 +367,16 @@ namespace POC_NEW
 
             openPipes.Sort();
         }
-        public static IPEndPoint[] GetActiveUdpListeners()
-        {
-            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
-            IPEndPoint[] endpoints = new IPEndPoint[0];
 
-            foreach (UnicastIPAddressInformation address in properties.GetUnicastAddresses())
-            {
-                if (address.Address.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    try
-                    {
-                        IPEndPoint endpoint = new IPEndPoint(address.Address, 0);
-                        using (UdpClient client = new UdpClient(endpoint))
-                        {
-                            IPEndPoint[] localEndpoints = { client.Client.LocalEndPoint as IPEndPoint };
-                            Array.Resize(ref endpoints, endpoints.Length + localEndpoints.Length);
-                            Array.Copy(localEndpoints, 0, endpoints, endpoints.Length - localEndpoints.Length, localEndpoints.Length);
-                        }
-                    }
-                    catch (SocketException)
-                    {
-                        // ignore exceptions for this example
-                    }
-                }
-            }
 
-            return endpoints;
-        }
-
-        public static List<string> runProcs=new List<string>();
-        public static bool isDone=false;
+        public static List<string> runProcs = new List<string>();
+        public static bool isDone = false;
         public static Dictionary<int, double[]> cpus = new Dictionary<int, double[]>();
         public static void UpdateRun()
         {
             foreach (string fileName in Directory.GetFiles(@"C:\Program Files (x86)", "*.exe", SearchOption.AllDirectories))
             {
-                string name = fileName.Split('\\')[fileName.Split('\\').Length-1].ToLower();
+                string name = fileName.Split('\\')[fileName.Split('\\').Length - 1].ToLower();
                 runProcs.Add(name);
             }
             foreach (string fileName in Directory.GetFiles(@"C:\WINDOWS\system32", "*.exe"))
@@ -389,11 +385,11 @@ namespace POC_NEW
                 runProcs.Add(name);
             }
             isDone = true;
-            
+
 
 
         }
-        
+
         public static void UpdateProcsForm(home form)
         {
             Process[] procs = Process.GetProcesses();
@@ -407,14 +403,14 @@ namespace POC_NEW
             Thread Getcpu2;
             bool isFirst = true;
 
-          
+
             while (true)
             {
                 tcpSockets.Clear();
                 udpSockets.Clear();
                 openPipes.Clear();
                 Console.WriteLine("start list");
-                
+
                 Thread tcp = new Thread(() => GetTcpSockets());
                 Thread udp = new Thread(() => GetUdpSockets());
                 Thread pipes = new Thread(() => GetPipes());
@@ -425,12 +421,12 @@ namespace POC_NEW
                 Console.WriteLine("end list");
 
 
-                
+
                 //cpus = new Dictionary<int, double[]>();
-                
 
 
-                
+
+
                 cpu1 = new Thread(() => AllCpu(cpus, procs));
 
 
@@ -443,7 +439,7 @@ namespace POC_NEW
 
                 cpu1.Join();
 
-                
+
                 Console.WriteLine("end cpu");
                 Thread.Sleep(500);
 
@@ -460,19 +456,22 @@ namespace POC_NEW
 
 
                 Getcpu2.Start();
-   
-               
+
+
 
 
                 Getcpu1.Join();
-                
+
                 Getcpu2.Join();
                 Console.WriteLine("end get");
                 int tempItem = 0;
+                int selected = 0;
                 DoubleBufferedListView list = (DoubleBufferedListView)form.Controls.Find("listView1", false)[0];
 
-                try {  tempItem = list.TopItem.Index; }
+                try { tempItem = list.TopItem.Index; }
 
+                catch { }
+                try { selected = list.SelectedItems[0].Index; }
                 catch { }
                 System.Windows.Forms.TextBox search = (System.Windows.Forms.TextBox)form.Controls.Find("searchBox", false)[0];
                 list.SuspendLayout();
@@ -480,10 +479,10 @@ namespace POC_NEW
                 list.Items.Clear();
                 typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
     .SetValue(list, true);
-                
+
                 if (search.Text == "Search")
                 {
-                    
+
                     foreach (Process proc in procs)
                     {
                         double reads = 0; ;
@@ -501,7 +500,8 @@ namespace POC_NEW
 
                         }
 
-                        try {
+                        try
+                        {
                             if (proc.Threads[0].ThreadState.ToString() == "Suspended")
                             {
                                 string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended",
@@ -517,7 +517,7 @@ namespace POC_NEW
                      proc.StartTime.ToString()};
                                 var ListViewItemData = new ListViewItem(data);
                                 list.Items.Add(ListViewItemData);
-                                
+
                             }
                         }
                         catch
@@ -539,48 +539,159 @@ namespace POC_NEW
                      ""};
                                     var ListViewItemData = new ListViewItem(data);
                                     list.Items.Add(ListViewItemData);
-                                    
+
                                 }
                             }
                             catch { }
                         }
-                        
-                        
+
+
                     }
                     try { list.TopItem = list.Items[tempItem]; }
                     catch { }
 
-                    
+
                 }
                 else
                 {
                     System.Windows.Forms.ComboBox filter = (System.Windows.Forms.ComboBox)form.Controls.Find("selectBy", false)[0];
                     if (filter.Text == "PID")
                     {
-                        foreach (ListViewItem item in list.Items)
+                        foreach (Process proc in procs)
                         {
-
-                            if (!item.SubItems[1].Text.ToUpper().Contains(search.Text.ToUpper()))
+                            if (proc.Id.ToString().Contains(search.Text))
                             {
-                                list.Items[item.Index].Remove();
+                                double reads = 0; ;
+                                double writes = 0;
+                                try
+                                {
+                                    if (GetProcessIoCounters(proc.Handle, out IO_COUNTERS counters))
+                                    {
+                                        reads = counters.ReadTransferCount;
+                                        writes = counters.WriteTransferCount;
+                                    }
+                                }
+                                catch
+                                {
+
+                                }
+
+                                try
+                                {
+                                    if (proc.Threads[0].ThreadState.ToString() == "Suspended")
+                                    {
+                                        string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended",
+                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(),
+                     proc.StartTime.ToString()};
+                                        var ListViewItemData = new ListViewItem(data);
+                                        list.Items.Add(ListViewItemData);
+                                    }
+                                    else
+                                    {
+                                        string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(cpus[proc.Id][2],2).ToString(),
+                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(),
+                     proc.StartTime.ToString()};
+                                        var ListViewItemData = new ListViewItem(data);
+                                        list.Items.Add(ListViewItemData);
+
+                                    }
+                                }
+                                catch
+                                {
+                                    try
+                                    {
+                                        if (proc.Threads[0].ThreadState.ToString() == "Suspended")
+                                        {
+                                            string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended",
+                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                     ""};
+                                            var ListViewItemData = new ListViewItem(data);
+                                            list.Items.Add(ListViewItemData);
+                                        }
+                                        else
+                                        {
+                                            string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(cpus[proc.Id][2],2).ToString(),
+                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                     ""};
+                                            var ListViewItemData = new ListViewItem(data);
+                                            list.Items.Add(ListViewItemData);
+
+                                        }
+                                    }
+                                    catch { }
+                                }
                             }
                         }
-                            
+
                     }
                     else if (filter.Text == "Name")
                     {
-                        foreach (ListViewItem item in list.Items)
-                        {
-
-                            if (!item.SubItems[0].Text.ToUpper().Contains(search.Text.ToUpper()))
+                        foreach (Process proc in procs)
+                            if (proc.ProcessName.ToUpper().Contains(search.Text.ToUpper()))
                             {
-                                list.Items[item.Index].Remove();
-                            }
-                        }
-                    }
-                        
+                                double reads = 0; ;
+                                double writes = 0;
+                                try
+                                {
+                                    if (GetProcessIoCounters(proc.Handle, out IO_COUNTERS counters))
+                                    {
+                                        reads = counters.ReadTransferCount;
+                                        writes = counters.WriteTransferCount;
+                                    }
+                                }
+                                catch
+                                {
 
+                                }
+
+                                try
+                                {
+                                    if (proc.Threads[0].ThreadState.ToString() == "Suspended")
+                                    {
+                                        string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended",
+                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(),
+                     proc.StartTime.ToString()};
+                                        var ListViewItemData = new ListViewItem(data);
+                                        list.Items.Add(ListViewItemData);
+                                    }
+                                    else
+                                    {
+                                        string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(cpus[proc.Id][2],2).ToString(),
+                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(),
+                     proc.StartTime.ToString()};
+                                        var ListViewItemData = new ListViewItem(data);
+                                        list.Items.Add(ListViewItemData);
+
+                                    }
+                                }
+                                catch
+                                {
+                                    try
+                                    {
+                                        if (proc.Threads[0].ThreadState.ToString() == "Suspended")
+                                        {
+                                            string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended",
+                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                     ""};
+                                            var ListViewItemData = new ListViewItem(data);
+                                            list.Items.Add(ListViewItemData);
+                                        }
+                                        else
+                                        {
+                                            string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(cpus[proc.Id][2],2).ToString(),
+                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                     ""};
+                                            var ListViewItemData = new ListViewItem(data);
+                                            list.Items.Add(ListViewItemData);
+
+                                        }
+                                    }
+                                    catch { }
+                                }
+                            }
+                    }
                 }
+                
                 if (isFirst)
                 {
                     // Call the sort method to manually sort.
@@ -595,14 +706,16 @@ namespace POC_NEW
                     list.Sort();
                     list.ListViewItemSorter = new ListViewItemComparer(home.column, home.sort);
                 }
+                try { list.Items[selected].Selected = true; list.Items[selected].Checked = true; }
+                catch { }
                 list.EndUpdate();
-                    
+
                 list.Update();
                 list.ResumeLayout();
 
+                
             }
         }
-
         public static string GetIdealProcessor(uint threadId)
         {
             // Thread ID of the thread you want to get the logical processor number for
@@ -640,3 +753,5 @@ namespace POC_NEW
         }
     }
 }
+
+

@@ -30,11 +30,11 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(addAlert));
             this.alerts = new System.Windows.Forms.ListView();
+            this.field = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.delete = new System.Windows.Forms.Button();
             this.edit = new System.Windows.Forms.Button();
             this.fieldValue = new System.Windows.Forms.ComboBox();
-            this.field = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.fieldLabel = new System.Windows.Forms.Label();
             this.valueLabel = new System.Windows.Forms.Label();
             this.valueText = new System.Windows.Forms.TextBox();
@@ -55,6 +55,16 @@
             this.alerts.TabIndex = 0;
             this.alerts.UseCompatibleStateImageBehavior = false;
             this.alerts.View = System.Windows.Forms.View.Details;
+            // 
+            // field
+            // 
+            this.field.Text = "Field";
+            this.field.Width = 70;
+            // 
+            // value
+            // 
+            this.value.Text = "Value";
+            this.value.Width = 70;
             // 
             // delete
             // 
@@ -96,16 +106,6 @@
             this.fieldValue.Name = "fieldValue";
             this.fieldValue.Size = new System.Drawing.Size(154, 28);
             this.fieldValue.TabIndex = 3;
-            // 
-            // field
-            // 
-            this.field.Text = "Field";
-            this.field.Width = 70;
-            // 
-            // value
-            // 
-            this.value.Text = "Value";
-            this.value.Width = 70;
             // 
             // fieldLabel
             // 
