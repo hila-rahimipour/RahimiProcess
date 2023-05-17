@@ -121,6 +121,12 @@
     <Compile Include="addProcess.Designer.cs">
       <DependentUpon>addProcess.cs</DependentUpon>
     </Compile>
+    <Compile Include="AlertPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AlertPrompt.Designer.cs">
+      <DependentUpon>AlertPrompt.cs</DependentUpon>
+    </Compile>
     <Compile Include="DoubleBufferedListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -143,7 +149,7 @@
       <DependentUpon>home.cs</DependentUpon>
     </Compile>
     <Compile Include="idealprocessor.cs" />
-    <Compile Include="ListViewItemComparer.cs" />
+    <Compile Include="ListViewColumnSorter.cs" />
     <Compile Include="MyAdoHelper.cs" />
     <Compile Include="NetworkInfo.cs">
       <SubType>Form</SubType>
@@ -179,6 +185,9 @@
     <EmbeddedResource Include="addProcess.resx">
       <DependentUpon>addProcess.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AlertPrompt.resx">
+      <DependentUpon>AlertPrompt.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="graphs.resx">
       <DependentUpon>graphs.cs</DependentUpon>
     </EmbeddedResource>
@@ -213,6 +222,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="infoProc.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="alertSign.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.117.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.117.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />

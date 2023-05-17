@@ -61,10 +61,14 @@ namespace POC_NEW
             InitializeComponent();
 
 
-            cpuGraph.ChartAreas[0].AxisY.Maximum = 110;
-            cpuGraph.ChartAreas[0].AxisY.Minimum = 0;
-            cpuGraph.ChartAreas[0].AxisX.Maximum = 30;
-            cpuGraph.ChartAreas[0].AxisX.Minimum = 0;
+            cpuGraphics.ChartAreas[0].AxisY.Maximum=100;
+            cpuGraphics.ChartAreas[0].AxisY.Minimum = 0;
+            cpuGraphics.ChartAreas[0].AxisX.Maximum = 30;
+            cpuGraphics.ChartAreas[0].AxisX.Minimum = 0;
+            //cpuGraphics.ChartAreas[0].RecalculateAxesScale();
+
+            
+
 
             ioGraph.ChartAreas[0].AxisY.Maximum = 1000;
             ioGraph.ChartAreas[0].AxisY.Minimum = 0;
@@ -244,20 +248,20 @@ namespace POC_NEW
                 writeBytes.NextValue();
                 Thread.Sleep(500);
                 Console.WriteLine("here");
-                reads = readBytes.NextValue();
-                writes = writeBytes.NextValue();
+                read = readBytes.NextValue();
+                write = writeBytes.NextValue();
                 double cpuVal = 0;
                 try
                 {
-                    cpuVal = ((DateTime.Now.Ticks - cpu[1]) / (proc.TotalProcessorTime.Ticks - cpu[0])) / Environment.ProcessorCount;
+                    cpuVal = (100*(proc.TotalProcessorTime.Ticks - cpu[0])/(DateTime.Now.Ticks - cpu[1])) / Environment.ProcessorCount;
                     if ((int)cpuVal > 10)
                         if (!tooltipInfo.Contains("High CPU usage!"))
                             tooltipInfo += "High CPU usage!\n";
-
+                    Console.WriteLine("CPU VALUE!!!!!"+cpuVal);
                 }
                 catch
                 {
-
+                    cpuVal = 0;
                 }
                 if (proc.Threads.Count > 10)
                     if (!tooltipInfo.Contains("Pay attention to the number"))
@@ -279,34 +283,45 @@ namespace POC_NEW
                 Console.WriteLine("done cpu single");
                 try
                 {
-                    if (cpuVal < 5)
-                        cpuGraph.ChartAreas[0].AxisY.Maximum = 5;
+                    if (cpuVal<1)
+                        cpuGraphics.ChartAreas[0].AxisY.Maximum = 1;
+                    else if (cpuVal < 5)
+                        cpuGraphics.ChartAreas[0].AxisY.Maximum = 5;
                     else if (cpuVal < 10)
-                        cpuGraph.ChartAreas[0].AxisY.Maximum = 10;
+                        cpuGraphics.ChartAreas[0].AxisY.Maximum = 10;
                     else if (cpuVal < 20)
-                        cpuGraph.ChartAreas[0].AxisY.Maximum = 20;
+                        cpuGraphics.ChartAreas[0].AxisY.Maximum = 20;
 
 
 
                 }
                 catch { }
+
+                if (read > ioGraph.ChartAreas[0].AxisY.Maximum)
+                {
+                    ioGraph.ChartAreas[0].AxisY.Maximum = read+50;
+                    ioGraph.ChartAreas[0].AxisY.LabelStyle.Enabled = false;
+                }
+                
+                Console.WriteLine($"Bounds {cpuGraphics.ChartAreas[0].AxisY.Maximum} {cpuGraphics.ChartAreas[0].AxisY.Minimum}");
                 try
                 {
-                    if (cpuVal > 1)
-                        cpuGraph.Series[0].Points.AddXY(count, cpuVal);
-                    else
-                        cpuGraph.Series[0].Points.AddXY(count, 0);
-                    ioGraph.Series[0].Points.AddXY(count, reads);
-                    ioGraph.Series[1].Points.AddXY(count, writes);
+                    Console.WriteLine("CPU VALUE:"+cpuVal);
+                    cpuGraphics.Series[0].Points.AddXY(count, Math.Round(cpuVal));
+                    
+                    
+                    ioGraph.Series[0].Points.AddXY(count, read);
+                    ioGraph.Series[1].Points.AddXY(count, write);
 
-                    if (cpuGraph.Series[0].Points.Count > 30)
+                    if (cpuGraphics.Series[0].Points.Count > 30)
                     {
                         count = 30;
-                        cpuGraph.Series[0].Points.RemoveAt(0);
+                        cpuGraphics.Series[0].Points.RemoveAt(0);
 
-                        foreach (System.Windows.Forms.DataVisualization.Charting.DataPoint point in cpuGraph.Series[0].Points)
+                        foreach (System.Windows.Forms.DataVisualization.Charting.DataPoint point in cpuGraphics.Series[0].Points)
                         {
                             point.XValue -= 1;
+                            point.ToolTip = "cpu value:" + point.YValues[0];
                         }
                     }
                     if (ioGraph.Series[0].Points.Count > 30)
@@ -318,10 +333,12 @@ namespace POC_NEW
                         foreach (System.Windows.Forms.DataVisualization.Charting.DataPoint point in ioGraph.Series[0].Points)
                         {
                             point.XValue -= 1;
+                            point.ToolTip = "read bytes/sec:" + point.YValues[0];
                         }
                         foreach (System.Windows.Forms.DataVisualization.Charting.DataPoint point in ioGraph.Series[1].Points)
                         {
                             point.XValue -= 1;
+                            point.ToolTip = "write bytes/sec:" + point.YValues[0];
                         }
                     }
                     count++;

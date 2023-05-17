@@ -19,6 +19,12 @@ using System.Drawing;
 using System.IO;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using System.Security.Principal;
+using System.Data.SQLite;
+
+using System.Windows.Forms.PropertyGridInternal;
+using static System.Net.WebRequestMethods;
 
 
 namespace POC_NEW
@@ -108,6 +114,22 @@ namespace POC_NEW
         [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool IsWow64Process([In] IntPtr hProcess, [Out] out bool wow64Process);
+        [DllImport("advapi32.dll", SetLastError = true)]
+        private static extern bool OpenProcessToken(IntPtr ProcessHandle, uint DesiredAccess, out IntPtr TokenHandle);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool CloseHandle(IntPtr hObject);
+
+
+        public static List<string> tcpSockets = new List<string>();
+        public static List<string> udpSockets = new List<string>();
+        public static List<string> openPipes = new List<string>();
+        public static List<string> runProcs = new List<string>();
+        public static bool isDone = false;
+        public static Dictionary<int, double[]> cpus = new Dictionary<int, double[]>();
+        public static EventWaitHandle waitHandle = new AutoResetEvent(false);
+        public static Process[] procs;
+
 
 
         public static void GetProcessors()
@@ -131,7 +153,6 @@ namespace POC_NEW
         {
             return Environment.ProcessorCount;
         }
-
         public static void ToList(List<ProcessInfo> procs)
         {
             procs.Clear();
@@ -183,8 +204,8 @@ namespace POC_NEW
                 {
                     if (GetProcessIoCounters(proc.Handle, out IO_COUNTERS counters))
                     {
-                        reads = counters.ReadTransferCount;
-                        writes = counters.WriteTransferCount;
+                        reads = counters.ReadOperationCount;
+                        writes = counters.WriteOperationCount;
                     }
                 }
                 catch
@@ -234,8 +255,22 @@ namespace POC_NEW
 
             });
         }
-
-
+        public static string GetIdealProcessor(uint threadId)
+        {
+            // Thread ID of the thread you want to get the logical processor number for
+            IntPtr thread = OpenThread(THREAD_QUERY_INFORMATION, false, threadId);
+            PROCESSOR_NUMBER idealProcessor;
+            if (thread != IntPtr.Zero)
+            {
+                if (GetThreadIdealProcessorEx(thread, out idealProcessor))
+                {
+                    byte processor = idealProcessor.Number;
+                    string byteString = string.Format("{0:X2}", processor);
+                    return byteString;
+                }
+            }
+            return "";
+        }
         public static void AllCpu(Dictionary<int, double[]> cpus, Process[] procs)
         {
             Parallel.For(0, procs.Length, c =>
@@ -258,7 +293,6 @@ namespace POC_NEW
                 }
             });
         }
-
         public static void GetAllCpu1(Dictionary<int, double[]> cpus, Process[] procs)
         {
             Parallel.For(0, cpus.Count / 2, a =>
@@ -267,7 +301,7 @@ namespace POC_NEW
                 {
                     double newProcessor = procs[a].TotalProcessorTime.Ticks;
                     double newTime = DateTime.Now.Ticks;
-                    cpus[procs[a].Id][2] = ((newProcessor - cpus[procs[a].Id][0]) / (newTime - cpus[procs[a].Id][2]));
+                    cpus[procs[a].Id][2] = (100*(newProcessor - cpus[procs[a].Id][0]) / (newTime - cpus[procs[a].Id][1]));
                 }
                 catch
                 {
@@ -276,7 +310,6 @@ namespace POC_NEW
                 }
             });
         }
-
         public static void GetAllCpu2(Dictionary<int, double[]> cpus, Process[] procs)
         {
             Parallel.For(cpus.Count / 2, cpus.Count, b =>
@@ -285,7 +318,7 @@ namespace POC_NEW
                 {
                     double newProcessor = procs[b].TotalProcessorTime.Ticks;
                     double newTime = DateTime.Now.Ticks;
-                    cpus[procs[b].Id][2] = ((newProcessor - cpus[procs[b].Id][0]) / (newTime - cpus[procs[b].Id][1]));
+                    cpus[procs[b].Id][2] = (100*(newProcessor - cpus[procs[b].Id][0]) / (newTime - cpus[procs[b].Id][1]));
                 }
                 catch
                 {
@@ -294,10 +327,6 @@ namespace POC_NEW
                 }
             });
         }
-
-        public static List<string> tcpSockets = new List<string>();
-        public static List<string> udpSockets = new List<string>();
-        public static List<string> openPipes = new List<string>();
         public static void GetTcpSockets()
         {
             IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
@@ -367,11 +396,6 @@ namespace POC_NEW
 
             openPipes.Sort();
         }
-
-
-        public static List<string> runProcs = new List<string>();
-        public static bool isDone = false;
-        public static Dictionary<int, double[]> cpus = new Dictionary<int, double[]>();
         public static void UpdateRun()
         {
             foreach (string fileName in Directory.GetFiles(@"C:\Program Files (x86)", "*.exe", SearchOption.AllDirectories))
@@ -389,7 +413,683 @@ namespace POC_NEW
 
 
         }
+        private static string GetProcessUser(Process process)
+        {
+            IntPtr processHandle = IntPtr.Zero;
+            try
+            {
+                OpenProcessToken(process.Handle, 8, out processHandle);
+                WindowsIdentity wi = new WindowsIdentity(processHandle);
+                string user = wi.Name;
+                return user.Contains(@"\") ? user.Substring(user.IndexOf(@"\") + 1) : user;
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                if (processHandle != IntPtr.Zero)
+                {
+                    CloseHandle(processHandle);
+                }
+            }
+        }
+        public static void Getalerts(Dictionary<string, List<string[]>> alerts)
+        {
+            string alertData = "";
+            string path = "alerts.db";
+            string cs = @"URI=file:" + Application.StartupPath + "\\alerts.db";
+            SQLiteConnection con;
+            SQLiteCommand cmd;
+            SQLiteDataReader dr;
 
+            //cpu
+            try
+            {
+                int count = 0;
+                foreach (string[] data in alerts["CPU"])
+                {
+                    count++;
+                    double value = double.Parse(data[0]);
+                    DateTime date = DateTime.Parse(data[1]);
+                    bool isAdded = false;
+                    Console.WriteLine($"VALUE {value}");
+                    Console.WriteLine($"DATE: {date}");
+                    Console.WriteLine(date);
+                    DateTime now = DateTime.Now;
+                    if (date.AddHours(2) < now)
+                    {
+                        Console.WriteLine("HEREERERER");
+
+
+
+                        foreach (Process process in Process.GetProcesses())
+                        {
+                            Console.WriteLine("PROCESS!!!");
+                            if (cpus[process.Id][2] > value)
+                            {
+                                alertData += $"{process.ProcessName} ({process.Id}), ";
+
+                                isAdded = true;
+
+                            }
+                        }
+                        con = new SQLiteConnection(cs);
+                        con.Open();
+                        cmd = new SQLiteCommand(con);
+                        cmd.CommandText = $"UPDATE info SET date=@date WHERE field=@fieldold AND value=@valueold";
+
+                        cmd.Parameters.AddWithValue("@fieldold", "CPU");
+                        cmd.Parameters.AddWithValue("@valueold", value.ToString());
+                        cmd.Parameters.AddWithValue("@date", now.ToString());
+                        cmd.ExecuteNonQuery();
+
+                        string stm = "SELECT * FROM info";
+                        SQLiteCommand command = new SQLiteCommand(stm, con);
+                        dr = command.ExecuteReader();
+                        alerts.Clear();
+                        while (dr.Read())
+                        {
+                            string field = dr.GetString(0);
+                            string[] datanew = new string[2] { dr.GetString(1), dr.GetString(2) };
+                            try
+                            {
+                                alerts[field].Add(datanew);
+                                Console.WriteLine("add to existing list");
+                            }
+                            catch
+                            {
+                                alerts[field] = new List<string[]> { datanew };
+                                Console.WriteLine("created new key");
+                                Console.WriteLine(alerts.Count);
+                            }
+
+                        }
+
+                    }
+                    if (isAdded)
+                    {
+                        alertData += $"with CPU above {value}\n";
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            //Working Set
+            try
+            {
+                int count = 0;
+                foreach (string[] data in alerts["Working Set"])
+                {
+                    count++;
+                    double value = double.Parse(data[0]);
+                    DateTime date = DateTime.Parse(data[1]);
+                    bool isAdded = false;
+                    Console.WriteLine($"VALUE {value}");
+                    Console.WriteLine($"DATE: {date}");
+                    Console.WriteLine(date);
+                    DateTime now = DateTime.Now;
+                    if (date.AddHours(2) < now)
+                    {
+                        Console.WriteLine("HEREERERER");
+
+
+
+                        foreach (Process process in Process.GetProcesses())
+                        {
+                            Console.WriteLine("PROCESS!!!");
+                            if (process.WorkingSet64 > value)
+                            {
+                                alertData += $"{process.ProcessName} ({process.Id}), ";
+
+                                isAdded = true;
+
+                            }
+                        }
+                        con = new SQLiteConnection(cs);
+                        con.Open();
+                        cmd = new SQLiteCommand(con);
+                        cmd.CommandText = $"UPDATE info SET date=@date WHERE field=@fieldold AND value=@valueold";
+
+                        cmd.Parameters.AddWithValue("@fieldold", "Working Set");
+                        cmd.Parameters.AddWithValue("@valueold", value.ToString());
+                        cmd.Parameters.AddWithValue("@date", now.ToString());
+                        cmd.ExecuteNonQuery();
+
+                        string stm = "SELECT * FROM info";
+                        SQLiteCommand command = new SQLiteCommand(stm, con);
+                        dr = command.ExecuteReader();
+                        alerts.Clear();
+                        while (dr.Read())
+                        {
+                            string field = dr.GetString(0);
+                            string[] datanew = new string[2] { dr.GetString(1), dr.GetString(2) };
+                            try
+                            {
+                                alerts[field].Add(datanew);
+                                Console.WriteLine("add to existing list");
+                            }
+                            catch
+                            {
+                                alerts[field] = new List<string[]> { datanew };
+                                Console.WriteLine("created new key");
+                                Console.WriteLine(alerts.Count);
+                            }
+
+                        }
+
+                    }
+                    if (isAdded)
+                    {
+                        alertData += $"with Working Set above {value}\n";
+                    }
+                }
+            }
+            catch { }
+            //Private Bytes
+            try
+            {
+                int count = 0;
+                foreach (string[] data in alerts["Private Bytes"])
+                {
+                    count++;
+                    double value = double.Parse(data[0]);
+                    DateTime date = DateTime.Parse(data[1]);
+                    bool isAdded = false;
+                    Console.WriteLine($"VALUE {value}");
+                    Console.WriteLine($"DATE: {date}");
+                    Console.WriteLine(date);
+                    DateTime now = DateTime.Now;
+                    if (date.AddHours(2) < now)
+                    {
+                        Console.WriteLine("HEREERERER");
+
+
+
+                        foreach (Process process in Process.GetProcesses())
+                        {
+                            Console.WriteLine("PROCESS!!!");
+                            if (process.PrivateMemorySize64 > value)
+                            {
+                                alertData += $"{process.ProcessName} ({process.Id}), ";
+
+                                isAdded = true;
+
+                            }
+                        }
+                        con = new SQLiteConnection(cs);
+                        con.Open();
+                        cmd = new SQLiteCommand(con);
+                        cmd.CommandText = $"UPDATE info SET date=@date WHERE field=@fieldold AND value=@valueold";
+
+                        cmd.Parameters.AddWithValue("@fieldold", "Private Bytes");
+                        cmd.Parameters.AddWithValue("@valueold", value.ToString());
+                        cmd.Parameters.AddWithValue("@date", now.ToString());
+                        cmd.ExecuteNonQuery();
+
+                        string stm = "SELECT * FROM info";
+                        SQLiteCommand command = new SQLiteCommand(stm, con);
+                        dr = command.ExecuteReader();
+                        alerts.Clear();
+                        while (dr.Read())
+                        {
+                            string field = dr.GetString(0);
+                            string[] datanew = new string[2] { dr.GetString(1), dr.GetString(2) };
+                            try
+                            {
+                                alerts[field].Add(datanew);
+                                Console.WriteLine("add to existing list");
+                            }
+                            catch
+                            {
+                                alerts[field] = new List<string[]> { datanew };
+                                Console.WriteLine("created new key");
+                                Console.WriteLine(alerts.Count);
+                            }
+
+                        }
+
+                    }
+                    if (isAdded)
+                    {
+                        alertData += $"with Private Bytes above {value}\n";
+                    }
+                }
+            }
+            catch { }
+            //Virtual Memory
+            try
+            {
+                int count = 0;
+                foreach (string[] data in alerts["Virtual Memory"])
+                {
+                    count++;
+                    double value = double.Parse(data[0]);
+                    DateTime date = DateTime.Parse(data[1]);
+                    bool isAdded = false;
+                    Console.WriteLine($"VALUE {value}");
+                    Console.WriteLine($"DATE: {date}");
+                    Console.WriteLine(date);
+                    DateTime now = DateTime.Now;
+                    if (date.AddHours(2) < now)
+                    {
+                        Console.WriteLine("HEREERERER");
+
+
+
+                        foreach (Process process in Process.GetProcesses())
+                        {
+                            Console.WriteLine("PROCESS!!!");
+                            if (process.VirtualMemorySize64 > value)
+                            {
+                                alertData += $"{process.ProcessName} ({process.Id}), ";
+
+                                isAdded = true;
+
+                            }
+                        }
+                        con = new SQLiteConnection(cs);
+                        con.Open();
+                        cmd = new SQLiteCommand(con);
+                        cmd.CommandText = $"UPDATE info SET date=@date WHERE field=@fieldold AND value=@valueold";
+
+                        cmd.Parameters.AddWithValue("@fieldold", "Virtual Memory");
+                        cmd.Parameters.AddWithValue("@valueold", value.ToString());
+                        cmd.Parameters.AddWithValue("@date", now.ToString());
+                        cmd.ExecuteNonQuery();
+
+                        string stm = "SELECT * FROM info";
+                        SQLiteCommand command = new SQLiteCommand(stm, con);
+                        dr = command.ExecuteReader();
+                        alerts.Clear();
+                        while (dr.Read())
+                        {
+                            string field = dr.GetString(0);
+                            string[] datanew = new string[2] { dr.GetString(1), dr.GetString(2) };
+                            try
+                            {
+                                alerts[field].Add(datanew);
+                                Console.WriteLine("add to existing list");
+                            }
+                            catch
+                            {
+                                alerts[field] = new List<string[]> { datanew };
+                                Console.WriteLine("created new key");
+                                Console.WriteLine(alerts.Count);
+                            }
+
+                        }
+
+                    }
+                    if (isAdded)
+                    {
+                        alertData += $"with Virtual Memory above {value}\n";
+                    }
+                }
+
+                if (alertData != "")
+                {
+                    AlertPrompt dialog = new AlertPrompt(alertData);
+                    // Display dialog.
+                    var result = dialog.ShowDialog();
+                }
+                alertData = "";
+            }
+
+            catch { }
+            //Reads
+            try
+            {
+                int count = 0;
+                foreach (string[] data in alerts["Reads"])
+                {
+                    count++;
+                    double value = double.Parse(data[0]);
+                    DateTime date = DateTime.Parse(data[1]);
+                    bool isAdded = false;
+                    Console.WriteLine($"VALUE {value}");
+                    Console.WriteLine($"DATE: {date}");
+                    Console.WriteLine(date);
+                    DateTime now = DateTime.Now;
+                    if (date.AddHours(2) < now)
+                    {
+                        Console.WriteLine("HEREERERER");
+
+
+
+                        foreach (Process process in Process.GetProcesses())
+                        {
+                            Console.WriteLine("PROCESS!!!");
+                            double reads = 0; ;
+                            
+                            try
+                            {
+                                if (GetProcessIoCounters(process.Handle, out IO_COUNTERS counters))
+                                {
+                                    reads = counters.ReadOperationCount;
+                                    
+                                }
+                            }
+                            catch
+                            {
+
+                            }
+                            if (reads > value)
+                            {
+                                alertData += $"{process.ProcessName} ({process.Id}), ";
+
+                                isAdded = true;
+
+                            }
+                        }
+                        con = new SQLiteConnection(cs);
+                        con.Open();
+                        cmd = new SQLiteCommand(con);
+                        cmd.CommandText = $"UPDATE info SET date=@date WHERE field=@fieldold AND value=@valueold";
+
+                        cmd.Parameters.AddWithValue("@fieldold", "Reads");
+                        cmd.Parameters.AddWithValue("@valueold", value.ToString());
+                        cmd.Parameters.AddWithValue("@date", now.ToString());
+                        cmd.ExecuteNonQuery();
+
+                        string stm = "SELECT * FROM info";
+                        SQLiteCommand command = new SQLiteCommand(stm, con);
+                        dr = command.ExecuteReader();
+                        alerts.Clear();
+                        while (dr.Read())
+                        {
+                            string field = dr.GetString(0);
+                            string[] datanew = new string[2] { dr.GetString(1), dr.GetString(2) };
+                            try
+                            {
+                                alerts[field].Add(datanew);
+                                Console.WriteLine("add to existing list");
+                            }
+                            catch
+                            {
+                                alerts[field] = new List<string[]> { datanew };
+                                Console.WriteLine("created new key");
+                                Console.WriteLine(alerts.Count);
+                            }
+
+                        }
+
+                    }
+                    if (isAdded)
+                    {
+                        alertData += $"with Reads above {value}\n";
+                    }
+                }
+
+                if (alertData != "")
+                {
+                    AlertPrompt dialog = new AlertPrompt(alertData);
+                    // Display dialog.
+                    var result = dialog.ShowDialog();
+                }
+                alertData = "";
+            }
+
+            catch { }
+            //Writes
+            try
+            {
+                int count = 0;
+                foreach (string[] data in alerts["Writes"])
+                {
+                    count++;
+                    double value = double.Parse(data[0]);
+                    DateTime date = DateTime.Parse(data[1]);
+                    bool isAdded = false;
+                    Console.WriteLine($"VALUE {value}");
+                    Console.WriteLine($"DATE: {date}");
+                    Console.WriteLine(date);
+                    DateTime now = DateTime.Now;
+                    if (date.AddHours(2) < now)
+                    {
+                        Console.WriteLine("HEREERERER");
+
+
+
+                        foreach (Process process in Process.GetProcesses())
+                        {
+                            Console.WriteLine("PROCESS!!!");
+                            double writes = 0; ;
+
+                            try
+                            {
+                                if (GetProcessIoCounters(process.Handle, out IO_COUNTERS counters))
+                                {
+                                    writes = counters.WriteOperationCount;
+
+                                }
+                            }
+                            catch
+                            {
+
+                            }
+                            if (writes > value)
+                            {
+                                alertData += $"{process.ProcessName} ({process.Id}), ";
+
+                                isAdded = true;
+
+                            }
+                        }
+                        con = new SQLiteConnection(cs);
+                        con.Open();
+                        cmd = new SQLiteCommand(con);
+                        cmd.CommandText = $"UPDATE info SET date=@date WHERE field=@fieldold AND value=@valueold";
+
+                        cmd.Parameters.AddWithValue("@fieldold", "Writes");
+                        cmd.Parameters.AddWithValue("@valueold", value.ToString());
+                        cmd.Parameters.AddWithValue("@date", now.ToString());
+                        cmd.ExecuteNonQuery();
+
+                        string stm = "SELECT * FROM info";
+                        SQLiteCommand command = new SQLiteCommand(stm, con);
+                        dr = command.ExecuteReader();
+                        alerts.Clear();
+                        while (dr.Read())
+                        {
+                            string field = dr.GetString(0);
+                            string[] datanew = new string[2] { dr.GetString(1), dr.GetString(2) };
+                            try
+                            {
+                                alerts[field].Add(datanew);
+                                Console.WriteLine("add to existing list");
+                            }
+                            catch
+                            {
+                                alerts[field] = new List<string[]> { datanew };
+                                Console.WriteLine("created new key");
+                                Console.WriteLine(alerts.Count);
+                            }
+
+                        }
+
+                    }
+                    if (isAdded)
+                    {
+                        alertData += $"with Writes above {value}\n";
+                    }
+                }
+
+                if (alertData != "")
+                {
+                    AlertPrompt dialog = new AlertPrompt(alertData);
+                    // Display dialog.
+                    var result = dialog.ShowDialog();
+                }
+                alertData = "";
+            }
+
+            catch { }
+            //Handle Count
+            try
+            {
+                int count = 0;
+                foreach (string[] data in alerts["Handle Count"])
+                {
+                    count++;
+                    double value = double.Parse(data[0]);
+                    DateTime date = DateTime.Parse(data[1]);
+                    bool isAdded = false;
+                    Console.WriteLine($"VALUE {value}");
+                    Console.WriteLine($"DATE: {date}");
+                    Console.WriteLine(date);
+                    DateTime now = DateTime.Now;
+                    if (date.AddHours(2) < now)
+                    {
+                        Console.WriteLine("HEREERERER");
+
+
+
+                        foreach (Process process in Process.GetProcesses())
+                        {
+                            
+                            if (process.HandleCount > value)
+                            {
+                                alertData += $"{process.ProcessName} ({process.Id}), ";
+
+                                isAdded = true;
+
+                            }
+                        }
+                        con = new SQLiteConnection(cs);
+                        con.Open();
+                        cmd = new SQLiteCommand(con);
+                        cmd.CommandText = $"UPDATE info SET date=@date WHERE field=@fieldold AND value=@valueold";
+
+                        cmd.Parameters.AddWithValue("@fieldold", "Handle Count");
+                        cmd.Parameters.AddWithValue("@valueold", value.ToString());
+                        cmd.Parameters.AddWithValue("@date", now.ToString());
+                        cmd.ExecuteNonQuery();
+
+                        string stm = "SELECT * FROM info";
+                        SQLiteCommand command = new SQLiteCommand(stm, con);
+                        dr = command.ExecuteReader();
+                        alerts.Clear();
+                        while (dr.Read())
+                        {
+                            string field = dr.GetString(0);
+                            string[] datanew = new string[2] { dr.GetString(1), dr.GetString(2) };
+                            try
+                            {
+                                alerts[field].Add(datanew);
+                                Console.WriteLine("add to existing list");
+                            }
+                            catch
+                            {
+                                alerts[field] = new List<string[]> { datanew };
+                                Console.WriteLine("created new key");
+                                Console.WriteLine(alerts.Count);
+                            }
+
+                        }
+
+                    }
+                    if (isAdded)
+                    {
+                        alertData += $"with Handle Count above {value}\n";
+                    }
+                }
+
+                if (alertData != "")
+                {
+                    AlertPrompt dialog = new AlertPrompt(alertData);
+                    // Display dialog.
+                    var result = dialog.ShowDialog();
+                }
+                alertData = "";
+            }
+
+            catch { }
+            //Thread Count
+            try
+            {
+                int count = 0;
+                foreach (string[] data in alerts["Thread Count"])
+                {
+                    count++;
+                    double value = double.Parse(data[0]);
+                    DateTime date = DateTime.Parse(data[1]);
+                    bool isAdded = false;
+                    Console.WriteLine($"VALUE {value}");
+                    Console.WriteLine($"DATE: {date}");
+                    Console.WriteLine(date);
+                    DateTime now = DateTime.Now;
+                    if (date.AddHours(2) < now)
+                    {
+                        Console.WriteLine("HEREERERER");
+
+
+
+                        foreach (Process process in Process.GetProcesses())
+                        {
+
+                            if (process.Threads.Count > value)
+                            {
+                                alertData += $"{process.ProcessName} ({process.Id}), ";
+
+                                isAdded = true;
+
+                            }
+                        }
+                        con = new SQLiteConnection(cs);
+                        con.Open();
+                        cmd = new SQLiteCommand(con);
+                        cmd.CommandText = $"UPDATE info SET date=@date WHERE field=@fieldold AND value=@valueold";
+
+                        cmd.Parameters.AddWithValue("@fieldold", "Thread Count");
+                        cmd.Parameters.AddWithValue("@valueold", value.ToString());
+                        cmd.Parameters.AddWithValue("@date", now.ToString());
+                        cmd.ExecuteNonQuery();
+
+                        string stm = "SELECT * FROM info";
+                        SQLiteCommand command = new SQLiteCommand(stm, con);
+                        dr = command.ExecuteReader();
+                        alerts.Clear();
+                        while (dr.Read())
+                        {
+                            string field = dr.GetString(0);
+                            string[] datanew = new string[2] { dr.GetString(1), dr.GetString(2) };
+                            try
+                            {
+                                alerts[field].Add(datanew);
+                                Console.WriteLine("add to existing list");
+                            }
+                            catch
+                            {
+                                alerts[field] = new List<string[]> { datanew };
+                                Console.WriteLine("created new key");
+                                Console.WriteLine(alerts.Count);
+                                
+                            }
+                            
+                        }
+
+                    }
+                    if (isAdded)
+                    {
+                        alertData += $"with Thread Count above {value}\n";
+                    }
+                }
+
+                if (alertData != "")
+                {
+                    AlertPrompt dialog = new AlertPrompt(alertData);
+                    // Display dialog.
+                    var result = dialog.ShowDialog();
+                }
+                alertData = "";
+            }
+
+            catch { }
+        }
         public static void UpdateProcsForm(home form)
         {
             Process[] procs = Process.GetProcesses();
@@ -402,9 +1102,41 @@ namespace POC_NEW
 
             Thread Getcpu2;
             bool isFirst = true;
+            string path = "alerts.db";
+            string cs = @"URI=file:" + Application.StartupPath + "\\alerts.db";
+            SQLiteConnection con;
+            SQLiteCommand cmd;
+            SQLiteDataReader dr;
 
+            
+            con = new SQLiteConnection(cs);
+            con.Open();
+            string stm = "SELECT * FROM info";
+            cmd = new SQLiteCommand(stm, con);
+            dr = cmd.ExecuteReader();
 
-            while (true)
+            Dictionary<string, List<string[]>> alerts = new Dictionary<string, List<string[]>>();
+            
+
+            
+            while (dr.Read())
+            {
+                string field = dr.GetString(0);
+                string[] data = new string[2] { dr.GetString(1), dr.GetString(2) };
+                try {
+                    alerts[field].Add(data);
+                    Console.WriteLine("add to existing list");
+                }
+                catch
+                {
+                    alerts[field]=new List<string[]> { data };
+                    Console.WriteLine("created new key");
+                    Console.WriteLine(alerts.Count);
+                }
+
+            }
+
+                while (true)
             {
                 tcpSockets.Clear();
                 udpSockets.Clear();
@@ -414,68 +1146,49 @@ namespace POC_NEW
                 Thread tcp = new Thread(() => GetTcpSockets());
                 Thread udp = new Thread(() => GetUdpSockets());
                 Thread pipes = new Thread(() => GetPipes());
+                Thread alertsThread = new Thread(() => Getalerts(alerts));
+
+                alertsThread.Start();
                 tcp.Start();
                 udp.Start();
                 pipes.Start();
 
                 Console.WriteLine("end list");
-
-
-
                 //cpus = new Dictionary<int, double[]>();
-
-
-
-
                 cpu1 = new Thread(() => AllCpu(cpus, procs));
-
-
-
-
+                
                 Console.WriteLine("start cpu");
                 cpu1.Start();
-
-
-
                 cpu1.Join();
 
-
                 Console.WriteLine("end cpu");
-                Thread.Sleep(500);
-
-
-
+                Thread.Sleep(1000);
                 Console.WriteLine("start get");
                 Console.WriteLine($"dict length: {cpus.Count}");
+
                 Getcpu1 = new Thread(() => GetAllCpu1(cpus, procs));
                 Getcpu2 = new Thread(() => GetAllCpu2(cpus, procs));
 
-
-
                 Getcpu1.Start();
-
-
                 Getcpu2.Start();
 
-
-
-
                 Getcpu1.Join();
-
                 Getcpu2.Join();
+
                 Console.WriteLine("end get");
                 int tempItem = 0;
                 int selected = 0;
                 DoubleBufferedListView list = (DoubleBufferedListView)form.Controls.Find("listView1", false)[0];
 
+               
+                System.Windows.Forms.TextBox search = (System.Windows.Forms.TextBox)form.Controls.Find("searchBox", false)[0];
+                
+                list.BeginUpdate();
                 try { tempItem = list.TopItem.Index; }
 
                 catch { }
                 try { selected = list.SelectedItems[0].Index; }
                 catch { }
-                System.Windows.Forms.TextBox search = (System.Windows.Forms.TextBox)form.Controls.Find("searchBox", false)[0];
-                list.SuspendLayout();
-                list.BeginUpdate();
                 list.Items.Clear();
                 typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
     .SetValue(list, true);
@@ -491,21 +1204,22 @@ namespace POC_NEW
                         {
                             if (GetProcessIoCounters(proc.Handle, out IO_COUNTERS counters))
                             {
-                                reads = counters.ReadTransferCount;
-                                writes = counters.WriteTransferCount;
+                                reads = counters.ReadOperationCount;
+                                writes = counters.WriteOperationCount;
                             }
                         }
                         catch
                         {
 
                         }
+                        
 
                         try
                         {
                             if (proc.Threads[0].ThreadState.ToString() == "Suspended")
                             {
                                 string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended",
-                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(),
+                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(), GetProcessUser(proc),
                      proc.StartTime.ToString()};
                                 var ListViewItemData = new ListViewItem(data);
                                 list.Items.Add(ListViewItemData);
@@ -513,7 +1227,7 @@ namespace POC_NEW
                             else
                             {
                                 string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(cpus[proc.Id][2],2).ToString(),
-                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(),
+                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(), GetProcessUser(proc),
                      proc.StartTime.ToString()};
                                 var ListViewItemData = new ListViewItem(data);
                                 list.Items.Add(ListViewItemData);
@@ -527,7 +1241,7 @@ namespace POC_NEW
                                 if (proc.Threads[0].ThreadState.ToString() == "Suspended")
                                 {
                                     string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended",
-                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(), GetProcessUser(proc),
                      ""};
                                     var ListViewItemData = new ListViewItem(data);
                                     list.Items.Add(ListViewItemData);
@@ -535,7 +1249,7 @@ namespace POC_NEW
                                 else
                                 {
                                     string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(cpus[proc.Id][2],2).ToString(),
-                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(), GetProcessUser(proc),
                      ""};
                                     var ListViewItemData = new ListViewItem(data);
                                     list.Items.Add(ListViewItemData);
@@ -547,9 +1261,6 @@ namespace POC_NEW
 
 
                     }
-                    try { list.TopItem = list.Items[tempItem]; }
-                    catch { }
-
 
                 }
                 else
@@ -557,6 +1268,7 @@ namespace POC_NEW
                     System.Windows.Forms.ComboBox filter = (System.Windows.Forms.ComboBox)form.Controls.Find("selectBy", false)[0];
                     if (filter.Text == "PID")
                     {
+
                         foreach (Process proc in procs)
                         {
                             if (proc.Id.ToString().Contains(search.Text))
@@ -567,8 +1279,8 @@ namespace POC_NEW
                                 {
                                     if (GetProcessIoCounters(proc.Handle, out IO_COUNTERS counters))
                                     {
-                                        reads = counters.ReadTransferCount;
-                                        writes = counters.WriteTransferCount;
+                                        reads = counters.ReadOperationCount;
+                                        writes = counters.WriteOperationCount;
                                     }
                                 }
                                 catch
@@ -581,7 +1293,7 @@ namespace POC_NEW
                                     if (proc.Threads[0].ThreadState.ToString() == "Suspended")
                                     {
                                         string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended",
-                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(),
+                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(), GetProcessUser(proc),
                      proc.StartTime.ToString()};
                                         var ListViewItemData = new ListViewItem(data);
                                         list.Items.Add(ListViewItemData);
@@ -589,7 +1301,7 @@ namespace POC_NEW
                                     else
                                     {
                                         string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(cpus[proc.Id][2],2).ToString(),
-                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(),
+                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(), GetProcessUser(proc),
                      proc.StartTime.ToString()};
                                         var ListViewItemData = new ListViewItem(data);
                                         list.Items.Add(ListViewItemData);
@@ -603,7 +1315,7 @@ namespace POC_NEW
                                         if (proc.Threads[0].ThreadState.ToString() == "Suspended")
                                         {
                                             string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended",
-                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(), GetProcessUser(proc),
                      ""};
                                             var ListViewItemData = new ListViewItem(data);
                                             list.Items.Add(ListViewItemData);
@@ -611,7 +1323,7 @@ namespace POC_NEW
                                         else
                                         {
                                             string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(cpus[proc.Id][2],2).ToString(),
-                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(), GetProcessUser(proc),
                      ""};
                                             var ListViewItemData = new ListViewItem(data);
                                             list.Items.Add(ListViewItemData);
@@ -635,21 +1347,22 @@ namespace POC_NEW
                                 {
                                     if (GetProcessIoCounters(proc.Handle, out IO_COUNTERS counters))
                                     {
-                                        reads = counters.ReadTransferCount;
-                                        writes = counters.WriteTransferCount;
+                                        reads = counters.ReadOperationCount;
+                                        writes = counters.WriteOperationCount;
                                     }
                                 }
                                 catch
                                 {
 
                                 }
+                                
 
                                 try
                                 {
                                     if (proc.Threads[0].ThreadState.ToString() == "Suspended")
                                     {
                                         string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended",
-                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(),
+                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(), GetProcessUser(proc),
                      proc.StartTime.ToString()};
                                         var ListViewItemData = new ListViewItem(data);
                                         list.Items.Add(ListViewItemData);
@@ -657,7 +1370,7 @@ namespace POC_NEW
                                     else
                                     {
                                         string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(cpus[proc.Id][2],2).ToString(),
-                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(),
+                     proc.WorkingSet64.ToString(),reads.ToString(), writes.ToString(), GetProcessUser(proc),
                      proc.StartTime.ToString()};
                                         var ListViewItemData = new ListViewItem(data);
                                         list.Items.Add(ListViewItemData);
@@ -671,7 +1384,7 @@ namespace POC_NEW
                                         if (proc.Threads[0].ThreadState.ToString() == "Suspended")
                                         {
                                             string[] data = {proc.ProcessName, proc.Id.ToString(), "Suspended",
-                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(), GetProcessUser(proc),
                      ""};
                                             var ListViewItemData = new ListViewItem(data);
                                             list.Items.Add(ListViewItemData);
@@ -679,7 +1392,7 @@ namespace POC_NEW
                                         else
                                         {
                                             string[] data = {proc.ProcessName, proc.Id.ToString(), Math.Round(cpus[proc.Id][2],2).ToString(),
-                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(),
+                     proc.WorkingSet64.ToString(), reads.ToString(), writes.ToString(), GetProcessUser(proc),
                      ""};
                                             var ListViewItemData = new ListViewItem(data);
                                             list.Items.Add(ListViewItemData);
@@ -695,19 +1408,31 @@ namespace POC_NEW
                 if (isFirst)
                 {
                     // Call the sort method to manually sort.
-                    list.Sort();
+
                     // Set the ListViewItemSorter property to a new ListViewItemComparer
                     // object.
-                    list.ListViewItemSorter = new ListViewItemComparer(0, list.Sorting);
+                    
+                    ListViewColumnSorter sorter = new ListViewColumnSorter();
+                    sorter.Order = SortOrder.Ascending;
+                    sorter.SortColumn=0;
+                    list.ListViewItemSorter = sorter;
+                    list.Sort();
                     isFirst = false;
+                    
                 }
                 if (home.isSort)
                 {
+                    ListViewColumnSorter sorter = new ListViewColumnSorter();
+                    sorter.Order = home.sort;
+                    sorter.SortColumn = home.column;
+                    isFirst = false;
                     list.Sort();
-                    list.ListViewItemSorter = new ListViewItemComparer(home.column, home.sort);
                 }
+                try { list.TopItem = list.Items[tempItem]; }
+                catch { }
                 try { list.Items[selected].Selected = true; list.Items[selected].Checked = true; }
                 catch { }
+
                 list.EndUpdate();
 
                 list.Update();
@@ -716,27 +1441,6 @@ namespace POC_NEW
                 
             }
         }
-        public static string GetIdealProcessor(uint threadId)
-        {
-            // Thread ID of the thread you want to get the logical processor number for
-            IntPtr thread = OpenThread(THREAD_QUERY_INFORMATION, false, threadId);
-            PROCESSOR_NUMBER idealProcessor;
-            if (thread != IntPtr.Zero)
-            {
-                if (GetThreadIdealProcessorEx(thread, out idealProcessor))
-                {
-                    byte processor = idealProcessor.Number;
-                    string byteString = string.Format("{0:X2}", processor);
-                    return byteString;
-                }
-            }
-            return "";
-        }
-
-        public static EventWaitHandle waitHandle = new AutoResetEvent(false);
-
-        public static Process[] procs;
-
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();

@@ -43,6 +43,7 @@
             // 
             // alerts
             // 
+            this.alerts.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.alerts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.field,
             this.value});
@@ -68,6 +69,7 @@
             // 
             // delete
             // 
+            this.delete.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.delete.Location = new System.Drawing.Point(119, 275);
             this.delete.Name = "delete";
             this.delete.Size = new System.Drawing.Size(83, 37);
@@ -78,6 +80,7 @@
             // 
             // edit
             // 
+            this.edit.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.edit.Location = new System.Drawing.Point(34, 275);
             this.edit.Name = "edit";
             this.edit.Size = new System.Drawing.Size(79, 37);
@@ -88,6 +91,7 @@
             // 
             // fieldValue
             // 
+            this.fieldValue.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.fieldValue.BackColor = System.Drawing.Color.White;
             this.fieldValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.fieldValue.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -95,7 +99,6 @@
             this.fieldValue.Items.AddRange(new object[] {
             "CPU",
             "Working Set",
-            "Working Set - Private",
             "Private Bytes",
             "Virtual Memory",
             "Reads",
@@ -109,6 +112,7 @@
             // 
             // fieldLabel
             // 
+            this.fieldLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.fieldLabel.AutoSize = true;
             this.fieldLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.fieldLabel.Location = new System.Drawing.Point(241, 91);
@@ -119,6 +123,7 @@
             // 
             // valueLabel
             // 
+            this.valueLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.valueLabel.AutoSize = true;
             this.valueLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.valueLabel.Location = new System.Drawing.Point(401, 91);
@@ -129,6 +134,7 @@
             // 
             // valueText
             // 
+            this.valueText.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.valueText.Location = new System.Drawing.Point(405, 127);
             this.valueText.Multiline = true;
             this.valueText.Name = "valueText";
@@ -137,6 +143,7 @@
             // 
             // addButton
             // 
+            this.addButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.addButton.Location = new System.Drawing.Point(317, 174);
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(133, 37);
@@ -147,8 +154,9 @@
             // 
             // addAlert
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.Snow;
             this.ClientSize = new System.Drawing.Size(538, 450);
             this.Controls.Add(this.addButton);

@@ -150,7 +150,7 @@ namespace POC_NEW
                     var command = new SQLiteCommand("SELECT * FROM info WHERE field=@field AND value=@value", con);
 
 
-                    cmd.CommandText = $"UPDATE info SET field=@field, value=@value WHERE field =@fieldold AND value=@valueold";
+                    cmd.CommandText = $"UPDATE info SET field=@field, value=@value, date=@date WHERE field=@fieldold AND value=@valueold";
                     string FIELD = fieldValue.Text;
                     string VALUE = valueText.Text;
 
@@ -168,6 +168,7 @@ namespace POC_NEW
                         cmd.Parameters.AddWithValue("@value", VALUE);
                         cmd.Parameters.AddWithValue("@fieldold", field);
                         cmd.Parameters.AddWithValue("@valueold", value);
+                        cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString());
                         alerts.SelectedItems[0].SubItems[0].Text = FIELD;
                         alerts.SelectedItems[0].SubItems[1].Text = VALUE;
                         cmd.ExecuteNonQuery();
@@ -198,7 +199,8 @@ namespace POC_NEW
                     cmd.CommandText = $"INSERT INTO info(field, value, date) VALUES(@field, @value, @date)";
                     string FIELD = fieldValue.Text;
                     string VALUE = valueText.Text;
-                    string DATE = "";
+                    string DATE = DateTime.Now.ToString();
+                    
 
                     command.Parameters.AddWithValue("@field", FIELD);
                     command.Parameters.AddWithValue("value", VALUE);

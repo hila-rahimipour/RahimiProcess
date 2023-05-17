@@ -97,12 +97,12 @@ namespace POC_NEW
             this.state = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.processor = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.modules = new System.Windows.Forms.TabPage();
-            this.graphs = new System.Windows.Forms.TabPage();
-            this.cpuGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.ioGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.pipes = new System.Windows.Forms.TabPage();
             this.dlls = new POC_NEW.DoubleBufferedListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.graphs = new System.Windows.Forms.TabPage();
+            this.cpuGraphics = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.ioGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.pipes = new System.Windows.Forms.TabPage();
             this.pipesList = new POC_NEW.DoubleBufferedListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControl1.SuspendLayout();
@@ -113,7 +113,7 @@ namespace POC_NEW
             this.threads.SuspendLayout();
             this.modules.SuspendLayout();
             this.graphs.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cpuGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cpuGraphics)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ioGraph)).BeginInit();
             this.pipes.SuspendLayout();
             this.SuspendLayout();
@@ -166,6 +166,7 @@ namespace POC_NEW
             // 
             // infoHover
             // 
+            this.infoHover.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.infoHover.BackgroundImage = global::POC_NEW.Properties.Resources.infoProc;
             this.infoHover.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.infoHover.Location = new System.Drawing.Point(8, 356);
@@ -393,6 +394,7 @@ namespace POC_NEW
             // 
             // memChart
             // 
+            this.memChart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             chartArea1.AxisX.MajorGrid.Enabled = false;
             chartArea1.AxisX.MajorTickMark.Enabled = false;
             chartArea1.AxisY.IsMarksNextToAxis = false;
@@ -757,10 +759,28 @@ namespace POC_NEW
             this.modules.TabIndex = 3;
             this.modules.Text = "Modules";
             // 
+            // dlls
+            // 
+            this.dlls.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dlls.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader2});
+            this.dlls.HideSelection = false;
+            this.dlls.Location = new System.Drawing.Point(0, 0);
+            this.dlls.Name = "dlls";
+            this.dlls.Size = new System.Drawing.Size(512, 503);
+            this.dlls.TabIndex = 0;
+            this.dlls.UseCompatibleStateImageBehavior = false;
+            this.dlls.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Name";
+            this.columnHeader2.Width = 400;
+            // 
             // graphs
             // 
             this.graphs.BackColor = System.Drawing.Color.White;
-            this.graphs.Controls.Add(this.cpuGraph);
+            this.graphs.Controls.Add(this.cpuGraphics);
             this.graphs.Controls.Add(this.ioGraph);
             this.graphs.Location = new System.Drawing.Point(4, 29);
             this.graphs.Name = "graphs";
@@ -768,7 +788,7 @@ namespace POC_NEW
             this.graphs.TabIndex = 4;
             this.graphs.Text = "Graphs";
             // 
-            // cpuGraph
+            // cpuGraphics
             // 
             chartArea2.AxisX.LabelStyle.Enabled = false;
             chartArea2.AxisX.LineColor = System.Drawing.Color.DarkGray;
@@ -779,30 +799,32 @@ namespace POC_NEW
             chartArea2.AxisX.MinorGrid.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.NotSet;
             chartArea2.AxisX.MinorGrid.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.NotSet;
             chartArea2.AxisX.MinorGrid.LineWidth = 0;
+            chartArea2.AxisX2.Enabled = System.Windows.Forms.DataVisualization.Charting.AxisEnabled.False;
             chartArea2.AxisY.IsLabelAutoFit = false;
             chartArea2.AxisY.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             chartArea2.AxisY.LineColor = System.Drawing.Color.DarkGray;
             chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            chartArea2.AxisY2.Enabled = System.Windows.Forms.DataVisualization.Charting.AxisEnabled.False;
             chartArea2.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
             chartArea2.Name = "ChartArea1";
-            this.cpuGraph.ChartAreas.Add(chartArea2);
+            this.cpuGraphics.ChartAreas.Add(chartArea2);
             legend1.Enabled = false;
             legend1.Name = "Legend1";
-            this.cpuGraph.Legends.Add(legend1);
-            this.cpuGraph.Location = new System.Drawing.Point(8, 22);
-            this.cpuGraph.Name = "cpuGraph";
-            this.cpuGraph.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel;
-            series3.BorderColor = System.Drawing.Color.Gold;
+            this.cpuGraphics.Legends.Add(legend1);
+            this.cpuGraphics.Location = new System.Drawing.Point(8, 22);
+            this.cpuGraphics.Name = "cpuGraphics";
+            this.cpuGraphics.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel;
+            series3.BorderColor = System.Drawing.Color.Goldenrod;
             series3.BorderWidth = 2;
             series3.ChartArea = "ChartArea1";
             series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Area;
-            series3.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            series3.Color = System.Drawing.Color.LemonChiffon;
             series3.Legend = "Legend1";
             series3.Name = "Series1";
-            this.cpuGraph.Series.Add(series3);
-            this.cpuGraph.Size = new System.Drawing.Size(496, 183);
-            this.cpuGraph.TabIndex = 4;
-            this.cpuGraph.Text = "chart1";
+            this.cpuGraphics.Series.Add(series3);
+            this.cpuGraphics.Size = new System.Drawing.Size(496, 183);
+            this.cpuGraphics.TabIndex = 4;
+            this.cpuGraphics.Text = "chart1";
             // 
             // ioGraph
             // 
@@ -859,24 +881,6 @@ namespace POC_NEW
             this.pipes.Text = "Pipes";
             this.pipes.UseVisualStyleBackColor = true;
             // 
-            // dlls
-            // 
-            this.dlls.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dlls.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader2});
-            this.dlls.HideSelection = false;
-            this.dlls.Location = new System.Drawing.Point(0, 0);
-            this.dlls.Name = "dlls";
-            this.dlls.Size = new System.Drawing.Size(512, 503);
-            this.dlls.TabIndex = 0;
-            this.dlls.UseCompatibleStateImageBehavior = false;
-            this.dlls.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Name";
-            this.columnHeader2.Width = 400;
-            // 
             // pipesList
             // 
             this.pipesList.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -903,6 +907,7 @@ namespace POC_NEW
             this.Controls.Add(this.tabControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "singleProcess";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "singleProcess";
             this.Load += new System.EventHandler(this.singleProcess_Load);
             this.tabControl1.ResumeLayout(false);
@@ -916,7 +921,7 @@ namespace POC_NEW
             this.threads.PerformLayout();
             this.modules.ResumeLayout(false);
             this.graphs.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.cpuGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cpuGraphics)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ioGraph)).EndInit();
             this.pipes.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -983,12 +988,12 @@ namespace POC_NEW
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label Bpriority;
         private System.Windows.Forms.DataVisualization.Charting.Chart ioGraph;
-        private System.Windows.Forms.DataVisualization.Charting.Chart cpuGraph;
         private System.Windows.Forms.DataVisualization.Charting.Chart memChart;
         private DoubleBufferedListView dlls;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private DoubleBufferedListView pipesList;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.PictureBox infoHover;
+        private System.Windows.Forms.DataVisualization.Charting.Chart cpuGraphics;
     }
 }

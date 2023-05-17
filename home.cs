@@ -29,6 +29,7 @@ namespace POC_NEW
         [DllImport(@"kernel32.dll", SetLastError = true)]
         static extern bool GetProcessIoCounters(IntPtr hProcess, out IO_COUNTERS counters);
         private int sortColumn = -1;
+        private ListViewColumnSorter lvwColumnSorter;
         public home()
         {
             InitializeComponent();
@@ -39,8 +40,10 @@ namespace POC_NEW
             Location = new Point(screen.Left + (screen.Width - w) / 2, screen.Top + (screen.Height - h) / 2);
             Size = new Size(w, h);
             selectBy.Text = "PID";
-            
-            
+            lvwColumnSorter = new ListViewColumnSorter();
+            listView1.ListViewItemSorter = lvwColumnSorter;
+
+
         }
 
         private void home_Load(object sender, EventArgs e)
@@ -389,35 +392,34 @@ namespace POC_NEW
         
         private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-
             try
             {
-                // Determine whether the column is the same as the last column clicked.
-                if (e.Column != sortColumn)
+                // Determine if clicked column is already the column that is being sorted.
+                if (e.Column == lvwColumnSorter.SortColumn)
                 {
-                    // Set the sort column to the new column.
-                    sortColumn = e.Column;
-                    // Set the sort order to ascending by default.
-                    listView1.Sorting = SortOrder.Ascending;
+                    // Reverse the current sort direction for this column.
+                    if (lvwColumnSorter.Order == SortOrder.Ascending)
+                    {
+                        lvwColumnSorter.Order = SortOrder.Descending;
+                    }
+                    else
+                    {
+                        lvwColumnSorter.Order = SortOrder.Ascending;
+                    }
                 }
                 else
                 {
-                    // Determine what the last sort order was and change it.
-                    if (listView1.Sorting == SortOrder.Ascending)
-                        listView1.Sorting = SortOrder.Descending;
-                    else
-                        listView1.Sorting = SortOrder.Ascending;
+                    // Set the column number that is to be sorted; default to ascending.
+                    lvwColumnSorter.SortColumn = e.Column;
+                    lvwColumnSorter.Order = SortOrder.Ascending;
                 }
+                sort = lvwColumnSorter.Order;
+                column = lvwColumnSorter.SortColumn;
+                isSort= true;
 
-                // Call the sort method to manually sort.
+                // Perform the sort with these new sort options.
                 listView1.Sort();
-                // Set the ListViewItemSorter property to a new ListViewItemComparer
-                // object.
-                listView1.ListViewItemSorter = new ListViewItemComparer(e.Column, listView1.Sorting);
-                isSort = true;
-                sort = listView1.Sorting;
-                column = e.Column;
-                
+
             }
             catch { }
         }
@@ -445,8 +447,8 @@ namespace POC_NEW
             }
             try
             {
-                Process proc = Process.GetProcessById(id);
-                proc.Kill();
+                Process.GetProcessById(id).Kill();
+                
             }
             catch
             {

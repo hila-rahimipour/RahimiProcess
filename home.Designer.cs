@@ -55,6 +55,7 @@
             this.ws = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.read = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.write = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.username = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.startTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menu.SuspendLayout();
             this.SuspendLayout();
@@ -286,10 +287,12 @@
             this.ws,
             this.read,
             this.write,
+            this.username,
             this.startTime});
             this.listView1.FullRowSelect = true;
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(0, 77);
+            this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(962, 479);
             this.listView1.TabIndex = 11;
@@ -328,10 +331,15 @@
             this.write.Text = "Write";
             this.write.Width = 120;
             // 
+            // username
+            // 
+            this.username.Text = "UserName";
+            this.username.Width = 100;
+            // 
             // startTime
             // 
             this.startTime.Text = "Start Time";
-            this.startTime.Width = 300;
+            this.startTime.Width = 200;
             // 
             // home
             // 
@@ -352,6 +360,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menu;
             this.Name = "home";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RahimiProcess";
             this.Load += new System.EventHandler(this.home_Load);
             this.menu.ResumeLayout(false);
@@ -389,5 +398,6 @@
         private DoubleBufferedListView listView1;
         private System.Windows.Forms.ToolStripMenuItem createAnAlertToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader startTime;
+        private System.Windows.Forms.ColumnHeader username;
     }
 }

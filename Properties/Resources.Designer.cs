@@ -63,6 +63,16 @@ namespace POC_NEW.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap alertSign {
+            get {
+                object obj = ResourceManager.GetObject("alertSign", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap infoProc {
             get {
                 object obj = ResourceManager.GetObject("infoProc", resourceCulture);
