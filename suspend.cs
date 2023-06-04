@@ -37,52 +37,54 @@ namespace POC_NEW
 
         public static void SuspendProcess(int pid)
         {
-            var process = Process.GetProcessById(pid); // throws exception if process does not exist
-
-            foreach (ProcessThread pT in process.Threads)
+            try
             {
-                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
+                var process = Process.GetProcessById(pid); // throws exception if process does not exist
 
-                if (pOpenThread == IntPtr.Zero)
+                foreach (ProcessThread pT in process.Threads)
                 {
-                    continue;
+                    IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
+
+                    if (pOpenThread == IntPtr.Zero)
+                    {
+                        continue;
+                    }
+
+                    SuspendThread(pOpenThread);
+                    CloseHandle(pOpenThread);
                 }
-
-                SuspendThread(pOpenThread);
-
-                CloseHandle(pOpenThread);
             }
+            catch { }
         }
 
         public static void ResumeProcess(int pid)
         {
-            var process = Process.GetProcessById(pid);
-
-            if (process.ProcessName == string.Empty)
-                return;
-
-            foreach (ProcessThread pT in process.Threads)
+            try
             {
-                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
+                var process = Process.GetProcessById(pid);
 
-                if (pOpenThread == IntPtr.Zero)
+
+
+                foreach (ProcessThread pT in process.Threads)
                 {
-                    continue;
+                    IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
+
+                    if (pOpenThread == IntPtr.Zero)
+                    {
+                        continue;
+                    }
+
+                    var suspendCount = 0;
+                    do
+                    {
+                        suspendCount = ResumeThread(pOpenThread);
+                    } while (suspendCount > 0);
+
+                    CloseHandle(pOpenThread);
                 }
-
-                var suspendCount = 0;
-                do
-                {
-                    suspendCount = ResumeThread(pOpenThread);
-                } while (suspendCount > 0);
-
-                CloseHandle(pOpenThread);
             }
+            catch { }
         }
-        //static void MMain(string[] args)
-        //{
-        //    SuspendProcess(14256);
-        //    ResumeProcess(14256);
-        //}
+        
     }
 }

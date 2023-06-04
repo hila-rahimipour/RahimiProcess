@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Threading;
 using System.Diagnostics;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Windows.Forms;
+using ToolTip = System.Windows.Forms.ToolTip;
 
 namespace POC_NEW
 {
@@ -30,6 +24,7 @@ namespace POC_NEW
         static extern bool GetProcessIoCounters(IntPtr hProcess, out IO_COUNTERS counters);
         private int sortColumn = -1;
         private ListViewColumnSorter lvwColumnSorter;
+        
         public home()
         {
             InitializeComponent();
@@ -42,17 +37,25 @@ namespace POC_NEW
             selectBy.Text = "PID";
             lvwColumnSorter = new ListViewColumnSorter();
             listView1.ListViewItemSorter = lvwColumnSorter;
+            lvwColumnSorter.Order = SortOrder.Ascending;
+            lvwColumnSorter.SortColumn = 0;
+            try
+            {
+                listView1.SelectedItems[0].Selected = false;
+            }
+            catch { }
+            
+
 
 
         }
 
         private void home_Load(object sender, EventArgs e)
         {
-            
-            
-        }
 
-        
+            Thread btnStat = new Thread(() => CheckButtonColor());
+            btnStat.Start();
+        }
 
         public void SetProcs()
         {
@@ -68,15 +71,15 @@ namespace POC_NEW
                     {
                         if (GetProcessIoCounters(proc.Handle, out IO_COUNTERS counters))
                         {
-                            reads = counters.ReadTransferCount;
-                            writes = counters.WriteTransferCount;
+                            reads = counters.ReadOperationCount;
+                            writes = counters.WriteOperationCount;
                         }
                     }
                     catch
                     {
 
                     }
-                    if (proc.Threads[0].ThreadState.ToString() == "Suspended")
+                    if (proc.Threads[0].WaitReason == ThreadWaitReason.Suspended)
                     {
                         try
                         {
@@ -122,17 +125,13 @@ namespace POC_NEW
             listView1.Update();
         }
 
-
+ 
+       
         // open form with proc info!!!!!!!!
         private void listView1_DoubleClick(object sender, EventArgs e)
         {
             
-            double y = Cursor.Position.Y;
-            foreach (ListViewItem item in listView1.Items)
-            {
-                if(item.Position.Y>=y+0.8 || item.Position.Y<=y+0.8)
-                    item.Selected = true;
-            }
+            
             int count = 0;
             for (int i = 0; i < listView1.Columns.Count; i++)
             {
@@ -141,11 +140,15 @@ namespace POC_NEW
             }
             try
             {
-                int id = int.Parse(listView1.SelectedItems[0].SubItems[count].Text);
+                int id = int.Parse(listView1.Items[selectedIndex].SubItems[count].Text);
                 //Application.EnableVisualStyles();
                 //Application.SetCompatibleTextRenderingDefault(false);
+                
                 singleProcess singleproc = new singleProcess(id);
-                singleproc.Show();
+                
+                Thread run = new Thread(()=>singleproc.ShowDialog());
+                run.Start();
+                
             }
             catch { }
             
@@ -186,10 +189,10 @@ namespace POC_NEW
             }
             try
             {
-                int id = int.Parse(listView1.SelectedItems[0].SubItems[count].Text);
+                int id = int.Parse(listView1.Items[selectedIndex].SubItems[count].Text);
                 Console.WriteLine(id);
                 singleProcess singleproc = new singleProcess(id);
-                singleproc.Show();
+                singleproc.ShowDialog();
             }  
             
             catch
@@ -202,7 +205,7 @@ namespace POC_NEW
             
         }
 
-
+        public static int selectedIndex = 0;
         //suspend process
         private void suspend_MouseClick(object sender, MouseEventArgs e)
         {
@@ -212,11 +215,13 @@ namespace POC_NEW
                 if (listView1.Columns[i].Text == "PID")
                     count = i;
             }
+            int id = -1;
             try
             {
-                int id = int.Parse(listView1.SelectedItems[0].SubItems[count].Text);
-                Console.WriteLine(id);
-                Suspend.SuspendProcess(id);
+                
+                    id = int.Parse(listView1.Items[selectedIndex].SubItems[count].Text);
+                
+                  
             }
 
             catch
@@ -225,6 +230,23 @@ namespace POC_NEW
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+            try
+            {
+
+                Thread suspend = new Thread(() => Suspend.SuspendProcess(id));
+                suspend.Start();
+                Console.WriteLine("SUSPENDED");
+                
+            }
+            catch { }
+            try
+            {
+                listView1.Items[selectedIndex].Focused = true;
+                listView1.Items[selectedIndex].Checked = true;
+                listView1.Focus();
+                
+            }
+            catch { }
         }
 
         //resume process
@@ -236,11 +258,12 @@ namespace POC_NEW
                 if (listView1.Columns[i].Text == "PID")
                     count = i;
             }
+            int id = -1;
+            
             try
             {
-                int id = int.Parse(listView1.SelectedItems[0].SubItems[count].Text);
-                Console.WriteLine(id);
-                Suspend.ResumeProcess(id);
+                    id = int.Parse(listView1.Items[selectedIndex].SubItems[count].Text);
+
             }
 
             catch
@@ -249,6 +272,20 @@ namespace POC_NEW
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+            try
+            {
+                Console.WriteLine(id);
+                Thread resume = new Thread(() => Suspend.ResumeProcess(id));
+                resume.Start();
+            }
+            catch { }
+            try
+            {
+                listView1.Items[selectedIndex].Focused = true;
+                listView1.Items[selectedIndex].Checked = true;
+                listView1.Focus();
+            }
+            catch { }
         }
 
         //on hover suspend button
@@ -356,10 +393,10 @@ namespace POC_NEW
             }
             try
             {
-                int id = int.Parse(listView1.SelectedItems[0].SubItems[count].Text);
+                int id = int.Parse(listView1.Items[selectedIndex].SubItems[count].Text);
                 Console.WriteLine(id);
                 singleProcess singleproc = new singleProcess(id);
-                singleproc.Show();
+                singleproc.ShowDialog();
             }
 
             catch
@@ -368,6 +405,7 @@ namespace POC_NEW
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+            
         }
 
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
@@ -386,42 +424,12 @@ namespace POC_NEW
         {
 
         }
-        public static bool isSort=false;
-        public static int column = -1;
-        public static SortOrder sort;
         
         private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            try
-            {
-                // Determine if clicked column is already the column that is being sorted.
-                if (e.Column == lvwColumnSorter.SortColumn)
-                {
-                    // Reverse the current sort direction for this column.
-                    if (lvwColumnSorter.Order == SortOrder.Ascending)
-                    {
-                        lvwColumnSorter.Order = SortOrder.Descending;
-                    }
-                    else
-                    {
-                        lvwColumnSorter.Order = SortOrder.Ascending;
-                    }
-                }
-                else
-                {
-                    // Set the column number that is to be sorted; default to ascending.
-                    lvwColumnSorter.SortColumn = e.Column;
-                    lvwColumnSorter.Order = SortOrder.Ascending;
-                }
-                sort = lvwColumnSorter.Order;
-                column = lvwColumnSorter.SortColumn;
-                isSort= true;
+            Thread sort = new Thread(() => SortColumn(sender, e));
+            sort.Start();
 
-                // Perform the sort with these new sort options.
-                listView1.Sort();
-
-            }
-            catch { }
         }
 
         private void cancel_MouseClick(object sender, MouseEventArgs e)
@@ -435,7 +443,7 @@ namespace POC_NEW
             }
             try
             {
-                id = int.Parse(listView1.SelectedItems[0].SubItems[count].Text);
+                id = int.Parse(listView1.Items[selectedIndex].SubItems[count].Text);
                 Console.WriteLine(id);
             }
 
@@ -445,17 +453,28 @@ namespace POC_NEW
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+            if (id != -1)
+            {
+                try
+                {
+                    Process.GetProcessById(id).Kill();
+
+                }
+                catch
+                {
+                    MessageBox.Show("Can't kill process", "process can't be killed or already been killed",
+                       MessageBoxButtons.OK,
+                       MessageBoxIcon.Information);
+                }
+            }
             try
             {
-                Process.GetProcessById(id).Kill();
-                
+                listView1.Items[selectedIndex].Focused = true;
+                listView1.Items[selectedIndex].Checked = true;
+                listView1.Focus();
+
             }
-            catch
-            {
-                MessageBox.Show("Can't kill process", "process can't be killed or already been killed",
-                   MessageBoxButtons.OK,
-                   MessageBoxIcon.Information);
-            }
+            catch { }
         }
 
         private void create_MouseClick(object sender, MouseEventArgs e)
@@ -468,6 +487,82 @@ namespace POC_NEW
         {
             addAlert alert = new addAlert();
             alert.Show();
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                Console.WriteLine("INDEX " + listView1.SelectedItems[0].Index);
+            }
+            catch { }
+        }
+
+        private void listView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                selectedIndex=listView1.SelectedItems[0].Index;
+                
+            }
+            catch { }
+        }
+        
+        private void SortColumn(object sender, ColumnClickEventArgs e)
+        {
+            bool isSorted = false;
+            while (!isSorted)
+            {
+                try
+                {
+                    // Determine if clicked column is already the column that is being sorted.
+                    if (e.Column == lvwColumnSorter.SortColumn)
+                    {
+                        // Reverse the current sort direction for this column.
+                        if (lvwColumnSorter.Order == SortOrder.Ascending)
+                        {
+                            lvwColumnSorter.Order = SortOrder.Descending;
+                        }
+                        else
+                        {
+                            lvwColumnSorter.Order = SortOrder.Ascending;
+                        }
+                    }
+                    else
+                    {
+                        // Set the column number that is to be sorted; default to ascending.
+                        lvwColumnSorter.SortColumn = e.Column;
+                        lvwColumnSorter.Order = SortOrder.Ascending;
+                    }
+
+                    // Perform the sort with these new sort options.
+                    listView1.Sort();
+                    isSorted = true;
+
+                }
+                catch { }
+            }
+        }
+        public void CheckButtonColor()
+        {
+            while (true)
+            {
+                if (Program.isChanged)
+                    alertsBtn.BackColor = Color.LightCoral;
+                else if (!Program.isChanged)
+                    alertsBtn.BackColor = Color.PaleGreen;
+                else if (Program.existAlert.Count == 0)
+                    alertsBtn.BackColor = Color.LightGray;
+                
+                Thread.Sleep(2000);
+            }
+        }
+
+        private void alertsBtn_MouseClick(object sender, MouseEventArgs e)
+        {
+            
+            AlertPrompt prompt = new AlertPrompt();
+            prompt.ShowDialog();
         }
     }
     

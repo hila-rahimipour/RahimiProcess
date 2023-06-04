@@ -168,7 +168,7 @@ namespace POC_NEW
                         cmd.Parameters.AddWithValue("@value", VALUE);
                         cmd.Parameters.AddWithValue("@fieldold", field);
                         cmd.Parameters.AddWithValue("@valueold", value);
-                        cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString());
+                        cmd.Parameters.AddWithValue("@date", DateTime.Now.AddHours(-2).ToString());
                         alerts.SelectedItems[0].SubItems[0].Text = FIELD;
                         alerts.SelectedItems[0].SubItems[1].Text = VALUE;
                         cmd.ExecuteNonQuery();
@@ -199,11 +199,10 @@ namespace POC_NEW
                     cmd.CommandText = $"INSERT INTO info(field, value, date) VALUES(@field, @value, @date)";
                     string FIELD = fieldValue.Text;
                     string VALUE = valueText.Text;
-                    string DATE = DateTime.Now.ToString();
                     
 
                     command.Parameters.AddWithValue("@field", FIELD);
-                    command.Parameters.AddWithValue("value", VALUE);
+                    command.Parameters.AddWithValue("@value", VALUE);
                     SQLiteDataReader reader = command.ExecuteReader();
                     bool is_exist=false;
                     while (reader.Read())
@@ -215,7 +214,7 @@ namespace POC_NEW
                     {
                         cmd.Parameters.AddWithValue("@field", FIELD);
                         cmd.Parameters.AddWithValue("@value", VALUE);
-                        cmd.Parameters.AddWithValue("@date", DATE);
+                        cmd.Parameters.AddWithValue("@date", DateTime.Now.AddHours(-2).ToString());
                         alerts.Items.Add(new ListViewItem(new string[2] { FIELD, VALUE }));
                         cmd.ExecuteNonQuery();
                     }

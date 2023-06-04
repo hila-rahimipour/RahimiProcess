@@ -55,16 +55,48 @@ namespace POC_NEW
         /// <returns>The result of the comparison. "0" if equal, negative if 'x' is less than 'y' and positive if 'x' is greater than 'y'</returns>
         public int Compare(object x, object y)
         {
-            int compareResult;
+            int compareResult=0;
             ListViewItem listviewX, listviewY;
 
             // Cast the objects to be compared to ListViewItem objects
             listviewX = (ListViewItem)x;
             listviewY = (ListViewItem)y;
-
-            // Compare the two items
-            compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text, listviewY.SubItems[ColumnToSort].Text);
-
+            double result;
+            
+            if (ColumnToSort == 2)
+            {
+                if (listviewX.SubItems[ColumnToSort].Text == "Suspended")
+                {
+                    if (listviewY.SubItems[ColumnToSort].Text == "Suspended")
+                        compareResult = 0;
+                    else
+                    {
+                        if (double.TryParse(listviewY.SubItems[ColumnToSort].Text, out result) && ColumnToSort != 2)
+                        {
+                            compareResult = 1;
+                        }
+                    }
+                }
+                else
+                {
+                    if (listviewY.SubItems[ColumnToSort].Text == "Suspended")
+                        compareResult = -1;
+                    else
+                    {
+                        if (double.TryParse(listviewY.SubItems[ColumnToSort].Text, out result))
+                            compareResult = ObjectCompare.Compare(double.Parse(listviewX.SubItems[ColumnToSort].Text), double.Parse(listviewY.SubItems[ColumnToSort].Text));
+                    }
+                }
+            }
+            else if (double.TryParse(listviewX.SubItems[ColumnToSort].Text, out result) && ColumnToSort!=2)
+            {
+                // Compare the two items
+                compareResult = ObjectCompare.Compare(double.Parse(listviewX.SubItems[ColumnToSort].Text), double.Parse(listviewY.SubItems[ColumnToSort].Text));
+            }
+            else
+            {
+                compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text, listviewY.SubItems[ColumnToSort].Text);
+            }
             // Calculate correct return value based on object comparison
             if (OrderOfSort == SortOrder.Ascending)
             {

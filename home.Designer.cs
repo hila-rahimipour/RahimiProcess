@@ -34,8 +34,6 @@
             this.suspendProcessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.filterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.findDllOrHandleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createAnAlertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu = new System.Windows.Forms.MenuStrip();
@@ -48,15 +46,17 @@
             this.resume = new System.Windows.Forms.Button();
             this.selectBy = new System.Windows.Forms.ComboBox();
             this.network = new System.Windows.Forms.Button();
+            this.alertsBtn = new System.Windows.Forms.Button();
             this.listView1 = new POC_NEW.DoubleBufferedListView();
-            this.ProcName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.cpu = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ws = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.read = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.write = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.username = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.startTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,7 +67,7 @@
             this.suspendProcessToolStripMenuItem,
             this.propertiesToolStripMenuItem});
             this.processToolStripMenuItem.Name = "processToolStripMenuItem";
-            this.processToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
+            this.processToolStripMenuItem.Size = new System.Drawing.Size(88, 30);
             this.processToolStripMenuItem.Text = "Process";
             // 
             // killProcessToolStripMenuItem
@@ -92,24 +92,10 @@
             // findToolStripMenuItem
             // 
             this.findToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.filterToolStripMenuItem,
-            this.findDllOrHandleToolStripMenuItem,
             this.createAnAlertToolStripMenuItem});
             this.findToolStripMenuItem.Name = "findToolStripMenuItem";
             this.findToolStripMenuItem.Size = new System.Drawing.Size(62, 29);
             this.findToolStripMenuItem.Text = "Find";
-            // 
-            // filterToolStripMenuItem
-            // 
-            this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            this.filterToolStripMenuItem.Size = new System.Drawing.Size(255, 34);
-            this.filterToolStripMenuItem.Text = "Filter";
-            // 
-            // findDllOrHandleToolStripMenuItem
-            // 
-            this.findDllOrHandleToolStripMenuItem.Name = "findDllOrHandleToolStripMenuItem";
-            this.findDllOrHandleToolStripMenuItem.Size = new System.Drawing.Size(255, 34);
-            this.findDllOrHandleToolStripMenuItem.Text = "Find dll or Handle";
             // 
             // createAnAlertToolStripMenuItem
             // 
@@ -121,13 +107,12 @@
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 30);
             this.helpToolStripMenuItem.Text = "Help";
             this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
             // 
             // menu
             // 
-            this.menu.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menu.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.processToolStripMenuItem,
@@ -275,82 +260,105 @@
             this.network.MouseClick += new System.Windows.Forms.MouseEventHandler(this.network_MouseClick);
             this.network.MouseHover += new System.EventHandler(this.network_MouseHover);
             // 
+            // alertsBtn
+            // 
+            this.alertsBtn.BackColor = System.Drawing.Color.LightCoral;
+            this.alertsBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.alertsBtn.FlatAppearance.BorderSize = 0;
+            this.alertsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.alertsBtn.Location = new System.Drawing.Point(410, 40);
+            this.alertsBtn.Name = "alertsBtn";
+            this.alertsBtn.Size = new System.Drawing.Size(75, 31);
+            this.alertsBtn.TabIndex = 16;
+            this.alertsBtn.Text = "Alerts";
+            this.alertsBtn.UseVisualStyleBackColor = false;
+            this.alertsBtn.MouseClick += new System.Windows.Forms.MouseEventHandler(this.alertsBtn_MouseClick);
+            // 
             // listView1
             // 
             this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.ProcName,
-            this.pid,
-            this.cpu,
-            this.ws,
-            this.read,
-            this.write,
-            this.username,
-            this.startTime});
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4,
+            this.columnHeader5,
+            this.columnHeader6,
+            this.columnHeader7,
+            this.columnHeader8,
+            this.columnHeader9});
             this.listView1.FullRowSelect = true;
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(0, 77);
+            this.listView1.Location = new System.Drawing.Point(0, 80);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(962, 479);
-            this.listView1.TabIndex = 11;
+            this.listView1.Size = new System.Drawing.Size(962, 474);
+            this.listView1.TabIndex = 18;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
+            this.listView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseClick);
             // 
-            // ProcName
+            // columnHeader1
             // 
-            this.ProcName.Text = "Name";
-            this.ProcName.Width = 120;
+            this.columnHeader1.Text = "Name";
+            this.columnHeader1.Width = 120;
             // 
-            // pid
+            // columnHeader2
             // 
-            this.pid.Text = "PID";
-            this.pid.Width = 80;
+            this.columnHeader2.Text = "PID";
+            this.columnHeader2.Width = 80;
             // 
-            // cpu
+            // columnHeader3
             // 
-            this.cpu.Text = "CPU";
-            this.cpu.Width = 80;
+            this.columnHeader3.Text = "CPU";
+            this.columnHeader3.Width = 80;
             // 
-            // ws
+            // columnHeader4
             // 
-            this.ws.Text = "Working Set";
-            this.ws.Width = 120;
+            this.columnHeader4.Text = "Working Set";
+            this.columnHeader4.Width = 120;
             // 
-            // read
+            // columnHeader5
             // 
-            this.read.Text = "Read";
-            this.read.Width = 120;
+            this.columnHeader5.Text = "Read";
+            this.columnHeader5.Width = 100;
             // 
-            // write
+            // columnHeader6
             // 
-            this.write.Text = "Write";
-            this.write.Width = 120;
+            this.columnHeader6.Text = "Write";
+            this.columnHeader6.Width = 100;
             // 
-            // username
+            // columnHeader7
             // 
-            this.username.Text = "UserName";
-            this.username.Width = 100;
+            this.columnHeader7.Text = "User Name";
+            this.columnHeader7.Width = 100;
             // 
-            // startTime
+            // columnHeader8
             // 
-            this.startTime.Text = "Start Time";
-            this.startTime.Width = 200;
+            this.columnHeader8.Text = "Thread Count";
+            this.columnHeader8.Width = 80;
+            // 
+            // columnHeader9
+            // 
+            this.columnHeader9.Text = "Start Time";
+            this.columnHeader9.Width = 150;
             // 
             // home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(962, 555);
+            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.alertsBtn);
             this.Controls.Add(this.network);
             this.Controls.Add(this.selectBy);
             this.Controls.Add(this.resume);
             this.Controls.Add(this.searchBox);
-            this.Controls.Add(this.listView1);
             this.Controls.Add(this.create);
             this.Controls.Add(this.suspend);
             this.Controls.Add(this.cancel);
@@ -376,8 +384,6 @@
         private System.Windows.Forms.ToolStripMenuItem suspendProcessToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem filterToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem findDllOrHandleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menu;
         private System.Windows.Forms.Button graph;
@@ -385,19 +391,21 @@
         private System.Windows.Forms.Button cancel;
         private System.Windows.Forms.Button suspend;
         private System.Windows.Forms.Button create;
-        private System.Windows.Forms.ColumnHeader ProcName;
-        private System.Windows.Forms.ColumnHeader pid;
-        private System.Windows.Forms.ColumnHeader cpu;
-        private System.Windows.Forms.ColumnHeader ws;
-        private System.Windows.Forms.ColumnHeader read;
-        private System.Windows.Forms.ColumnHeader write;
         private System.Windows.Forms.TextBox searchBox;
         private System.Windows.Forms.Button resume;
         private System.Windows.Forms.ComboBox selectBy;
         private System.Windows.Forms.Button network;
-        private DoubleBufferedListView listView1;
         private System.Windows.Forms.ToolStripMenuItem createAnAlertToolStripMenuItem;
-        private System.Windows.Forms.ColumnHeader startTime;
-        private System.Windows.Forms.ColumnHeader username;
+        private System.Windows.Forms.Button alertsBtn;
+        private DoubleBufferedListView listView1;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.ColumnHeader columnHeader7;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.ColumnHeader columnHeader9;
     }
 }

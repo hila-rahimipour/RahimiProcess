@@ -17,6 +17,8 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Collections.ObjectModel;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Xml;
+using System.IO;
+
 
 namespace POC_NEW
 {
@@ -61,20 +63,26 @@ namespace POC_NEW
             InitializeComponent();
 
 
-            cpuGraphics.ChartAreas[0].AxisY.Maximum=100;
+            cpuGraphics.ChartAreas[0].AxisY.Maximum = 1;
             cpuGraphics.ChartAreas[0].AxisY.Minimum = 0;
             cpuGraphics.ChartAreas[0].AxisX.Maximum = 30;
             cpuGraphics.ChartAreas[0].AxisX.Minimum = 0;
             //cpuGraphics.ChartAreas[0].RecalculateAxesScale();
 
-            
 
 
-            ioGraph.ChartAreas[0].AxisY.Maximum = 1000;
+
+            ioGraph.ChartAreas[0].AxisY.Maximum = 10;
             ioGraph.ChartAreas[0].AxisY.Minimum = 0;
             ioGraph.ChartAreas[0].AxisX.Maximum = 30;
             ioGraph.ChartAreas[0].AxisX.Minimum = 0;
-           
+
+            
+            try
+            {
+                threadsProc.SelectedItems[0].Selected = false;
+            }
+            catch { }
 
 
 
@@ -98,15 +106,17 @@ namespace POC_NEW
             }
             return "";
         }
-        bool isFirst=true;
+        bool isFirst = true;
         public void SingleProcess()
         {
             try
             {
                 Process proc = Process.GetProcessById(pid);
+                this.procthreads = proc.Threads;
                 double wsValue = 0;
                 this.Text = $"{proc.ProcessName}: {proc.Id}";
-                Thread thread = new Thread(() => GetProcessInstanceName(pid));
+                string instanceName = "";
+                Thread thread = new Thread(() => instanceName=GetInstanceNameForProcessId(pid));
                 thread.Start();
 
                 //Process[] sameName = Process.GetProcessesByName(proc.ProcessName);
@@ -123,7 +133,7 @@ namespace POC_NEW
                 {
                     try
                     {
-                        pipesList.BeginUpdate();
+                        
                         dlls.BeginUpdate();
 
                         try { pipeTop = pipesList.TopItem.Index; }
@@ -131,37 +141,31 @@ namespace POC_NEW
                         try { dllTop = dlls.TopItem.Index; }
                         catch { }
 
-                        pipesList.Items.Clear();
+                        
                         dlls.Items.Clear();
                         foreach (ProcessModule module in proc.Modules)
                         {
                             //Check if the module represents a pipe
-                            if (module.ModuleName.Contains("pipe"))
-                            {
-                                ListViewItem item = new ListViewItem(new string[1] { module.ModuleName });
-                                pipesList.Items.Add(item);
-                            }
+                            
                             ListViewItem dllItem = new ListViewItem(new string[1] { module.ModuleName });
                             dlls.Items.Add(dllItem);
                         }
-                        pipesList.EndUpdate();
+                        
                         dlls.EndUpdate();
 
-                        pipesList.Update();
+                        
 
                         dlls.Update();
 
                     }
                     catch
                     {
-                        pipesList.BeginUpdate();
-                        pipesList.Items.Clear();
+                        
                         dlls.BeginUpdate();
                         dlls.Items.Clear();
-                        pipesList.Items.Add(new ListViewItem(new string[1] { "Can't Access" }));
+                        
                         dlls.Items.Add(new ListViewItem(new string[1] { "Can't Access" }));
-                        pipesList.EndUpdate();
-                        pipesList.Update();
+                        
                         dlls.EndUpdate();
                         dlls.Update();
                     }
@@ -214,7 +218,8 @@ namespace POC_NEW
                     procVirtual.Text = (Convert.ToInt64(obj["VirtualSize"]).ToString());
                     command.Text = obj["CommandLine"].ToString();
                     path.Text = obj["ExecutablePath"].ToString();
-                    parent.Text = obj["ParentProcessId"].ToString();
+                    parent.Text = obj["ParentProcessId"].ToString() +
+                        $" ({Process.GetProcessById(int.Parse(obj["ParentProcessId"].ToString())).ProcessName})";
 
                 }
 
@@ -227,11 +232,11 @@ namespace POC_NEW
                 double read = 0;
                 double write = 0;
                 while (instanceName == "") { }
-                workingSet = new PerformanceCounter("Process", "Working Set - Private",instanceName);
+                workingSet = new PerformanceCounter("Process", "Working Set - Private", instanceName);
                 readBytes = new PerformanceCounter("Process", "IO Read Bytes/sec", instanceName);
                 writeBytes = new PerformanceCounter("Process", "IO Write Bytes/sec", instanceName);
                 Console.WriteLine("in cpu");
-                
+
                 try
                 {
                     cpu[0] = proc.TotalProcessorTime.Ticks;
@@ -253,11 +258,11 @@ namespace POC_NEW
                 double cpuVal = 0;
                 try
                 {
-                    cpuVal = (100*(proc.TotalProcessorTime.Ticks - cpu[0])/(DateTime.Now.Ticks - cpu[1])) / Environment.ProcessorCount;
+                    cpuVal = (100 * (proc.TotalProcessorTime.Ticks - cpu[0]) / (DateTime.Now.Ticks - cpu[1])) / Environment.ProcessorCount;
                     if ((int)cpuVal > 10)
                         if (!tooltipInfo.Contains("High CPU usage!"))
                             tooltipInfo += "High CPU usage!\n";
-                    Console.WriteLine("CPU VALUE!!!!!"+cpuVal);
+                    Console.WriteLine("CPU VALUE!!!!!" + cpuVal);
                 }
                 catch
                 {
@@ -272,47 +277,47 @@ namespace POC_NEW
                     if (!tooltipInfo.Contains("The process uses DLL"))
                         tooltipInfo += "The process uses DLL's a lot\n";
 
-               
+
                 procPrivateWS.Text = wsValue.ToString();
                 procSharedWS.Text = (proc.WorkingSet64 - wsValue).ToString();
                 procPeakWS.Text = proc.PeakWorkingSet64.ToString();
-               
-                
+
+
 
 
                 Console.WriteLine("done cpu single");
-                try
+
+                if ((int)cpuVal+1 > cpuGraphics.ChartAreas[0].AxisY.Maximum)
                 {
-                    if (cpuVal<1)
-                        cpuGraphics.ChartAreas[0].AxisY.Maximum = 1;
-                    else if (cpuVal < 5)
-                        cpuGraphics.ChartAreas[0].AxisY.Maximum = 5;
-                    else if (cpuVal < 10)
-                        cpuGraphics.ChartAreas[0].AxisY.Maximum = 10;
-                    else if (cpuVal < 20)
-                        cpuGraphics.ChartAreas[0].AxisY.Maximum = 20;
-
-
-
+                    cpuGraphics.ChartAreas[0].AxisY.Maximum = (int)cpuVal + 3;
+                    
                 }
-                catch { }
-
                 if (read > ioGraph.ChartAreas[0].AxisY.Maximum)
                 {
-                    ioGraph.ChartAreas[0].AxisY.Maximum = read+50;
-                    ioGraph.ChartAreas[0].AxisY.LabelStyle.Enabled = false;
+                    
+                    ioGraph.ChartAreas[0].AxisY.Maximum = read + 100;
+                    if (ioGraph.ChartAreas[0].AxisY.Maximum > 100)
+                    {
+                        ioGraph.ChartAreas[0].AxisY.LabelStyle.Enabled = false;
+                        ioGraph.ChartAreas[0].AxisY.RoundAxisValues();
+                    }
                 }
-                
-                Console.WriteLine($"Bounds {cpuGraphics.ChartAreas[0].AxisY.Maximum} {cpuGraphics.ChartAreas[0].AxisY.Minimum}");
+                if (write > ioGraph.ChartAreas[0].AxisY.Maximum)
+                {
+                    ioGraph.ChartAreas[0].AxisY.Maximum = write + 100;
+                    if (ioGraph.ChartAreas[0].AxisY.Maximum > 100)
+                    {
+                        ioGraph.ChartAreas[0].AxisY.LabelStyle.Enabled = false;
+                        ioGraph.ChartAreas[0].AxisY.RoundAxisValues();
+                    }
+                }
+                //Console.WriteLine($"Bounds {cpuGraphics.ChartAreas[0].AxisY.Maximum} {cpuGraphics.ChartAreas[0].AxisY.Minimum}");
                 try
                 {
-                    Console.WriteLine("CPU VALUE:"+cpuVal);
-                    cpuGraphics.Series[0].Points.AddXY(count, Math.Round(cpuVal));
-                    
-                    
-                    ioGraph.Series[0].Points.AddXY(count, read);
-                    ioGraph.Series[1].Points.AddXY(count, write);
+                    Console.WriteLine("CPU VALUE:" + cpuVal);
+                    cpuLabel.Text = Math.Round(cpuVal, 2).ToString();
 
+                    cpuGraphics.Series[0].Points.AddXY(count, Math.Round(cpuVal, 2));
                     if (cpuGraphics.Series[0].Points.Count > 30)
                     {
                         count = 30;
@@ -321,9 +326,18 @@ namespace POC_NEW
                         foreach (System.Windows.Forms.DataVisualization.Charting.DataPoint point in cpuGraphics.Series[0].Points)
                         {
                             point.XValue -= 1;
-                            point.ToolTip = "cpu value:" + point.YValues[0];
+
                         }
                     }
+                }
+                catch { }
+                try
+                {
+                    readLabel.Text = Math.Round(read,2).ToString();
+                    writeLabel.Text = Math.Round(write).ToString();
+                    ioGraph.Series[0].Points.AddXY(count, Math.Round(read, 2));
+                    ioGraph.Series[1].Points.AddXY(count, Math.Round(write));
+                    ioGraph.ChartAreas[0].AxisY.RoundAxisValues();
                     if (ioGraph.Series[0].Points.Count > 30)
                     {
                         count = 30;
@@ -333,17 +347,39 @@ namespace POC_NEW
                         foreach (System.Windows.Forms.DataVisualization.Charting.DataPoint point in ioGraph.Series[0].Points)
                         {
                             point.XValue -= 1;
-                            point.ToolTip = "read bytes/sec:" + point.YValues[0];
+                            
                         }
                         foreach (System.Windows.Forms.DataVisualization.Charting.DataPoint point in ioGraph.Series[1].Points)
                         {
                             point.XValue -= 1;
-                            point.ToolTip = "write bytes/sec:" + point.YValues[0];
+                            
                         }
                     }
-                    count++;
+                    
+                    
                 }
                 catch { }
+                
+                try
+                {
+                    foreach (System.Windows.Forms.DataVisualization.Charting.DataPoint point in cpuGraphics.Series[0].Points)
+                        point.ToolTip = "cpu value: " + point.YValues[0];
+                    for (int i=0; i<ioGraph.Series[0].Points.Count;i++)
+                    {
+                        ioGraph.Series[0].Points[i].ToolTip = "read bytes/sec: " + ioGraph.Series[0].Points[i].YValues[0]+
+                            "\nwrite bytes/sec: "+ ioGraph.Series[1].Points[i].YValues[0];
+                        ioGraph.Series[1].Points[i].ToolTip = "read bytes/sec: " + ioGraph.Series[0].Points[i].YValues[0] +
+                            "\nwrite bytes/sec: " + ioGraph.Series[1].Points[i].YValues[0];
+
+
+
+
+                    }
+                    
+
+                }
+                catch { }
+                
 
                 try
                 {
@@ -364,22 +400,45 @@ namespace POC_NEW
 
                     memChart.Series[1].Points.AddXY("WS", wsValue);
 
-                    
-                    memChart.Series[0].Points[0].ToolTip = $"Private Size:\n{memChart.Series[0].Points[0].YValues[0]-wsValue}";
-                    memChart.Series[0].Points[1].ToolTip = $"Shared Working Set:\n{memChart.Series[0].Points[1].YValues[0]-wsValue}";
+
+                    memChart.Series[0].Points[0].ToolTip = $"Private Size:\n{memChart.Series[0].Points[0].YValues[0] - wsValue}";
+                    memChart.Series[0].Points[1].ToolTip = $"Shared Working Set:\n{memChart.Series[0].Points[1].YValues[0] - wsValue}";
                     memChart.Series[1].Points[0].ToolTip = $"Private Working Set:\n{memChart.Series[1].Points[0].YValues[0]}";
                     memChart.Series[1].Points[1].ToolTip = $"Private Working Set:\n{memChart.Series[1].Points[1].YValues[0]}";
                 }
                 catch { }
                 
+                count++;
+                if (Program.dict.ContainsKey(pid))
+                {
+                    pipesList.BeginUpdate();
+                    pipesList.Items.Clear();
+                    foreach(string[] con in Program.dict[pid])
+                    {
+                        try
+                        {
+                            string[] data = new string[4] { con[0], con[1], con[2], con[3] };
+                            ListViewItem item = new ListViewItem(data);
+                            pipesList.Items.Add(item);
+                        }
+                        catch { }
+                    }
+                    pipesList.EndUpdate();
+                    pipesList.Update();
+                    pipesList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                    
+                }
+                Console.WriteLine("ID!!!!!!!" + proc.Id);
             }
             catch
             {
                 terminate.Text = "Process Terminated, Closing window";
                 this.Close();
+                this.Dispose();
             }
         }
-        public static string instanceName = "";
+        
+        public ProcessThreadCollection procthreads=null;
         private void singleProcess_Load(object sender, EventArgs e)
         {
             Thread update = new Thread(() => Update());
@@ -391,7 +450,7 @@ namespace POC_NEW
 
         public void Update()
         {
-            
+
             while (true)
             {
                 SingleProcess();
@@ -399,65 +458,100 @@ namespace POC_NEW
             }
         }
         private int selectedThreadIndex = -1;
-        private int topIndex=0;
-        public void ThreadUpdate()
+        private int topIndex = 0;
+
+        public Dictionary<int, double[]> cpus = new Dictionary<int, double[]>();
+        public void CPUthreads()
         {
-            while (true)
+            if (this.procthreads != null) {
+                Parallel.For(0, this.procthreads.Count, c =>
+                {
+                    double lastProcessor = 0;
+                    double lastTime = 0;
+                    try
+                    {
+
+                        lastProcessor = this.procthreads[c].TotalProcessorTime.Ticks;
+                        lastTime = DateTime.Now.Ticks;
+                        double[] data = { lastProcessor, lastTime, 0 };
+                        this.cpus[this.procthreads[c].Id] = data;
+
+                    }
+                    catch 
+                    { 
+
+                    }
+                });
+               
+
+
+            }
+        }
+        public void GetCpu()
+        {
+            if (this.procthreads != null)
             {
-                
+                Parallel.For(0, this.procthreads.Count, a =>
+            {
+                double newProcessor = 0;
+                double newTime = 0;
                 try
                 {
-                    
+
+                    newProcessor = this.procthreads[a].TotalProcessorTime.Ticks;
+                    newTime = DateTime.Now.Ticks;
+                    this.cpus[this.procthreads[a].Id][2] = (100 * (newProcessor - this.cpus[this.procthreads[a].Id][0])) / ((newTime - this.cpus[this.procthreads[a].Id][1])*Environment.ProcessorCount);
+
+
+                }
+                catch
+                {
+
+                }
+            });
+            }
+        }
+        public void ThreadUpdate()
+        {
+            Thread cpuRun;
+            int index = 0;
+            int selected = -1;
+            while (true)
+            {
+                cpuRun = new Thread(() => CPUthreads());
+                cpuRun.Start();
+                cpuRun.Join();
+                Thread.Sleep(500);
+                Thread cpuGet = new Thread(() => GetCpu());
+                cpuGet.Start();
+                cpuGet.Join();
+                try
+                {
+
                     var threadItems = new List<ListViewItem>();
-                    ProcessThreadCollection threads = Process.GetProcessById(pid).Threads;
-                    for (int i = 0; i < threads.Count; i++)
+                    try
+                    {
+                        index = threadsProc.TopItem.Index;
+                    }
+                    catch { }
+
+                    foreach(ProcessThread thread in this.procthreads)
                     {
                         try
                         {
-                            ProcessThread thread = threads[i];
-                            double processorTime = thread.TotalProcessorTime.Ticks;
-                            double now = DateTime.Now.Ticks;
+                            string state = thread.ThreadState.ToString();
 
-                            ManagementObjectSearcher searcher = new ManagementObjectSearcher($"SELECT * FROM Win32_Thread WHERE Handle = {thread.Id}");
-                            string state = "";
-                            foreach (ManagementObject obj in searcher.Get())
+
+                            double cpuThread=0;
+                            try
                             {
-                                state = obj["ThreadState"].ToString();
+                                cpuThread=this.cpus[thread.Id][2];
                             }
+                            catch { }
 
-                            double cpuThread = ((thread.TotalProcessorTime.Ticks - processorTime) / (DateTime.Now.Ticks - now)) / Environment.ProcessorCount;
 
-                            string[] data = { "", "", "", "" };
-                            
-                            switch (state)
-                            {
-                                case "0":
-                                    data = new string[] { thread.Id.ToString(), cpuThread.ToString(), "Initialized", GetIdealProcessor((uint)thread.Id) };
-                                    
-                                    break;
-                                case "1":
-                                    data = new string[] { thread.Id.ToString(), cpuThread.ToString(), "Ready", GetIdealProcessor((uint)thread.Id) };
-                                   
-                                    break;
-                                case "2":
-                                    data = new string[] { thread.Id.ToString(), cpuThread.ToString(), "Running", GetIdealProcessor((uint)thread.Id) };
-                                    break;
-                                case "3":
-                                    data = new string[] { thread.Id.ToString(), cpuThread.ToString(), "Standby", GetIdealProcessor((uint)thread.Id) };
-                                    break;
-                                case "4":
-                                    data = new string[] { thread.Id.ToString(), cpuThread.ToString(), "Terminated", GetIdealProcessor((uint)thread.Id) };
-                                    break;
-                                case "5":
-                                    data = new string[] { thread.Id.ToString(), cpuThread.ToString(), "Waiting", GetIdealProcessor((uint)thread.Id) };
-                                    break;
-                                case "6":
-                                    data = new string[] { thread.Id.ToString(), cpuThread.ToString(), "Transition", GetIdealProcessor((uint)thread.Id) };
-                                    break;
-                                case "7":
-                                    data = new string[] { thread.Id.ToString(), cpuThread.ToString(), "Unknown", GetIdealProcessor((uint)thread.Id) };
-                                    break;
-                            }
+
+                            string[] data = new string[4] { thread.Id.ToString(), Math.Round(cpuThread,2).ToString(), state, GetIdealProcessor((uint)thread.Id) };
 
                             var ListViewItemData = new ListViewItem(data);
                             threadItems.Add(ListViewItemData);
@@ -467,33 +561,36 @@ namespace POC_NEW
                             continue;
                         }
                     }
-
-                    procThreads.BeginInvoke(new Action(() =>
+                    threadsProc.BeginInvoke(new Action(() =>
                     {
                         // Save the selected index if there is a selection
-                        if (procThreads.SelectedIndices.Count > 0)
+                        if (threadsProc.SelectedIndices.Count > 0)
                         {
-                            selectedThreadIndex = procThreads.SelectedIndices[0];
+                            selectedThreadIndex = threadsProc.SelectedIndices[0];
                         }
 
-                        procThreads.Items.Clear();
-                        procThreads.Items.AddRange(threadItems.ToArray());
+                        threadsProc.Items.Clear();
+                        threadsProc.Items.AddRange(threadItems.ToArray());
 
                         // Restore the selected index if there was a selection
-                        if (selectedThreadIndex >= 0 && selectedThreadIndex < procThreads.Items.Count)
+                        if (selectedThreadIndex >= 0 && selectedThreadIndex < threadsProc.Items.Count)
                         {
-                            procThreads.Items[selectedThreadIndex].Selected = true;
-                            procThreads.TopItem = procThreads.Items[topIndex];
-                            
+                            threadsProc.Items[selectedThreadIndex].Selected = true;
+                            threadsProc.TopItem = threadsProc.Items[index];
+
                         }
                         else
                         {
-                            procThreads.Items[0].Selected = true;
-                            procThreads.Items[0].Focused = true;
-                            procThreads.TopItem = procThreads.Items[topIndex];
+                            threadsProc.Items[0].Selected = true;
+                            threadsProc.Items[0].Focused = true;
+                            threadsProc.TopItem = threadsProc.Items[index];
 
                         }
                     }));
+                    
+
+                    // Restore the selected index if there was a selection
+
 
 
 
@@ -502,7 +599,7 @@ namespace POC_NEW
                 {
                     continue;
                 }
-                Thread.Sleep(1000);
+
             }
         }
 
@@ -511,15 +608,15 @@ namespace POC_NEW
         {
             int tid;
             int count = 0;
-            topIndex = procThreads.TopItem.Index;
-            for (int i = 0; i < procThreads.Columns.Count; i++)
+            topIndex = threadsProc.TopItem.Index;
+            for (int i = 0; i < threadsProc.Columns.Count; i++)
             {
-                if (procThreads.Columns[i].Text == "tid")
+                if (threadsProc.Columns[i].Text == "tid")
                     count = i;
             }
             try
             {
-                tid = int.Parse(procThreads.SelectedItems[0].SubItems[count].Text);
+                tid = int.Parse(threadsProc.SelectedItems[0].SubItems[count].Text);
 
                 foreach (ProcessThread thread in Process.GetProcessById(pid).Threads)
                 {
@@ -530,11 +627,11 @@ namespace POC_NEW
                         Cpriority.Text = thread.CurrentPriority.ToString();
                         startThread.Text = thread.StartTime.ToString();
                         
-                        ManagementObjectSearcher searcher = new ManagementObjectSearcher($"SELECT * FROM Win32_Thread WHERE Handle = {thread.Id}");
+                        
                         string state = "";
-                        state = procThreads.SelectedItems[0].SubItems[2].Text;
+                        state = threadsProc.SelectedItems[0].SubItems[2].Text;
 
-                        if (state == "Waiting")
+                        if (state == "Wait")
                         {
                             threadStateText.Text = state + ": " + thread.WaitReason;
                            
@@ -542,7 +639,7 @@ namespace POC_NEW
                         else if (state == "")
                         {
                             state = thread.ThreadState.ToString();
-                            if (state == "Waiting")
+                            if (state == "Wait")
                                 threadStateText.Text = state + ": " + thread.WaitReason;
                             else
                                 threadStateText.Text = state;
@@ -561,6 +658,7 @@ namespace POC_NEW
 
             }
             catch { }
+            
         }
 
         private void threadID_Click(object sender, EventArgs e)
@@ -576,30 +674,36 @@ namespace POC_NEW
             
 
         }
-        public static void GetProcessInstanceName(int pid)
+        public static string GetInstanceNameForProcessId(int processId)
         {
-            PerformanceCounterCategory cat = new PerformanceCounterCategory("Process");
+            var process = Process.GetProcessById(processId);
+            string processName = Path.GetFileNameWithoutExtension(process.ProcessName);
 
-            string[] instances = cat.GetInstanceNames();
+            PerformanceCounterCategory cat = new PerformanceCounterCategory("Process");
+            string[] instances = cat.GetInstanceNames()
+                .Where(inst => inst.StartsWith(processName))
+                .ToArray();
+
             foreach (string instance in instances)
             {
-                try
+                using (PerformanceCounter cnt = new PerformanceCounter("Process",
+                    "ID Process", instance, true))
                 {
-
-                    using (PerformanceCounter cnt = new PerformanceCounter("Process",
-                         "ID Process", instance, true))
+                    int val = (int)cnt.RawValue;
+                    if (val == processId)
                     {
-                        int val = (int)cnt.RawValue;
-                        if (val == pid)
-                        {
-                            instanceName = instance;
-                        }
+                        return instance;
                     }
                 }
-                catch { }
             }
-            if (instanceName == "")
-                instanceName = Process.GetProcessById(pid).ProcessName;
+            return null;
+        }
+
+        private void singleProcess_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+            this.Dispose();  
+            
         }
     }
 
