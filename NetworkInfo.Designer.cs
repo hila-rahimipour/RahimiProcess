@@ -1,5 +1,5 @@
 ﻿
-namespace POC_NEW
+namespace RahimiProcess
 {
     partial class NetworkInfo
     {

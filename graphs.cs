@@ -12,7 +12,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 
-namespace POC_NEW
+namespace RahimiProcess
 {
     public partial class graphs : Form
     {

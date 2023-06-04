@@ -1,4 +1,4 @@
-﻿namespace POC_NEW
+﻿namespace RahimiProcess
 {
     partial class addAlert
     {

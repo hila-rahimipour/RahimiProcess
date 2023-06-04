@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Data.SQLite;
 
-namespace POC_NEW
+namespace RahimiProcess
 {
     public partial class addAlert : Form
     {

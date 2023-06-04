@@ -20,7 +20,7 @@ using System.Xml;
 using System.IO;
 
 
-namespace POC_NEW
+namespace RahimiProcess
 {
     public partial class singleProcess : Form
     {

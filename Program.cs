@@ -27,7 +27,7 @@ using System.Windows.Forms.PropertyGridInternal;
 using static System.Net.WebRequestMethods;
 
 
-namespace POC_NEW
+namespace RahimiProcess
 {
     class Program
     {

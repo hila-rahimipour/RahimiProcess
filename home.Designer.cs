@@ -1,4 +1,4 @@
-﻿namespace POC_NEW
+﻿namespace RahimiProcess
 {
     partial class home
     {
@@ -47,7 +47,7 @@
             this.selectBy = new System.Windows.Forms.ComboBox();
             this.network = new System.Windows.Forms.Button();
             this.alertsBtn = new System.Windows.Forms.Button();
-            this.listView1 = new POC_NEW.DoubleBufferedListView();
+            this.listView1 = new RahimiProcess.DoubleBufferedListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));

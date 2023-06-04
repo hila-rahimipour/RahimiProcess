@@ -6,7 +6,7 @@ using System.Threading;
 using System.Windows.Forms;
 using ToolTip = System.Windows.Forms.ToolTip;
 
-namespace POC_NEW
+namespace RahimiProcess
 {
     struct IO_COUNTERS
     {

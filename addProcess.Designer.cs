@@ -1,4 +1,4 @@
-﻿namespace POC_NEW
+﻿namespace RahimiProcess
 {
     partial class addProcess
     {
@@ -33,7 +33,7 @@
             this.procName = new System.Windows.Forms.TextBox();
             this.search = new System.Windows.Forms.TextBox();
             this.searchButton = new System.Windows.Forms.Button();
-            this.processes = new POC_NEW.DoubleBufferedListView();
+            this.processes = new RahimiProcess.DoubleBufferedListView();
             this.name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 

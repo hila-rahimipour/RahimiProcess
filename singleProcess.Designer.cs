@@ -1,5 +1,5 @@
 ﻿
-namespace POC_NEW
+namespace RahimiProcess
 {
     partial class singleProcess
     {
@@ -81,7 +81,7 @@ namespace POC_NEW
             this.reads = new System.Windows.Forms.Label();
             this.procPrivate = new System.Windows.Forms.Label();
             this.threads = new System.Windows.Forms.TabPage();
-            this.threadsProc = new POC_NEW.DoubleBufferedListView();
+            this.threadsProc = new RahimiProcess.DoubleBufferedListView();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -97,7 +97,7 @@ namespace POC_NEW
             this.label3 = new System.Windows.Forms.Label();
             this.Bpriority = new System.Windows.Forms.Label();
             this.modules = new System.Windows.Forms.TabPage();
-            this.dlls = new POC_NEW.DoubleBufferedListView();
+            this.dlls = new RahimiProcess.DoubleBufferedListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.graphs = new System.Windows.Forms.TabPage();
             this.writeLabel = new System.Windows.Forms.Label();
@@ -109,7 +109,7 @@ namespace POC_NEW
             this.ioGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.cpuGraphics = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.pipes = new System.Windows.Forms.TabPage();
-            this.pipesList = new POC_NEW.DoubleBufferedListView();
+            this.pipesList = new RahimiProcess.DoubleBufferedListView();
             this.Protocol = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -137,9 +137,10 @@ namespace POC_NEW
             this.tabControl1.Controls.Add(this.pipes);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(593, 539);
+            this.tabControl1.Size = new System.Drawing.Size(395, 350);
             this.tabControl1.TabIndex = 0;
             // 
             // general
@@ -166,21 +167,23 @@ namespace POC_NEW
             this.general.Controls.Add(this.handleCount);
             this.general.Controls.Add(this.procAffinity);
             this.general.Controls.Add(this.affinity);
-            this.general.Location = new System.Drawing.Point(4, 29);
+            this.general.Location = new System.Drawing.Point(4, 22);
+            this.general.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.general.Name = "general";
-            this.general.Padding = new System.Windows.Forms.Padding(3);
-            this.general.Size = new System.Drawing.Size(585, 506);
+            this.general.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.general.Size = new System.Drawing.Size(387, 324);
             this.general.TabIndex = 0;
             this.general.Text = "General";
             // 
             // infoHover
             // 
             this.infoHover.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.infoHover.BackgroundImage = global::POC_NEW.Properties.Resources.infoProc;
+            this.infoHover.BackgroundImage = global::RahimiProcess.Properties.Resources.infoProc;
             this.infoHover.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.infoHover.Location = new System.Drawing.Point(8, 356);
+            this.infoHover.Location = new System.Drawing.Point(5, 231);
+            this.infoHover.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.infoHover.Name = "infoHover";
-            this.infoHover.Size = new System.Drawing.Size(43, 38);
+            this.infoHover.Size = new System.Drawing.Size(29, 25);
             this.infoHover.TabIndex = 60;
             this.infoHover.TabStop = false;
             this.infoHover.MouseHover += new System.EventHandler(this.infoHover_MouseHover);
@@ -192,9 +195,10 @@ namespace POC_NEW
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Black;
-            this.label1.Location = new System.Drawing.Point(7, 229);
+            this.label1.Location = new System.Drawing.Point(5, 149);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(160, 20);
+            this.label1.Size = new System.Drawing.Size(114, 13);
             this.label1.TabIndex = 56;
             this.label1.Text = "Parent Process ID:";
             // 
@@ -205,9 +209,10 @@ namespace POC_NEW
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.Black;
-            this.label2.Location = new System.Drawing.Point(7, 167);
+            this.label2.Location = new System.Drawing.Point(5, 109);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(133, 20);
+            this.label2.Size = new System.Drawing.Size(93, 13);
             this.label2.TabIndex = 52;
             this.label2.Text = "Command Line:";
             // 
@@ -217,9 +222,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.command.AutoSize = true;
             this.command.ForeColor = System.Drawing.Color.Black;
-            this.command.Location = new System.Drawing.Point(146, 167);
+            this.command.Location = new System.Drawing.Point(97, 109);
+            this.command.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.command.Name = "command";
-            this.command.Size = new System.Drawing.Size(0, 20);
+            this.command.Size = new System.Drawing.Size(0, 13);
             this.command.TabIndex = 53;
             // 
             // label5
@@ -229,9 +235,10 @@ namespace POC_NEW
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.Black;
-            this.label5.Location = new System.Drawing.Point(7, 198);
+            this.label5.Location = new System.Drawing.Point(5, 129);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(51, 20);
+            this.label5.Size = new System.Drawing.Size(37, 13);
             this.label5.TabIndex = 54;
             this.label5.Text = "Path:";
             // 
@@ -241,9 +248,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.path.AutoSize = true;
             this.path.ForeColor = System.Drawing.Color.Black;
-            this.path.Location = new System.Drawing.Point(64, 198);
+            this.path.Location = new System.Drawing.Point(43, 129);
+            this.path.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.path.Name = "path";
-            this.path.Size = new System.Drawing.Size(0, 20);
+            this.path.Size = new System.Drawing.Size(0, 13);
             this.path.TabIndex = 55;
             // 
             // parent
@@ -252,9 +260,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.parent.AutoSize = true;
             this.parent.ForeColor = System.Drawing.Color.Black;
-            this.parent.Location = new System.Drawing.Point(173, 226);
+            this.parent.Location = new System.Drawing.Point(115, 147);
+            this.parent.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.parent.Name = "parent";
-            this.parent.Size = new System.Drawing.Size(0, 20);
+            this.parent.Size = new System.Drawing.Size(0, 13);
             this.parent.TabIndex = 57;
             // 
             // start
@@ -263,9 +272,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.start.AutoSize = true;
             this.start.ForeColor = System.Drawing.Color.Black;
-            this.start.Location = new System.Drawing.Point(139, 260);
+            this.start.Location = new System.Drawing.Point(93, 169);
+            this.start.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.start.Name = "start";
-            this.start.Size = new System.Drawing.Size(0, 20);
+            this.start.Size = new System.Drawing.Size(0, 13);
             this.start.TabIndex = 59;
             // 
             // label11
@@ -275,9 +285,10 @@ namespace POC_NEW
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label11.ForeColor = System.Drawing.Color.Black;
-            this.label11.Location = new System.Drawing.Point(7, 260);
+            this.label11.Location = new System.Drawing.Point(5, 169);
+            this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(126, 20);
+            this.label11.Size = new System.Drawing.Size(89, 13);
             this.label11.TabIndex = 58;
             this.label11.Text = "Creation Date:";
             // 
@@ -288,9 +299,10 @@ namespace POC_NEW
             this.priority.AutoSize = true;
             this.priority.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.priority.ForeColor = System.Drawing.Color.Black;
-            this.priority.Location = new System.Drawing.Point(7, 75);
+            this.priority.Location = new System.Drawing.Point(5, 49);
+            this.priority.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.priority.Name = "priority";
-            this.priority.Size = new System.Drawing.Size(115, 20);
+            this.priority.Size = new System.Drawing.Size(82, 13);
             this.priority.TabIndex = 33;
             this.priority.Text = "Base Priority:";
             // 
@@ -301,9 +313,10 @@ namespace POC_NEW
             this.name.AutoSize = true;
             this.name.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.name.ForeColor = System.Drawing.Color.Black;
-            this.name.Location = new System.Drawing.Point(7, 13);
+            this.name.Location = new System.Drawing.Point(5, 8);
+            this.name.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.name.Name = "name";
-            this.name.Size = new System.Drawing.Size(60, 20);
+            this.name.Size = new System.Drawing.Size(43, 13);
             this.name.TabIndex = 29;
             this.name.Text = "Name:";
             // 
@@ -313,9 +326,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.procName.AutoSize = true;
             this.procName.ForeColor = System.Drawing.Color.Black;
-            this.procName.Location = new System.Drawing.Point(73, 13);
+            this.procName.Location = new System.Drawing.Point(49, 8);
+            this.procName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.procName.Name = "procName";
-            this.procName.Size = new System.Drawing.Size(0, 20);
+            this.procName.Size = new System.Drawing.Size(0, 13);
             this.procName.TabIndex = 30;
             // 
             // id
@@ -325,9 +339,10 @@ namespace POC_NEW
             this.id.AutoSize = true;
             this.id.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.id.ForeColor = System.Drawing.Color.Black;
-            this.id.Location = new System.Drawing.Point(7, 44);
+            this.id.Location = new System.Drawing.Point(5, 29);
+            this.id.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.id.Name = "id";
-            this.id.Size = new System.Drawing.Size(44, 20);
+            this.id.Size = new System.Drawing.Size(32, 13);
             this.id.TabIndex = 31;
             this.id.Text = "PID:";
             // 
@@ -335,9 +350,10 @@ namespace POC_NEW
             // 
             this.terminate.AutoSize = true;
             this.terminate.ForeColor = System.Drawing.Color.Black;
-            this.terminate.Location = new System.Drawing.Point(253, 325);
+            this.terminate.Location = new System.Drawing.Point(169, 211);
+            this.terminate.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.terminate.Name = "terminate";
-            this.terminate.Size = new System.Drawing.Size(0, 20);
+            this.terminate.Size = new System.Drawing.Size(0, 13);
             this.terminate.TabIndex = 51;
             // 
             // processID
@@ -346,9 +362,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.processID.AutoSize = true;
             this.processID.ForeColor = System.Drawing.Color.Black;
-            this.processID.Location = new System.Drawing.Point(57, 44);
+            this.processID.Location = new System.Drawing.Point(38, 29);
+            this.processID.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.processID.Name = "processID";
-            this.processID.Size = new System.Drawing.Size(0, 20);
+            this.processID.Size = new System.Drawing.Size(0, 13);
             this.processID.TabIndex = 32;
             // 
             // procPriority
@@ -357,9 +374,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.procPriority.AutoSize = true;
             this.procPriority.ForeColor = System.Drawing.Color.Black;
-            this.procPriority.Location = new System.Drawing.Point(128, 75);
+            this.procPriority.Location = new System.Drawing.Point(85, 49);
+            this.procPriority.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.procPriority.Name = "procPriority";
-            this.procPriority.Size = new System.Drawing.Size(0, 20);
+            this.procPriority.Size = new System.Drawing.Size(0, 13);
             this.procPriority.TabIndex = 34;
             // 
             // procHandle
@@ -368,9 +386,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.procHandle.AutoSize = true;
             this.procHandle.ForeColor = System.Drawing.Color.Black;
-            this.procHandle.Location = new System.Drawing.Point(137, 137);
+            this.procHandle.Location = new System.Drawing.Point(91, 89);
+            this.procHandle.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.procHandle.Name = "procHandle";
-            this.procHandle.Size = new System.Drawing.Size(0, 20);
+            this.procHandle.Size = new System.Drawing.Size(0, 13);
             this.procHandle.TabIndex = 46;
             // 
             // handleCount
@@ -380,9 +399,10 @@ namespace POC_NEW
             this.handleCount.AutoSize = true;
             this.handleCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.handleCount.ForeColor = System.Drawing.Color.Black;
-            this.handleCount.Location = new System.Drawing.Point(7, 137);
+            this.handleCount.Location = new System.Drawing.Point(5, 89);
+            this.handleCount.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.handleCount.Name = "handleCount";
-            this.handleCount.Size = new System.Drawing.Size(124, 20);
+            this.handleCount.Size = new System.Drawing.Size(88, 13);
             this.handleCount.TabIndex = 45;
             this.handleCount.Text = "Handle Count:";
             // 
@@ -392,9 +412,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.procAffinity.AutoSize = true;
             this.procAffinity.ForeColor = System.Drawing.Color.Black;
-            this.procAffinity.Location = new System.Drawing.Point(152, 106);
+            this.procAffinity.Location = new System.Drawing.Point(101, 69);
+            this.procAffinity.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.procAffinity.Name = "procAffinity";
-            this.procAffinity.Size = new System.Drawing.Size(0, 20);
+            this.procAffinity.Size = new System.Drawing.Size(0, 13);
             this.procAffinity.TabIndex = 44;
             // 
             // affinity
@@ -404,9 +425,10 @@ namespace POC_NEW
             this.affinity.AutoSize = true;
             this.affinity.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.affinity.ForeColor = System.Drawing.Color.Black;
-            this.affinity.Location = new System.Drawing.Point(7, 106);
+            this.affinity.Location = new System.Drawing.Point(5, 69);
+            this.affinity.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.affinity.Name = "affinity";
-            this.affinity.Size = new System.Drawing.Size(139, 20);
+            this.affinity.Size = new System.Drawing.Size(99, 13);
             this.affinity.TabIndex = 43;
             this.affinity.Text = "Process Affinity:";
             // 
@@ -430,10 +452,11 @@ namespace POC_NEW
             this.memNet.Controls.Add(this.procReads);
             this.memNet.Controls.Add(this.reads);
             this.memNet.Controls.Add(this.procPrivate);
-            this.memNet.Location = new System.Drawing.Point(4, 29);
+            this.memNet.Location = new System.Drawing.Point(4, 22);
+            this.memNet.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.memNet.Name = "memNet";
-            this.memNet.Padding = new System.Windows.Forms.Padding(3);
-            this.memNet.Size = new System.Drawing.Size(585, 506);
+            this.memNet.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.memNet.Size = new System.Drawing.Size(387, 324);
             this.memNet.TabIndex = 1;
             this.memNet.Text = "Memory & Network";
             // 
@@ -448,7 +471,8 @@ namespace POC_NEW
             chartArea1.AxisY.MajorTickMark.Enabled = false;
             chartArea1.Name = "ChartArea1";
             this.memChart.ChartAreas.Add(chartArea1);
-            this.memChart.Location = new System.Drawing.Point(190, 200);
+            this.memChart.Location = new System.Drawing.Point(127, 130);
+            this.memChart.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.memChart.Name = "memChart";
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StackedColumn;
@@ -458,7 +482,7 @@ namespace POC_NEW
             series2.Name = "Series2";
             this.memChart.Series.Add(series1);
             this.memChart.Series.Add(series2);
-            this.memChart.Size = new System.Drawing.Size(387, 298);
+            this.memChart.Size = new System.Drawing.Size(258, 194);
             this.memChart.TabIndex = 72;
             // 
             // procPeakWS
@@ -467,9 +491,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.procPeakWS.AutoSize = true;
             this.procPeakWS.ForeColor = System.Drawing.Color.Black;
-            this.procPeakWS.Location = new System.Drawing.Point(171, 170);
+            this.procPeakWS.Location = new System.Drawing.Point(114, 110);
+            this.procPeakWS.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.procPeakWS.Name = "procPeakWS";
-            this.procPeakWS.Size = new System.Drawing.Size(0, 20);
+            this.procPeakWS.Size = new System.Drawing.Size(0, 13);
             this.procPeakWS.TabIndex = 71;
             // 
             // privateMemory
@@ -479,9 +504,10 @@ namespace POC_NEW
             this.privateMemory.AutoSize = true;
             this.privateMemory.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.privateMemory.ForeColor = System.Drawing.Color.Black;
-            this.privateMemory.Location = new System.Drawing.Point(8, 15);
+            this.privateMemory.Location = new System.Drawing.Point(5, 10);
+            this.privateMemory.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.privateMemory.Name = "privateMemory";
-            this.privateMemory.Size = new System.Drawing.Size(136, 20);
+            this.privateMemory.Size = new System.Drawing.Size(98, 13);
             this.privateMemory.TabIndex = 56;
             this.privateMemory.Text = "Private Memory:";
             // 
@@ -492,9 +518,10 @@ namespace POC_NEW
             this.peakWS.AutoSize = true;
             this.peakWS.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.peakWS.ForeColor = System.Drawing.Color.Black;
-            this.peakWS.Location = new System.Drawing.Point(8, 170);
+            this.peakWS.Location = new System.Drawing.Point(5, 110);
+            this.peakWS.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.peakWS.Name = "peakWS";
-            this.peakWS.Size = new System.Drawing.Size(157, 20);
+            this.peakWS.Size = new System.Drawing.Size(114, 13);
             this.peakWS.TabIndex = 70;
             this.peakWS.Text = "Peak Working Set:";
             // 
@@ -504,9 +531,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.procPrivateWS.AutoSize = true;
             this.procPrivateWS.ForeColor = System.Drawing.Color.Black;
-            this.procPrivateWS.Location = new System.Drawing.Point(186, 108);
+            this.procPrivateWS.Location = new System.Drawing.Point(124, 70);
+            this.procPrivateWS.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.procPrivateWS.Name = "procPrivateWS";
-            this.procPrivateWS.Size = new System.Drawing.Size(0, 20);
+            this.procPrivateWS.Size = new System.Drawing.Size(0, 13);
             this.procPrivateWS.TabIndex = 63;
             this.procPrivateWS.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
@@ -516,9 +544,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.procSharedWS.AutoSize = true;
             this.procSharedWS.ForeColor = System.Drawing.Color.Black;
-            this.procSharedWS.Location = new System.Drawing.Point(189, 139);
+            this.procSharedWS.Location = new System.Drawing.Point(126, 90);
+            this.procSharedWS.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.procSharedWS.Name = "procSharedWS";
-            this.procSharedWS.Size = new System.Drawing.Size(0, 20);
+            this.procSharedWS.Size = new System.Drawing.Size(0, 13);
             this.procSharedWS.TabIndex = 69;
             // 
             // privateWS
@@ -528,9 +557,10 @@ namespace POC_NEW
             this.privateWS.AutoSize = true;
             this.privateWS.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.privateWS.ForeColor = System.Drawing.Color.Black;
-            this.privateWS.Location = new System.Drawing.Point(8, 108);
+            this.privateWS.Location = new System.Drawing.Point(5, 70);
+            this.privateWS.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.privateWS.Name = "privateWS";
-            this.privateWS.Size = new System.Drawing.Size(172, 20);
+            this.privateWS.Size = new System.Drawing.Size(125, 13);
             this.privateWS.TabIndex = 62;
             this.privateWS.Text = "Private Working Set:";
             // 
@@ -541,9 +571,10 @@ namespace POC_NEW
             this.SharedWS.AutoSize = true;
             this.SharedWS.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SharedWS.ForeColor = System.Drawing.Color.Black;
-            this.SharedWS.Location = new System.Drawing.Point(8, 139);
+            this.SharedWS.Location = new System.Drawing.Point(5, 90);
+            this.SharedWS.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.SharedWS.Name = "SharedWS";
-            this.SharedWS.Size = new System.Drawing.Size(175, 20);
+            this.SharedWS.Size = new System.Drawing.Size(125, 13);
             this.SharedWS.TabIndex = 68;
             this.SharedWS.Text = "Shared Working Set:";
             // 
@@ -553,9 +584,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.procWS.AutoSize = true;
             this.procWS.ForeColor = System.Drawing.Color.Black;
-            this.procWS.Location = new System.Drawing.Point(126, 77);
+            this.procWS.Location = new System.Drawing.Point(84, 50);
+            this.procWS.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.procWS.Name = "procWS";
-            this.procWS.Size = new System.Drawing.Size(0, 20);
+            this.procWS.Size = new System.Drawing.Size(0, 13);
             this.procWS.TabIndex = 61;
             // 
             // procWrites
@@ -564,9 +596,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.procWrites.AutoSize = true;
             this.procWrites.ForeColor = System.Drawing.Color.Black;
-            this.procWrites.Location = new System.Drawing.Point(79, 257);
+            this.procWrites.Location = new System.Drawing.Point(53, 167);
+            this.procWrites.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.procWrites.Name = "procWrites";
-            this.procWrites.Size = new System.Drawing.Size(0, 20);
+            this.procWrites.Size = new System.Drawing.Size(0, 13);
             this.procWrites.TabIndex = 67;
             // 
             // workingset
@@ -576,9 +609,10 @@ namespace POC_NEW
             this.workingset.AutoSize = true;
             this.workingset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.workingset.ForeColor = System.Drawing.Color.Black;
-            this.workingset.Location = new System.Drawing.Point(8, 77);
+            this.workingset.Location = new System.Drawing.Point(5, 50);
+            this.workingset.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.workingset.Name = "workingset";
-            this.workingset.Size = new System.Drawing.Size(112, 20);
+            this.workingset.Size = new System.Drawing.Size(81, 13);
             this.workingset.TabIndex = 60;
             this.workingset.Text = "Working Set:";
             // 
@@ -589,9 +623,10 @@ namespace POC_NEW
             this.writes.AutoSize = true;
             this.writes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.writes.ForeColor = System.Drawing.Color.Black;
-            this.writes.Location = new System.Drawing.Point(8, 257);
+            this.writes.Location = new System.Drawing.Point(5, 167);
+            this.writes.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.writes.Name = "writes";
-            this.writes.Size = new System.Drawing.Size(65, 20);
+            this.writes.Size = new System.Drawing.Size(47, 13);
             this.writes.TabIndex = 66;
             this.writes.Text = "Writes:";
             // 
@@ -601,9 +636,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.procVirtual.AutoSize = true;
             this.procVirtual.ForeColor = System.Drawing.Color.Black;
-            this.procVirtual.Location = new System.Drawing.Point(147, 46);
+            this.procVirtual.Location = new System.Drawing.Point(98, 30);
+            this.procVirtual.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.procVirtual.Name = "procVirtual";
-            this.procVirtual.Size = new System.Drawing.Size(0, 20);
+            this.procVirtual.Size = new System.Drawing.Size(0, 13);
             this.procVirtual.TabIndex = 59;
             // 
             // virtualMemory
@@ -613,9 +649,10 @@ namespace POC_NEW
             this.virtualMemory.AutoSize = true;
             this.virtualMemory.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.virtualMemory.ForeColor = System.Drawing.Color.Black;
-            this.virtualMemory.Location = new System.Drawing.Point(8, 46);
+            this.virtualMemory.Location = new System.Drawing.Point(5, 30);
+            this.virtualMemory.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.virtualMemory.Name = "virtualMemory";
-            this.virtualMemory.Size = new System.Drawing.Size(133, 20);
+            this.virtualMemory.Size = new System.Drawing.Size(94, 13);
             this.virtualMemory.TabIndex = 58;
             this.virtualMemory.Text = "Virtual Memory:";
             // 
@@ -625,9 +662,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.procReads.AutoSize = true;
             this.procReads.ForeColor = System.Drawing.Color.Black;
-            this.procReads.Location = new System.Drawing.Point(80, 226);
+            this.procReads.Location = new System.Drawing.Point(53, 147);
+            this.procReads.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.procReads.Name = "procReads";
-            this.procReads.Size = new System.Drawing.Size(0, 20);
+            this.procReads.Size = new System.Drawing.Size(0, 13);
             this.procReads.TabIndex = 65;
             // 
             // reads
@@ -637,9 +675,10 @@ namespace POC_NEW
             this.reads.AutoSize = true;
             this.reads.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.reads.ForeColor = System.Drawing.Color.Black;
-            this.reads.Location = new System.Drawing.Point(8, 226);
+            this.reads.Location = new System.Drawing.Point(5, 147);
+            this.reads.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.reads.Name = "reads";
-            this.reads.Size = new System.Drawing.Size(66, 20);
+            this.reads.Size = new System.Drawing.Size(47, 13);
             this.reads.TabIndex = 64;
             this.reads.Text = "Reads:";
             // 
@@ -649,9 +688,10 @@ namespace POC_NEW
             | System.Windows.Forms.AnchorStyles.Left)));
             this.procPrivate.AutoSize = true;
             this.procPrivate.ForeColor = System.Drawing.Color.Black;
-            this.procPrivate.Location = new System.Drawing.Point(150, 15);
+            this.procPrivate.Location = new System.Drawing.Point(100, 10);
+            this.procPrivate.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.procPrivate.Name = "procPrivate";
-            this.procPrivate.Size = new System.Drawing.Size(0, 20);
+            this.procPrivate.Size = new System.Drawing.Size(0, 13);
             this.procPrivate.TabIndex = 57;
             // 
             // threads
@@ -668,9 +708,10 @@ namespace POC_NEW
             this.threads.Controls.Add(this.Cpriority);
             this.threads.Controls.Add(this.label3);
             this.threads.Controls.Add(this.Bpriority);
-            this.threads.Location = new System.Drawing.Point(4, 29);
+            this.threads.Location = new System.Drawing.Point(4, 22);
+            this.threads.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.threads.Name = "threads";
-            this.threads.Size = new System.Drawing.Size(585, 506);
+            this.threads.Size = new System.Drawing.Size(387, 324);
             this.threads.TabIndex = 2;
             this.threads.Text = "Threads";
             // 
@@ -685,9 +726,10 @@ namespace POC_NEW
             this.threadsProc.FullRowSelect = true;
             this.threadsProc.HideSelection = false;
             this.threadsProc.Location = new System.Drawing.Point(0, 0);
+            this.threadsProc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.threadsProc.MultiSelect = false;
             this.threadsProc.Name = "threadsProc";
-            this.threadsProc.Size = new System.Drawing.Size(585, 331);
+            this.threadsProc.Size = new System.Drawing.Size(387, 217);
             this.threadsProc.TabIndex = 68;
             this.threadsProc.UseCompatibleStateImageBehavior = false;
             this.threadsProc.View = System.Windows.Forms.View.Details;
@@ -718,9 +760,10 @@ namespace POC_NEW
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label14.ForeColor = System.Drawing.Color.Black;
-            this.label14.Location = new System.Drawing.Point(8, 350);
+            this.label14.Location = new System.Drawing.Point(5, 227);
+            this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(94, 20);
+            this.label14.Size = new System.Drawing.Size(68, 13);
             this.label14.TabIndex = 66;
             this.label14.Text = "Thread ID:";
             // 
@@ -729,9 +772,10 @@ namespace POC_NEW
             this.threadID.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.threadID.AutoSize = true;
             this.threadID.ForeColor = System.Drawing.Color.Black;
-            this.threadID.Location = new System.Drawing.Point(108, 350);
+            this.threadID.Location = new System.Drawing.Point(72, 227);
+            this.threadID.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.threadID.Name = "threadID";
-            this.threadID.Size = new System.Drawing.Size(0, 20);
+            this.threadID.Size = new System.Drawing.Size(0, 13);
             this.threadID.TabIndex = 67;
             this.threadID.Click += new System.EventHandler(this.threadID_Click);
             // 
@@ -741,9 +785,10 @@ namespace POC_NEW
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.ForeColor = System.Drawing.Color.Black;
-            this.label12.Location = new System.Drawing.Point(233, 392);
+            this.label12.Location = new System.Drawing.Point(155, 255);
+            this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(58, 20);
+            this.label12.Size = new System.Drawing.Size(41, 13);
             this.label12.TabIndex = 64;
             this.label12.Text = "State:";
             // 
@@ -752,9 +797,10 @@ namespace POC_NEW
             this.threadStateText.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.threadStateText.AutoSize = true;
             this.threadStateText.ForeColor = System.Drawing.Color.Black;
-            this.threadStateText.Location = new System.Drawing.Point(297, 392);
+            this.threadStateText.Location = new System.Drawing.Point(198, 255);
+            this.threadStateText.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.threadStateText.Name = "threadStateText";
-            this.threadStateText.Size = new System.Drawing.Size(0, 20);
+            this.threadStateText.Size = new System.Drawing.Size(0, 13);
             this.threadStateText.TabIndex = 65;
             // 
             // label8
@@ -763,9 +809,10 @@ namespace POC_NEW
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.Black;
-            this.label8.Location = new System.Drawing.Point(233, 350);
+            this.label8.Location = new System.Drawing.Point(155, 227);
+            this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(97, 20);
+            this.label8.Size = new System.Drawing.Size(69, 13);
             this.label8.TabIndex = 62;
             this.label8.Text = "Start Time:";
             // 
@@ -774,9 +821,10 @@ namespace POC_NEW
             this.startThread.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.startThread.AutoSize = true;
             this.startThread.ForeColor = System.Drawing.Color.Black;
-            this.startThread.Location = new System.Drawing.Point(336, 350);
+            this.startThread.Location = new System.Drawing.Point(224, 227);
+            this.startThread.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.startThread.Name = "startThread";
-            this.startThread.Size = new System.Drawing.Size(0, 20);
+            this.startThread.Size = new System.Drawing.Size(0, 13);
             this.startThread.TabIndex = 63;
             // 
             // label6
@@ -785,9 +833,10 @@ namespace POC_NEW
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.Black;
-            this.label6.Location = new System.Drawing.Point(8, 434);
+            this.label6.Location = new System.Drawing.Point(5, 282);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(134, 20);
+            this.label6.Size = new System.Drawing.Size(95, 13);
             this.label6.TabIndex = 60;
             this.label6.Text = "Current Priority:";
             // 
@@ -796,9 +845,10 @@ namespace POC_NEW
             this.Cpriority.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.Cpriority.AutoSize = true;
             this.Cpriority.ForeColor = System.Drawing.Color.Black;
-            this.Cpriority.Location = new System.Drawing.Point(148, 434);
+            this.Cpriority.Location = new System.Drawing.Point(99, 282);
+            this.Cpriority.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.Cpriority.Name = "Cpriority";
-            this.Cpriority.Size = new System.Drawing.Size(0, 20);
+            this.Cpriority.Size = new System.Drawing.Size(0, 13);
             this.Cpriority.TabIndex = 61;
             // 
             // label3
@@ -807,9 +857,10 @@ namespace POC_NEW
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(8, 392);
+            this.label3.Location = new System.Drawing.Point(5, 255);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(115, 20);
+            this.label3.Size = new System.Drawing.Size(82, 13);
             this.label3.TabIndex = 58;
             this.label3.Text = "Base Priority:";
             // 
@@ -818,18 +869,20 @@ namespace POC_NEW
             this.Bpriority.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.Bpriority.AutoSize = true;
             this.Bpriority.ForeColor = System.Drawing.Color.Black;
-            this.Bpriority.Location = new System.Drawing.Point(129, 392);
+            this.Bpriority.Location = new System.Drawing.Point(86, 255);
+            this.Bpriority.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.Bpriority.Name = "Bpriority";
-            this.Bpriority.Size = new System.Drawing.Size(0, 20);
+            this.Bpriority.Size = new System.Drawing.Size(0, 13);
             this.Bpriority.TabIndex = 59;
             // 
             // modules
             // 
             this.modules.BackColor = System.Drawing.Color.White;
             this.modules.Controls.Add(this.dlls);
-            this.modules.Location = new System.Drawing.Point(4, 29);
+            this.modules.Location = new System.Drawing.Point(4, 22);
+            this.modules.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.modules.Name = "modules";
-            this.modules.Size = new System.Drawing.Size(585, 506);
+            this.modules.Size = new System.Drawing.Size(387, 324);
             this.modules.TabIndex = 3;
             this.modules.Text = "Modules";
             // 
@@ -841,8 +894,9 @@ namespace POC_NEW
             this.dlls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dlls.HideSelection = false;
             this.dlls.Location = new System.Drawing.Point(0, 0);
+            this.dlls.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dlls.Name = "dlls";
-            this.dlls.Size = new System.Drawing.Size(585, 506);
+            this.dlls.Size = new System.Drawing.Size(387, 324);
             this.dlls.TabIndex = 0;
             this.dlls.UseCompatibleStateImageBehavior = false;
             this.dlls.View = System.Windows.Forms.View.Details;
@@ -863,9 +917,10 @@ namespace POC_NEW
             this.graphs.Controls.Add(this.label4);
             this.graphs.Controls.Add(this.ioGraph);
             this.graphs.Controls.Add(this.cpuGraphics);
-            this.graphs.Location = new System.Drawing.Point(4, 29);
+            this.graphs.Location = new System.Drawing.Point(4, 22);
+            this.graphs.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.graphs.Name = "graphs";
-            this.graphs.Size = new System.Drawing.Size(585, 506);
+            this.graphs.Size = new System.Drawing.Size(387, 324);
             this.graphs.TabIndex = 4;
             this.graphs.Text = "Graphs";
             // 
@@ -873,18 +928,20 @@ namespace POC_NEW
             // 
             this.writeLabel.AutoSize = true;
             this.writeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.writeLabel.Location = new System.Drawing.Point(315, 248);
+            this.writeLabel.Location = new System.Drawing.Point(210, 161);
+            this.writeLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.writeLabel.Name = "writeLabel";
-            this.writeLabel.Size = new System.Drawing.Size(0, 17);
+            this.writeLabel.Size = new System.Drawing.Size(0, 13);
             this.writeLabel.TabIndex = 9;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(245, 248);
+            this.label10.Location = new System.Drawing.Point(163, 161);
+            this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(59, 17);
+            this.label10.Size = new System.Drawing.Size(45, 13);
             this.label10.TabIndex = 8;
             this.label10.Text = "Writes:";
             // 
@@ -892,27 +949,30 @@ namespace POC_NEW
             // 
             this.readLabel.AutoSize = true;
             this.readLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.readLabel.Location = new System.Drawing.Point(148, 248);
+            this.readLabel.Location = new System.Drawing.Point(99, 161);
+            this.readLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.readLabel.Name = "readLabel";
-            this.readLabel.Size = new System.Drawing.Size(0, 17);
+            this.readLabel.Size = new System.Drawing.Size(0, 13);
             this.readLabel.TabIndex = 7;
             // 
             // cpuLabel
             // 
             this.cpuLabel.AutoSize = true;
             this.cpuLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cpuLabel.Location = new System.Drawing.Point(201, 6);
+            this.cpuLabel.Location = new System.Drawing.Point(134, 4);
+            this.cpuLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.cpuLabel.Name = "cpuLabel";
-            this.cpuLabel.Size = new System.Drawing.Size(0, 17);
+            this.cpuLabel.Size = new System.Drawing.Size(0, 13);
             this.cpuLabel.TabIndex = 7;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(76, 248);
+            this.label9.Location = new System.Drawing.Point(51, 161);
+            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(59, 17);
+            this.label9.Size = new System.Drawing.Size(46, 13);
             this.label9.TabIndex = 6;
             this.label9.Text = "Reads:";
             // 
@@ -920,9 +980,10 @@ namespace POC_NEW
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(76, 6);
+            this.label4.Location = new System.Drawing.Point(51, 4);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(113, 17);
+            this.label4.Size = new System.Drawing.Size(88, 13);
             this.label4.TabIndex = 6;
             this.label4.Text = "Current Value:";
             // 
@@ -952,7 +1013,8 @@ namespace POC_NEW
             legend1.IsTextAutoFit = false;
             legend1.Name = "Legend1";
             this.ioGraph.Legends.Add(legend1);
-            this.ioGraph.Location = new System.Drawing.Point(17, 262);
+            this.ioGraph.Location = new System.Drawing.Point(11, 170);
+            this.ioGraph.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ioGraph.Name = "ioGraph";
             this.ioGraph.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel;
             series3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
@@ -973,7 +1035,7 @@ namespace POC_NEW
             series4.Name = "Series2";
             this.ioGraph.Series.Add(series3);
             this.ioGraph.Series.Add(series4);
-            this.ioGraph.Size = new System.Drawing.Size(550, 241);
+            this.ioGraph.Size = new System.Drawing.Size(367, 157);
             this.ioGraph.TabIndex = 3;
             this.ioGraph.Text = "ioGraph";
             // 
@@ -1003,7 +1065,8 @@ namespace POC_NEW
             legend2.IsTextAutoFit = false;
             legend2.Name = "Legend1";
             this.cpuGraphics.Legends.Add(legend2);
-            this.cpuGraphics.Location = new System.Drawing.Point(17, 14);
+            this.cpuGraphics.Location = new System.Drawing.Point(11, 9);
+            this.cpuGraphics.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cpuGraphics.Name = "cpuGraphics";
             this.cpuGraphics.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel;
             series5.BorderColor = System.Drawing.Color.Goldenrod;
@@ -1015,17 +1078,18 @@ namespace POC_NEW
             series5.LegendText = "CPU";
             series5.Name = "Series1";
             this.cpuGraphics.Series.Add(series5);
-            this.cpuGraphics.Size = new System.Drawing.Size(550, 241);
+            this.cpuGraphics.Size = new System.Drawing.Size(367, 157);
             this.cpuGraphics.TabIndex = 3;
             this.cpuGraphics.Text = "cpuGraphics";
             // 
             // pipes
             // 
             this.pipes.Controls.Add(this.pipesList);
-            this.pipes.Location = new System.Drawing.Point(4, 29);
+            this.pipes.Location = new System.Drawing.Point(4, 22);
+            this.pipes.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pipes.Name = "pipes";
-            this.pipes.Padding = new System.Windows.Forms.Padding(3);
-            this.pipes.Size = new System.Drawing.Size(585, 506);
+            this.pipes.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pipes.Size = new System.Drawing.Size(387, 324);
             this.pipes.TabIndex = 5;
             this.pipes.Text = "Connections";
             this.pipes.UseVisualStyleBackColor = true;
@@ -1040,9 +1104,10 @@ namespace POC_NEW
             this.columnHeader8});
             this.pipesList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pipesList.HideSelection = false;
-            this.pipesList.Location = new System.Drawing.Point(3, 3);
+            this.pipesList.Location = new System.Drawing.Point(2, 2);
+            this.pipesList.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pipesList.Name = "pipesList";
-            this.pipesList.Size = new System.Drawing.Size(579, 500);
+            this.pipesList.Size = new System.Drawing.Size(383, 320);
             this.pipesList.TabIndex = 0;
             this.pipesList.UseCompatibleStateImageBehavior = false;
             this.pipesList.View = System.Windows.Forms.View.Details;
@@ -1069,11 +1134,12 @@ namespace POC_NEW
             // 
             // singleProcess
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(593, 539);
+            this.ClientSize = new System.Drawing.Size(395, 350);
             this.Controls.Add(this.tabControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "singleProcess";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "singleProcess";

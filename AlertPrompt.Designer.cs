@@ -1,4 +1,4 @@
-﻿namespace POC_NEW
+﻿namespace RahimiProcess
 {
     partial class AlertPrompt
     {
@@ -33,7 +33,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.procAlerts = new POC_NEW.DoubleBufferedListView();
+            this.procAlerts = new RahimiProcess.DoubleBufferedListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -41,7 +41,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.pictureBox1.BackgroundImage = global::POC_NEW.Properties.Resources.alertSign;
+            this.pictureBox1.BackgroundImage = global::RahimiProcess.Properties.Resources.alertSign;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.pictureBox1.Location = new System.Drawing.Point(118, 12);
             this.pictureBox1.Name = "pictureBox1";

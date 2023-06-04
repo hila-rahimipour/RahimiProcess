@@ -21,7 +21,7 @@ public enum ThreadAccess : int
     IMPERSONATE = (0x0100),
     DIRECT_IMPERSONATION = (0x0200)
 }
-namespace POC_NEW
+namespace RahimiProcess
 {
     public class Suspend
     {

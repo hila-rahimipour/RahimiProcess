@@ -13,7 +13,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 
-namespace POC_NEW
+namespace RahimiProcess
 {
     class ListViewColumnSorter : IComparer
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
-namespace POC_NEW
+namespace RahimiProcess
 {
     public class ProcessInfo
     {

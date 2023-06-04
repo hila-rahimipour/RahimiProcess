@@ -12,7 +12,7 @@ using System.Net.NetworkInformation;
 using System.Net;
 using System.Diagnostics;
 
-namespace POC_NEW
+namespace RahimiProcess
 {
 
     public partial class NetworkInfo : Form

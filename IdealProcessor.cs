@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
-namespace POC_NEW
+namespace RahimiProcess
 {
     class IdealProcessor
     {
